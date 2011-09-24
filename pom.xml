@@ -44,6 +44,12 @@
 	</dependencyManagement>
 
 	<dependencies>
+<!-- 		<dependency> -->
+<!-- 			<groupId>com.ocpsoft</groupId> -->
+<!-- 			<artifactId>prettyfaces-jsf2</artifactId> -->
+<!-- 			<version>3.3.0</version> -->
+<!-- 		</dependency> -->
+
 		<dependency>
 			<groupId>org.jboss.resteasy</groupId>
 			<artifactId>resteasy-jaxrs</artifactId>
@@ -53,6 +59,7 @@
 <!-- 					<artifactId>javassist</artifactId> -->
 <!-- 					<groupId>javassist</groupId> -->
 <!-- 				</exclusion> -->
+
 				<exclusion>
 					<artifactId>jsr250-api</artifactId>
 					<groupId>javax.annotation</groupId>
@@ -67,11 +74,37 @@
 				</exclusion>
 			</exclusions>
 		</dependency>
+
+		<dependency>
+			<groupId>org.jboss.resteasy</groupId>
+			<artifactId>resteasy-jaxb-provider</artifactId>
+			<version>2.2.1.GA</version>
+			<exclusions>
+				<exclusion>
+					<artifactId>jaxb-impl</artifactId>
+					<groupId>com.sun.xml.bind</groupId>
+				</exclusion>
+			</exclusions>
+		</dependency>
+
+		<dependency>
+			<groupId>org.jboss.resteasy</groupId>
+			<artifactId>resteasy-jettison-provider</artifactId>
+			<version>2.2.1.GA</version>
+		</dependency>
+
 		<dependency>
 			<groupId>org.alfredlibrary</groupId>
 			<artifactId>alfred</artifactId>
 			<version>1.1.0</version>
 		</dependency>
+
+<!-- 		<dependency> -->
+<!-- 			<groupId>com.google.appengine</groupId> -->
+<!-- 			<artifactId>appengine-api-1.0-sdk</artifactId> -->
+<!-- 			<version>1.5.4</version> -->
+<!-- 			<scope>compile</scope> -->
+<!-- 		</dependency> -->
 	</dependencies>
 
 	<build>
@@ -83,6 +116,11 @@
 			</resource>
 		</resources>
 		<plugins>
+<!-- 			<plugin> -->
+<!-- 				<groupId>net.kindleit</groupId> -->
+<!-- 				<artifactId>maven-gae-plugin</artifactId> -->
+<!-- 				<version>0.9.1</version> -->
+<!-- 			</plugin> -->
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-compiler-plugin</artifactId>
@@ -103,7 +141,6 @@
 				<artifactId>maven-war-plugin</artifactId>
 				<version>2.1-beta-1</version>
 				<configuration>
-					<warName>rasea</warName>
 					<webResources>
 						<resource>
 							<directory>src/main/webapp/WEB-INF</directory>

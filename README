@@ -1,4 +1,10 @@
+Correios RESTful Web Services
+=============================
+
 Como não achei um free por aí, estou construindo RESTful Web Services para os Correios.
+
+Rastreamento
+------------
 
 Por enquanto estou empenhado no serviço de rastreamento, mas com o tempo disponibilizarei outros. Estes serviços expõem as informações contidas nas páginas HTML dos Correios. O parse é feito com auxílio do projeto Alfred Library (http://alfredlibrary.org).  
 

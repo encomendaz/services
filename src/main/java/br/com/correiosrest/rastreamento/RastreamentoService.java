@@ -39,21 +39,22 @@ public class RastreamentoService {
 
 	@GET
 	@Path("/{codigo}")
-	@Produces("text/plain;charset=UTF-8")
-	public String pesquisar(@PathParam("codigo") String codigo, @QueryParam("ini") Integer inicio,
+	@Produces("application/json;charset=UTF-8")
+	public String pesquisar(@PathParam("codigo") String codigo, @QueryParam("inicio") Integer inicio,
 			@QueryParam("fim") Integer fim) {
 
-		List<RegistroResponse> ocorrencias = new ArrayList<RegistroResponse>();
-		List<RegistroRastreamento> registros = Rastreamento.rastrear(codigo);
-		Collections.reverse(registros);
+		List<RastreamentoResponse> ocorrencias = new ArrayList<RastreamentoResponse>();
+		List<RegistroRastreamento> response = Rastreamento.rastrear(codigo);
+		Collections.reverse(response);
 
 		int _ini = (inicio == null || inicio < 1 ? 1 : inicio);
-		int _fim = (fim == null || fim > registros.size() ? registros.size() : fim);
+		int _fim = (fim == null || fim > response.size() ? response.size() : fim);
 
 		for (int i = _ini; i <= _fim; i++) {
-			ocorrencias.add(RegistroResponse.parse(registros.get(i - 1)));
+			ocorrencias.add(RastreamentoResponse.parse(response.get(i - 1)));
 		}
 
+		Collections.reverse(ocorrencias);
 		return ocorrencias.toString();
 	}
 }

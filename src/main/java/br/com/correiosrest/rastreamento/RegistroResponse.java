@@ -21,34 +21,20 @@
  */
 package br.com.correiosrest.rastreamento;
 
-import static javax.xml.bind.annotation.XmlAccessType.FIELD;
-
 import java.util.Date;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import javax.xml.bind.annotation.XmlAccessorType;
-import javax.xml.bind.annotation.XmlElement;
-import javax.xml.bind.annotation.XmlRootElement;
-import javax.xml.bind.annotation.XmlType;
-
 import org.alfredlibrary.utilitarios.correios.RegistroRastreamento;
 
-@XmlAccessorType(FIELD)
-@XmlRootElement(name = "reg")
-@XmlType(propOrder = { "data", "local", "situacao", "observacao" })
 public class RegistroResponse {
 
-	@XmlElement(name = "dat", required = true)
 	private Date data;
 
-	@XmlElement(name = "loc", required = true)
 	private String local;
 
-	@XmlElement(name = "sit", required = true)
 	private String situacao;
 
-	@XmlElement(name = "obs", required = false)
 	private String observacao;
 
 	private RegistroResponse() {
@@ -96,6 +82,29 @@ public class RegistroResponse {
 		return buffer.toString().trim();
 	}
 
+	@Override
+	public String toString() {
+		StringBuffer buffer = new StringBuffer();
+
+		buffer.append("{");
+		buffer.append("\"data\":\"" + this.data + "\"");
+
+		buffer.append(",");
+		buffer.append("\"local\":\"" + this.local + "\"");
+
+		buffer.append(",");
+		buffer.append("\"situacao\":\"" + this.situacao + "\"");
+
+		if (this.observacao != null) {
+			buffer.append(",");
+			buffer.append("\"observacao\":\"" + this.observacao + "\"");
+		}
+
+		buffer.append("}");
+
+		return buffer.toString();
+	}
+
 	public String getSituacao() {
 		return situacao;
 	}
@@ -111,5 +120,4 @@ public class RegistroResponse {
 	public Date getData() {
 		return data;
 	}
-
 }

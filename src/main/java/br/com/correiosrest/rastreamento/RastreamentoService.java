@@ -22,6 +22,7 @@
 package br.com.correiosrest.rastreamento;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import javax.ws.rs.GET;
@@ -34,23 +35,26 @@ import org.alfredlibrary.utilitarios.correios.Rastreamento;
 import org.alfredlibrary.utilitarios.correios.RegistroRastreamento;
 
 @Path("/rastreamento")
-public class RastreamentoRS {
+public class RastreamentoService {
 
 	@GET
-	@Produces("application/json;charset=UTF-8")
+	@Produces("text/plain;charset=UTF-8")
 	@Path("/{codigo}")
-	public List<RegistroResponse> pesquisar(@PathParam("codigo") String codigo, @QueryParam("ini") Integer inicio,
+	public String pesquisar(@PathParam("codigo") String codigo, @QueryParam("ini") Integer inicio,
 			@QueryParam("fim") Integer fim) {
-		List<RegistroResponse> ocorrencias = new ArrayList<RegistroResponse>();
 
+		List<RegistroResponse> ocorrencias = new ArrayList<RegistroResponse>();
 		List<RegistroRastreamento> registros = Rastreamento.rastrear(codigo);
-		int size = registros.size();
-		for (int i = 1; i <= size; i++) {
-			if (i >= (inicio == null ? 1 : inicio) && i <= (fim == null ? size : fim)) {
-				ocorrencias.add(RegistroResponse.parse(registros.get(i - 1)));
-			}
+		Collections.reverse(registros);
+
+		int _ini = (inicio == null || inicio < 1 ? 1 : inicio);
+		int _fim = (fim == null || fim > registros.size() ? registros.size() : fim);
+
+		for (int i = _ini; i <= _fim; i++) {
+			ocorrencias.add(RegistroResponse.parse(registros.get(i - 1)));
 		}
 
-		return ocorrencias;
+		return ocorrencias.toString();
 	}
+
 }

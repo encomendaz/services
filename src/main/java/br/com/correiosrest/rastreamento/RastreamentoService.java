@@ -38,8 +38,8 @@ import org.alfredlibrary.utilitarios.correios.RegistroRastreamento;
 public class RastreamentoService {
 
 	@GET
-	@Produces("text/plain;charset=UTF-8")
 	@Path("/{codigo}")
+	@Produces("text/plain;charset=UTF-8")
 	public String pesquisar(@PathParam("codigo") String codigo, @QueryParam("ini") Integer inicio,
 			@QueryParam("fim") Integer fim) {
 
@@ -56,5 +56,4 @@ public class RastreamentoService {
 
 		return ocorrencias.toString();
 	}
-
 }

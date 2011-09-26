@@ -89,7 +89,7 @@ public class RastreamentoResponse {
 		StringBuffer buffer = new StringBuffer();
 
 		buffer.append("{");
-		SimpleDateFormat formatter = new SimpleDateFormat("EEE MMM d HH:mm:ss Z yyyy", Locale.US);
+		SimpleDateFormat formatter = new SimpleDateFormat("EEE MMM d HH:mm:ss -0300 yyyy", Locale.US);
 		buffer.append("\"data\":\"" + formatter.format(this.data) + "\"");
 
 		buffer.append(",");

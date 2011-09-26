@@ -21,7 +21,9 @@
  */
 package br.com.correiosrest.rastreamento;
 
+import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.Locale;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -87,7 +89,8 @@ public class RastreamentoResponse {
 		StringBuffer buffer = new StringBuffer();
 
 		buffer.append("{");
-		buffer.append("\"data\":\"" + this.data + "\"");
+		SimpleDateFormat formatter = new SimpleDateFormat("EEE MMM d HH:mm:ss Z yyyy", Locale.US);
+		buffer.append("\"data\":\"" + formatter.format(this.data) + "\"");
 
 		buffer.append(",");
 		buffer.append("\"local\":\"" + this.local + "\"");

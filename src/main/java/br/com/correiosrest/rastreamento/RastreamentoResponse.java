@@ -57,12 +57,22 @@ public class RastreamentoResponse {
 	}
 
 	private static String parse(String local) {
-		Pattern pattern = Pattern.compile("^(.*) (.*) - \\2/(\\w{2})$");
+		Pattern pattern = Pattern.compile("^(.*?[A-Z]{2,3}) (.*) - (.*)/(\\w{2})$");
 		Matcher matcher = pattern.matcher(local == null ? "" : local);
 		String resultado = local;
 
 		if (matcher.matches()) {
-			resultado = matcher.group(1) + " " + parseToFirstUpper(matcher.group(2)) + "/" + matcher.group(3);
+			String p1 = matcher.group(1);
+			String p2;
+			String p3 = matcher.group(4);
+
+			if (matcher.group(2).equals(matcher.group(3))) {
+				p2 = matcher.group(2);
+			} else {
+				p2 = matcher.group(2) + " – " + matcher.group(3);
+			}
+
+			resultado = p1 + " " + parseToFirstUpper(p2) + "/" + p3;
 		}
 
 		return resultado;
@@ -89,7 +99,7 @@ public class RastreamentoResponse {
 		StringBuffer buffer = new StringBuffer();
 
 		buffer.append("{");
-		SimpleDateFormat formatter = new SimpleDateFormat("EEE MMM d HH:mm:ss -0300 yyyy", Locale.US);
+		SimpleDateFormat formatter = new SimpleDateFormat("EEE, MMM d HH:mm:ss -0300 yyyy", Locale.US);
 		buffer.append("\"data\":\"" + formatter.format(this.data) + "\"");
 
 		buffer.append(",");

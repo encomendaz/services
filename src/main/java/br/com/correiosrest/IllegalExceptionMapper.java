@@ -25,13 +25,11 @@ import javax.ws.rs.core.Response;
 import javax.ws.rs.ext.ExceptionMapper;
 import javax.ws.rs.ext.Provider;
 
-import org.alfredlibrary.AlfredException;
-
 @Provider
-public class CorrreiosExceptionMapper implements ExceptionMapper<AlfredException> {
+public class IllegalExceptionMapper implements ExceptionMapper<IllegalArgumentException> {
 
 	@Override
-	public Response toResponse(AlfredException exception) {
+	public Response toResponse(IllegalArgumentException exception) {
 		return Response.status(404).build();
 	}
 }

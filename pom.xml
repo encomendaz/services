@@ -1,13 +1,12 @@
 <!--
- Correios RESTful Web Services
+ EncomendaZ
  
- Copyright (c) 2011, Cleverson Sacramento <http://cleversonsacramento.com>.
+ Copyright (c) 2011, EncomendaZ <http://encomendaz.net>.
  All rights reserved.
 
- Correios RESTful Web Services is free software; you can redistribute
- it and/or modify it under the terms of the GNU Lesser General Public
- License as published by the Free Software Foundation; either
- version 3 of the License.
+ EncomendaZ is free software; you can redistribute it and/or modify it
+ under the terms of the GNU Lesser General Public License as published
+ by the Free Software Foundation; either version 3 of the License.
 
  This library is distributed in the hope that it will be useful,
  but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -24,12 +23,12 @@
 
 	<modelVersion>4.0.0</modelVersion>
 
-	<groupId>com.cleversonsacramento</groupId>
-	<artifactId>correios-rest</artifactId>
+	<groupId>net.encomendaz</groupId>
+	<artifactId>encomendaz-rest</artifactId>
 	<version>1.0.0.Alpha1-SNAPSHOT</version>
 	<packaging>war</packaging>
 
-	<name>Correios RESTful Web Services</name>
+	<name>EncomendaZ RESTful Web Services</name>
 
 	<dependencies>
 		<dependency>

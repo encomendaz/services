@@ -103,9 +103,9 @@
 	</build>
 
 	<scm>
-		<connection>scm:git:git@github.com:zyc/correios-rest.git</connection>
-		<url>scm:git:git@github.com:zyc/correios-rest.git</url>
-		<developerConnection>scm:git:git@github.com:zyc/correios-rest.git</developerConnection>
+		<connection>scm:git:git@github.com:encomendaz/rest.git</connection>
+		<url>scm:git:git@github.com:encomendaz/rest.git</url>
+		<developerConnection>scm:git:git@github.com:encomendaz/rest.git</developerConnection>
 	</scm>
 
 	<repositories>

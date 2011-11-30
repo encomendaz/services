@@ -25,6 +25,7 @@ import java.util.Collections;
 import java.util.List;
 
 import javax.ws.rs.GET;
+import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
@@ -38,7 +39,7 @@ public class RastreamentoService {
 	@GET
 	@Path("/rastreamento.json")
 	@Produces("application/json;charset=UTF-8")
-	public String pesquisar(@QueryParam("id") String id, @QueryParam("inicio") Integer inicio,
+	public List<RastreamentoResponse> pesquisar(@QueryParam("id") String id, @QueryParam("inicio") Integer inicio,
 			@QueryParam("fim") Integer fim, @QueryParam("ordem") String ordem) {
 
 		if (id == null || id.isEmpty()) {
@@ -49,21 +50,27 @@ public class RastreamentoService {
 			throw new IllegalArgumentException("O parâmetro \"ordem\" só aceita os valores \"asc\" ou \"desc\"");
 		}
 
-		List<RastreamentoResponse> ocorrencias = new ArrayList<RastreamentoResponse>();
-		List<RegistroRastreamento> response = Rastreamento.rastrear(id);
-		Collections.reverse(response);
+		List<RastreamentoResponse> response = new ArrayList<RastreamentoResponse>();
+		List<RegistroRastreamento> registros = Rastreamento.rastrear(id);
+		Collections.reverse(registros);
 
 		int _ini = (inicio == null || inicio < 1 ? 1 : inicio);
-		int _fim = (fim == null || fim > response.size() ? response.size() : fim);
+		int _fim = (fim == null || fim > registros.size() ? registros.size() : fim);
 
 		for (int i = _ini; i <= _fim; i++) {
-			ocorrencias.add(RastreamentoResponse.parse(response.get(i - 1)));
+			response.add(RastreamentoResponse.parse(registros.get(i - 1)));
 		}
 
 		if ("desc".equals(ordem)) {
-			Collections.reverse(ocorrencias);
+			Collections.reverse(response);
 		}
 
-		return ocorrencias.toString();
+		return response;
+	}
+
+	@PUT
+	@Path("/rastreamento.json")
+	public void cadastrar(@QueryParam("id") String id, @QueryParam("email") String email) {
+
 	}
 }

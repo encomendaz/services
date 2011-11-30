@@ -19,8 +19,8 @@
  Fifth Floor, Boston, MA  02110-1301, USA.
 -->
 <web-app xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://java.sun.com/xml/ns/javaee"
-	xmlns:web="http://java.sun.com/xml/ns/javaee/web-app_3_0.xsd" xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_3_0.xsd"
-	version="3.0">
+	xmlns:web="http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd" xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd"
+	version="2.5">
 
 	<distributable />
 
@@ -51,4 +51,9 @@
 		<param-name>resteasy.scan</param-name>
 		<param-value>true</param-value>
 	</context-param>
+
+<!-- 	<context-param> -->
+<!-- 		<param-name>resteasy.providers</param-name> -->
+<!-- 		<param-value>org.codehaus.jackson.jaxrs.JacksonJsonProvider</param-value> -->
+<!-- 	</context-param> -->
 </web-app>

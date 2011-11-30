@@ -20,26 +20,35 @@
  */
 package net.encomendaz.rastreamento;
 
-import java.text.SimpleDateFormat;
+import static javax.xml.bind.annotation.XmlAccessType.FIELD;
+
 import java.util.Date;
-import java.util.Locale;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.XmlType;
+
 import org.alfredlibrary.utilitarios.correios.RegistroRastreamento;
 
+@XmlAccessorType(FIELD)
+@XmlRootElement(name = "registro")
+@XmlType(propOrder = { "data", "local", "situacao", "observacao" })
 public class RastreamentoResponse {
 
+	@XmlElement(required = true)
 	private Date data;
 
+	@XmlElement
 	private String local;
 
+	@XmlElement
 	private String situacao;
 
+	@XmlElement
 	private String observacao;
-
-	private RastreamentoResponse() {
-	}
 
 	public static RastreamentoResponse parse(RegistroRastreamento registro) {
 		if (registro == null) {
@@ -93,43 +102,35 @@ public class RastreamentoResponse {
 		return buffer.toString().trim();
 	}
 
-	@Override
-	public String toString() {
-		StringBuffer buffer = new StringBuffer();
-
-		buffer.append("{");
-		SimpleDateFormat formatter = new SimpleDateFormat("EEE, MMM d HH:mm:ss -0300 yyyy", Locale.US);
-		buffer.append("\"data\":\"" + formatter.format(this.data) + "\"");
-
-		buffer.append(",");
-		buffer.append("\"local\":\"" + this.local + "\"");
-
-		buffer.append(",");
-		buffer.append("\"situacao\":\"" + this.situacao + "\"");
-
-		if (this.observacao != null) {
-			buffer.append(",");
-			buffer.append("\"obs\":\"" + this.observacao + "\"");
-		}
-
-		buffer.append("}");
-
-		return buffer.toString();
-	}
-
 	public String getSituacao() {
 		return situacao;
+	}
+
+	public void setSituacao(String situacao) {
+		this.situacao = situacao;
 	}
 
 	public String getObservacao() {
 		return observacao;
 	}
 
+	public void setObservacao(String observacao) {
+		this.observacao = observacao;
+	}
+
 	public String getLocal() {
 		return local;
 	}
 
+	public void setLocal(String local) {
+		this.local = local;
+	}
+
 	public Date getData() {
 		return data;
+	}
+
+	public void setData(Date data) {
+		this.data = data;
 	}
 }

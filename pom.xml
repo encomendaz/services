@@ -23,7 +23,7 @@
 
 	<modelVersion>4.0.0</modelVersion>
 
-	<groupId>net.encomendaz.rest</groupId>
+	<groupId>net.encomendaz.rest.rest</groupId>
 	<artifactId>encomendaz-rest</artifactId>
 	<version>1.0.0.Alpha1-SNAPSHOT</version>
 	<packaging>war</packaging>
@@ -55,6 +55,12 @@
 			<groupId>org.jboss.resteasy</groupId>
 			<artifactId>resteasy-jackson-provider</artifactId>
 			<version>2.2.3.GA</version>
+		</dependency>
+
+		<dependency>
+			<groupId>com.amazonaws</groupId>
+			<artifactId>aws-java-sdk</artifactId>
+			<version>1.2.12</version>
 		</dependency>
 
 		<dependency>

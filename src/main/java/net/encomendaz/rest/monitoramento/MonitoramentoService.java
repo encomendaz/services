@@ -29,7 +29,18 @@ import javax.ws.rs.QueryParam;
 @Produces("application/json;charset=UTF-8")
 public class MonitoramentoService {
 
+	private MonitoramentoManager manager;
+
 	@GET
-	public void listar(@QueryParam("email") String email) {
+	public void cadastrar(@QueryParam("id") String id, @QueryParam("email") String email) {
+		getManager().cadastrar(id, email);
+	}
+
+	private MonitoramentoManager getManager() {
+		if (manager == null) {
+			manager = new MonitoramentoManager();
+		}
+
+		return manager;
 	}
 }

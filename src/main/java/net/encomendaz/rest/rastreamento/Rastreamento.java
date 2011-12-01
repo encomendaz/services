@@ -40,7 +40,7 @@ import org.codehaus.jackson.map.annotate.JsonSerialize;
 @XmlAccessorType(FIELD)
 @XmlRootElement(name = "registro")
 @XmlType(propOrder = { "data", "local", "situacao", "observacao" })
-public class RastreamentoResponse {
+public class Rastreamento {
 
 	@XmlElement(required = true)
 	private Date data;
@@ -54,12 +54,12 @@ public class RastreamentoResponse {
 	@XmlElement(nillable = true)
 	private String observacao;
 
-	public static RastreamentoResponse parse(RegistroRastreamento registro) {
+	public static Rastreamento parse(RegistroRastreamento registro) {
 		if (registro == null) {
 			throw new IllegalArgumentException("O registro de rastreamento não pode ser nulo.");
 		}
 
-		RastreamentoResponse response = new RastreamentoResponse();
+		Rastreamento response = new Rastreamento();
 		response.data = registro.getDataHora();
 		response.local = parse(registro.getLocal());
 		response.situacao = registro.getAcao();

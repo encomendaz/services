@@ -18,13 +18,17 @@
  * or write to the Free Software Foundation, Inc., 51 Franklin Street,
  * Fifth Floor, Boston, MA  02110-1301, USA.
  */
-package net.encomendaz.rastreamento;
+package net.encomendaz.rest;
 
-public class RastreamentoException extends Exception {
+import javax.ws.rs.core.Response;
+import javax.ws.rs.ext.ExceptionMapper;
+import javax.ws.rs.ext.Provider;
 
-	private static final long serialVersionUID = 1L;
+@Provider
+public class IllegalExceptionMapper implements ExceptionMapper<IllegalArgumentException> {
 
-	public RastreamentoException(String message) {
-		super(message);
+	@Override
+	public Response toResponse(IllegalArgumentException exception) {
+		return Response.status(404).build();
 	}
 }

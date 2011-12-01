@@ -18,19 +18,18 @@
  * or write to the Free Software Foundation, Inc., 51 Franklin Street,
  * Fifth Floor, Boston, MA  02110-1301, USA.
  */
-package net.encomendaz;
+package net.encomendaz.rest.monitoramento;
 
-import javax.ws.rs.core.Response;
-import javax.ws.rs.ext.ExceptionMapper;
-import javax.ws.rs.ext.Provider;
+import javax.ws.rs.GET;
+import javax.ws.rs.Path;
+import javax.ws.rs.Produces;
+import javax.ws.rs.QueryParam;
 
-import org.alfredlibrary.AlfredException;
+@Path("/monitoramento.json")
+@Produces("application/json;charset=UTF-8")
+public class MonitoramentoService {
 
-@Provider
-public class AlfredExceptionMapper implements ExceptionMapper<AlfredException> {
-
-	@Override
-	public Response toResponse(AlfredException cause) {
-		return Response.status(404).build();
+	@GET
+	public void listar(@QueryParam("email") String email) {
 	}
 }

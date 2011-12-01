@@ -18,17 +18,19 @@
  * or write to the Free Software Foundation, Inc., 51 Franklin Street,
  * Fifth Floor, Boston, MA  02110-1301, USA.
  */
-package net.encomendaz;
+package net.encomendaz.rest;
 
 import javax.ws.rs.core.Response;
 import javax.ws.rs.ext.ExceptionMapper;
 import javax.ws.rs.ext.Provider;
 
+import org.alfredlibrary.AlfredException;
+
 @Provider
-public class IllegalExceptionMapper implements ExceptionMapper<IllegalArgumentException> {
+public class AlfredExceptionMapper implements ExceptionMapper<AlfredException> {
 
 	@Override
-	public Response toResponse(IllegalArgumentException exception) {
+	public Response toResponse(AlfredException cause) {
 		return Response.status(404).build();
 	}
 }

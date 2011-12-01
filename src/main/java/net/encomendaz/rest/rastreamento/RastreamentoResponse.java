@@ -18,9 +18,10 @@
  * or write to the Free Software Foundation, Inc., 51 Franklin Street,
  * Fifth Floor, Boston, MA  02110-1301, USA.
  */
-package net.encomendaz.rastreamento;
+package net.encomendaz.rest.rastreamento;
 
 import static javax.xml.bind.annotation.XmlAccessType.FIELD;
+import static org.codehaus.jackson.map.annotate.JsonSerialize.Inclusion.NON_NULL;
 
 import java.util.Date;
 import java.util.regex.Matcher;
@@ -31,7 +32,10 @@ import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlType;
 
+import net.encomendaz.rest.JsonDateSerializer;
+
 import org.alfredlibrary.utilitarios.correios.RegistroRastreamento;
+import org.codehaus.jackson.map.annotate.JsonSerialize;
 
 @XmlAccessorType(FIELD)
 @XmlRootElement(name = "registro")
@@ -47,7 +51,7 @@ public class RastreamentoResponse {
 	@XmlElement
 	private String situacao;
 
-	@XmlElement
+	@XmlElement(nillable = true)
 	private String observacao;
 
 	public static RastreamentoResponse parse(RegistroRastreamento registro) {
@@ -110,6 +114,7 @@ public class RastreamentoResponse {
 		this.situacao = situacao;
 	}
 
+	@JsonSerialize(include = NON_NULL)
 	public String getObservacao() {
 		return observacao;
 	}
@@ -126,6 +131,7 @@ public class RastreamentoResponse {
 		this.local = local;
 	}
 
+	@JsonSerialize(using = JsonDateSerializer.class)
 	public Date getData() {
 		return data;
 	}

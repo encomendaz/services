@@ -1,6 +1,6 @@
 package net.encomendaz;
 
-import net.encomendaz.rastreamento.RastreamentoService;
+import net.encomendaz.rest.rastreamento.RastreamentoService;
 
 import org.alfredlibrary.AlfredException;
 import org.junit.Test;

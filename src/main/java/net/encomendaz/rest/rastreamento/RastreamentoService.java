@@ -18,14 +18,13 @@
  * or write to the Free Software Foundation, Inc., 51 Franklin Street,
  * Fifth Floor, Boston, MA  02110-1301, USA.
  */
-package net.encomendaz.rastreamento;
+package net.encomendaz.rest.rastreamento;
 
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
 import javax.ws.rs.GET;
-import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
@@ -33,12 +32,11 @@ import javax.ws.rs.QueryParam;
 import org.alfredlibrary.utilitarios.correios.Rastreamento;
 import org.alfredlibrary.utilitarios.correios.RegistroRastreamento;
 
-@Path("/")
+@Path("/rastreamento.json")
+@Produces("application/json;charset=UTF-8")
 public class RastreamentoService {
 
 	@GET
-	@Path("/rastreamento.json")
-	@Produces("application/json;charset=UTF-8")
 	public List<RastreamentoResponse> pesquisar(@QueryParam("id") String id, @QueryParam("inicio") Integer inicio,
 			@QueryParam("fim") Integer fim, @QueryParam("ordem") String ordem) {
 
@@ -66,11 +64,5 @@ public class RastreamentoService {
 		}
 
 		return response;
-	}
-
-	@PUT
-	@Path("/rastreamento.json")
-	public void cadastrar(@QueryParam("id") String id, @QueryParam("email") String email) {
-
 	}
 }

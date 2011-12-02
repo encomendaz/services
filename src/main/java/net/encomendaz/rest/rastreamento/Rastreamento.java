@@ -32,7 +32,7 @@ import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlType;
 
-import net.encomendaz.rest.JsonDateSerializer;
+import net.encomendaz.rest.DateSerializer;
 
 import org.alfredlibrary.utilitarios.correios.RegistroRastreamento;
 import org.codehaus.jackson.map.annotate.JsonSerialize;
@@ -131,7 +131,7 @@ public class Rastreamento {
 		this.local = local;
 	}
 
-	@JsonSerialize(using = JsonDateSerializer.class)
+	@JsonSerialize(using = DateSerializer.class)
 	public Date getData() {
 		return data;
 	}

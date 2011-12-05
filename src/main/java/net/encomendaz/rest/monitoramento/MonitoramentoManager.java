@@ -40,7 +40,7 @@ public class MonitoramentoManager {
 
 		List<Monitoramento> ids;
 
-		if (listar(email) == null) {
+		if (obter(email) == null) {
 			ids = new ArrayList<Monitoramento>();
 			emails.put(email, ids);
 
@@ -71,7 +71,11 @@ public class MonitoramentoManager {
 		}
 	}
 
-	public List<Monitoramento> listar(String email) {
+	public List<String> obter() {
+		return new ArrayList<String>(emails.keySet());
+	}
+
+	public List<Monitoramento> obter(String email) {
 		return emails.get(email);
 	}
 

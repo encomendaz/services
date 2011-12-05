@@ -20,10 +20,15 @@
  */
 package net.encomendaz.rest.monitoramento;
 
+import java.util.List;
+
 import javax.ws.rs.GET;
+import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
+
+import net.encomendaz.rest.AlreadyExistsException;
 
 @Path("/monitoramento.json")
 @Produces("application/json;charset=UTF-8")
@@ -31,9 +36,14 @@ public class MonitoramentoService {
 
 	private MonitoramentoManager manager;
 
+	@PUT
+	public void cadastrar(@QueryParam("id") String id, @QueryParam("email") String email) throws AlreadyExistsException {
+		getManager().cadastrar(email, id);
+	}
+
 	@GET
-	public void cadastrar(@QueryParam("id") String id, @QueryParam("email") String email) {
-		getManager().cadastrar(id, email);
+	public List<String> listar(@QueryParam("email") String email) {
+		return getManager().listar(email);
 	}
 
 	private MonitoramentoManager getManager() {

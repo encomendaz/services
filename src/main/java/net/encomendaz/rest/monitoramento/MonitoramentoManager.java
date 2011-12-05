@@ -20,17 +20,52 @@
  */
 package net.encomendaz.rest.monitoramento;
 
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+
+import net.encomendaz.rest.AlreadyExistsException;
+import net.encomendaz.rest.DoesNotExistException;
 
 public class MonitoramentoManager {
 
-	public void cadastrar(String id, String email) {
-		System.out.println("xczxczxczxc");
+	private static Map<String, List<String>> emails = new HashMap<String, List<String>>();
+
+	public void cadastrar(String email, String id) throws AlreadyExistsException {
+		List<String> ids;
+
+		if (!emails.containsKey(email)) {
+			ids = new ArrayList<String>();
+			emails.put(email, ids);
+
+		} else if (emails.get(email).contains(id)) {
+			throw new AlreadyExistsException();
+		}
+
+		ids = emails.get(email);
+		ids.add(id);
 	}
 
-	public List<Monitoramento> listar(String email) {
-		System.out.println("xczxczxczxc");
+	public void remover(String email, String id) throws DoesNotExistException {
+		if (emails.containsKey(email) && emails.get(email).contains(id)) {
+			emails.get(email).remove(id);
 
-		return null;
+		} else {
+			throw new DoesNotExistException();
+		}
+	}
+
+	public void remover(String email) throws DoesNotExistException {
+		if (emails.containsKey(email)) {
+			emails.remove(email);
+
+		} else {
+			throw new DoesNotExistException();
+		}
+	}
+
+	public List<String> listar(String email) {
+		return emails.get(email);
 	}
 }

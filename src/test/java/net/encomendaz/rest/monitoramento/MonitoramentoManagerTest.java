@@ -20,14 +20,55 @@
  */
 package net.encomendaz.rest.monitoramento;
 
+import static junit.framework.Assert.assertTrue;
+import static junit.framework.Assert.fail;
+import static org.junit.Assert.assertFalse;
+import net.encomendaz.rest.AlreadyExistsException;
+import net.encomendaz.rest.DoesNotExistException;
+
+import org.junit.Before;
 import org.junit.Test;
 
 public class MonitoramentoManagerTest {
 
 	private MonitoramentoManager manager = new MonitoramentoManager();
 
+	private static final String ID_TEST = "xcxxxx";
+
+	private static final String EMAIL_TEST = "fake@fake.com";
+
+	@Before
+	public void before() {
+
+		try {
+			manager.remover(EMAIL_TEST);
+		} catch (DoesNotExistException e) {
+		}
+	}
+
 	@Test
-	public void cadastrarComSucesso() {
-		manager.cadastrar("xxxx", "cleverson.sacramento@gmail.com");
+	public void cadastrarComSucesso() throws AlreadyExistsException {
+		manager.cadastrar(EMAIL_TEST, ID_TEST);
+		assertTrue(manager.listar(EMAIL_TEST).contains(ID_TEST));
+	}
+
+	@Test
+	public void removerComSucesso() throws AlreadyExistsException, DoesNotExistException {
+		manager.cadastrar(EMAIL_TEST, ID_TEST);
+		manager.remover(EMAIL_TEST, ID_TEST);
+		assertFalse(manager.listar(EMAIL_TEST).contains(ID_TEST));
+	}
+
+	@Test
+	public void falhaAoCadastrarDuplicado() throws AlreadyExistsException {
+		manager.cadastrar(EMAIL_TEST, ID_TEST);
+
+		try {
+			manager.cadastrar(EMAIL_TEST, ID_TEST);
+			fail();
+
+		} catch (AlreadyExistsException cause) {
+			assertTrue(manager.listar(EMAIL_TEST).contains(ID_TEST));
+		}
 	}
 }

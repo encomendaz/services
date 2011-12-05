@@ -21,6 +21,7 @@
 package net.encomendaz.rest.monitoramento;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -30,7 +31,8 @@ import net.encomendaz.rest.DoesNotExistException;
 
 public class MonitoramentoManager {
 
-	private static Map<String, List<Monitoramento>> emails = new HashMap<String, List<Monitoramento>>();
+	protected static Map<String, List<Monitoramento>> emails = Collections
+			.synchronizedMap(new HashMap<String, List<Monitoramento>>());
 
 	public void cadastrar(String email, String id) throws AlreadyExistsException {
 		Monitoramento monitoramento = new Monitoramento();

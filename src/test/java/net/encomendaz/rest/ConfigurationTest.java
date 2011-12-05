@@ -1,8 +1,8 @@
-package net.encomendaz.rest.conf;
+package net.encomendaz.rest;
 
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
-import net.encomendaz.rest.config.Configuration;
+import net.encomendaz.rest.Configuration;
 
 import org.junit.Test;
 

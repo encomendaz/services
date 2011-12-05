@@ -24,19 +24,9 @@
 
 	<distributable />
 
-<!-- 	<listener> -->
-<!-- 		<listener-class>org.jboss.resteasy.plugins.server.servlet.ResteasyBootstrap</listener-class> -->
-<!-- 	</listener> -->
-
-<!-- 	<servlet> -->
-<!-- 		<servlet-name>Resteasy</servlet-name> -->
-<!-- 		<servlet-class>org.jboss.resteasy.plugins.server.servlet.HttpServletDispatcher</servlet-class> -->
-<!-- 	</servlet> -->
-
-<!-- 	<servlet-mapping> -->
-<!-- 		<servlet-name>Resteasy</servlet-name> -->
-<!-- 		<url-pattern>/*</url-pattern> -->
-<!-- 	</servlet-mapping> -->
+	<listener>
+		<listener-class>net.encomendaz.rest.monitoramento.MonitoramentoContextListener</listener-class>
+	</listener>
 
 	<filter>
 		<filter-name>Resteasy</filter-name>
@@ -51,9 +41,4 @@
 		<param-name>resteasy.scan</param-name>
 		<param-value>true</param-value>
 	</context-param>
-
-<!-- 	<context-param> -->
-<!-- 		<param-name>resteasy.providers</param-name> -->
-<!-- 		<param-value>org.codehaus.jackson.jaxrs.JacksonJsonProvider</param-value> -->
-<!-- 	</context-param> -->
 </web-app>

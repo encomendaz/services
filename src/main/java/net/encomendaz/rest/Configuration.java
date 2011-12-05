@@ -18,19 +18,21 @@
  * or write to the Free Software Foundation, Inc., 51 Franklin Street,
  * Fifth Floor, Boston, MA  02110-1301, USA.
  */
-package net.encomendaz.rest.config;
+package net.encomendaz.rest;
 
 import java.util.ResourceBundle;
 
 public class Configuration {
 
+	private static Configuration instance;
+
+	private ResourceBundle resourceBundle;
+
 	private String awsAccessKey;
 
 	private String awsSecretKey;
 
-	private ResourceBundle resourceBundle;
-
-	private static Configuration instance;
+	private Integer intervaloMonitoramento;
 
 	private Configuration() {
 	}
@@ -41,6 +43,14 @@ public class Configuration {
 		}
 
 		return instance;
+	}
+
+	private ResourceBundle getResourceBundle() {
+		if (resourceBundle == null) {
+			resourceBundle = ResourceBundle.getBundle("META-INF/configuration");
+		}
+
+		return resourceBundle;
 	}
 
 	public String getAwsAccessKey() {
@@ -59,11 +69,12 @@ public class Configuration {
 		return awsSecretKey;
 	}
 
-	private ResourceBundle getResourceBundle() {
-		if (resourceBundle == null) {
-			resourceBundle = ResourceBundle.getBundle("META-INF/configuration");
+	public Integer getIntervaloMonitoramento() {
+		if (intervaloMonitoramento == null) {
+			String value = getResourceBundle().getString("monitoramento.intervalo");
+			intervaloMonitoramento = Integer.parseInt(value) * 1000; // * 60;
 		}
 
-		return resourceBundle;
+		return intervaloMonitoramento;
 	}
 }

@@ -20,9 +20,84 @@
  */
 package net.encomendaz.rest.monitoramento;
 
+import static javax.xml.bind.annotation.XmlAccessType.FIELD;
 
+import java.util.Date;
+
+import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.XmlTransient;
+import javax.xml.bind.annotation.XmlType;
+
+@XmlAccessorType(FIELD)
+@XmlRootElement(name = "registro")
+@XmlType(propOrder = { "id", "updated" })
 public class Monitoramento {
 
-		
-	
+	@XmlElement(required = true)
+	private String id;
+
+	@XmlElement
+	private Date updated;
+
+	@XmlTransient
+	private String hash;
+
+	public Monitoramento() {
+	}
+
+	public Monitoramento(String id) {
+		this.id = id;
+	}
+
+	public String getId() {
+		return id;
+	}
+
+	public void setId(String id) {
+		this.id = id;
+	}
+
+	public Date getUpdated() {
+		return updated;
+	}
+
+	public void setUpdated(Date updated) {
+		this.updated = updated;
+
+	}
+
+	public String getHash() {
+		return hash;
+	}
+
+	public void setHash(String hash) {
+		this.hash = hash;
+	}
+
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + ((id == null) ? 0 : id.hashCode());
+		return result;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (!(obj instanceof Monitoramento))
+			return false;
+		Monitoramento other = (Monitoramento) obj;
+		if (id == null) {
+			if (other.id != null)
+				return false;
+		} else if (!id.equals(other.id))
+			return false;
+		return true;
+	}
 }

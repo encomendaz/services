@@ -30,26 +30,30 @@ import net.encomendaz.rest.DoesNotExistException;
 
 public class MonitoramentoManager {
 
-	private static Map<String, List<String>> emails = new HashMap<String, List<String>>();
+	private static Map<String, List<Monitoramento>> emails = new HashMap<String, List<Monitoramento>>();
 
 	public void cadastrar(String email, String id) throws AlreadyExistsException {
-		List<String> ids;
+		Monitoramento monitoramento = new Monitoramento();
+		monitoramento.setId(id);
 
-		if (!emails.containsKey(email)) {
-			ids = new ArrayList<String>();
+		List<Monitoramento> ids;
+
+		if (listar(email) == null) {
+			ids = new ArrayList<Monitoramento>();
 			emails.put(email, ids);
 
-		} else if (emails.get(email).contains(id)) {
+		} else if (existe(email, id)) {
 			throw new AlreadyExistsException();
 		}
 
 		ids = emails.get(email);
-		ids.add(id);
+		ids.add(monitoramento);
 	}
 
 	public void remover(String email, String id) throws DoesNotExistException {
-		if (emails.containsKey(email) && emails.get(email).contains(id)) {
-			emails.get(email).remove(id);
+		if (existe(email, id)) {
+			Monitoramento monitoramento = obter(email, id);
+			emails.get(email).remove(monitoramento);
 
 		} else {
 			throw new DoesNotExistException();
@@ -65,7 +69,23 @@ public class MonitoramentoManager {
 		}
 	}
 
-	public List<String> listar(String email) {
+	public List<Monitoramento> listar(String email) {
 		return emails.get(email);
+	}
+
+	public Monitoramento obter(String email, String id) {
+		Monitoramento result = null;
+		Monitoramento monitoramento = new Monitoramento(id);
+
+		if (emails.containsKey(email) && emails.get(email).contains(monitoramento)) {
+			int i = emails.get(email).indexOf(monitoramento);
+			result = emails.get(email).get(i);
+		}
+
+		return result;
+	}
+
+	public boolean existe(String email, String id) {
+		return obter(email, id) != null;
 	}
 }

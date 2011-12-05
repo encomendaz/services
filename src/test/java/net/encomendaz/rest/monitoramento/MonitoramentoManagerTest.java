@@ -20,9 +20,9 @@
  */
 package net.encomendaz.rest.monitoramento;
 
-import static junit.framework.Assert.assertTrue;
-import static junit.framework.Assert.fail;
 import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 import net.encomendaz.rest.AlreadyExistsException;
 import net.encomendaz.rest.DoesNotExistException;
 
@@ -31,15 +31,14 @@ import org.junit.Test;
 
 public class MonitoramentoManagerTest {
 
-	private MonitoramentoManager manager = new MonitoramentoManager();
-
 	private static final String ID_TEST = "xcxxxx";
 
 	private static final String EMAIL_TEST = "fake@fake.com";
 
+	private MonitoramentoManager manager = new MonitoramentoManager();
+
 	@Before
 	public void before() {
-
 		try {
 			manager.remover(EMAIL_TEST);
 		} catch (DoesNotExistException e) {
@@ -49,14 +48,16 @@ public class MonitoramentoManagerTest {
 	@Test
 	public void cadastrarComSucesso() throws AlreadyExistsException {
 		manager.cadastrar(EMAIL_TEST, ID_TEST);
-		assertTrue(manager.listar(EMAIL_TEST).contains(ID_TEST));
+
+		assertTrue(manager.existe(EMAIL_TEST, ID_TEST));
 	}
 
 	@Test
 	public void removerComSucesso() throws AlreadyExistsException, DoesNotExistException {
 		manager.cadastrar(EMAIL_TEST, ID_TEST);
 		manager.remover(EMAIL_TEST, ID_TEST);
-		assertFalse(manager.listar(EMAIL_TEST).contains(ID_TEST));
+
+		assertFalse(manager.existe(EMAIL_TEST, ID_TEST));
 	}
 
 	@Test
@@ -68,7 +69,7 @@ public class MonitoramentoManagerTest {
 			fail();
 
 		} catch (AlreadyExistsException cause) {
-			assertTrue(manager.listar(EMAIL_TEST).contains(ID_TEST));
+			assertTrue(manager.existe(EMAIL_TEST, ID_TEST));
 		}
 	}
 }

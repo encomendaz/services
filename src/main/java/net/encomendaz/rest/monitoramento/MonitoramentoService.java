@@ -42,7 +42,7 @@ public class MonitoramentoService {
 	}
 
 	@GET
-	public List<String> listar(@QueryParam("email") String email) {
+	public List<Monitoramento> listar(@QueryParam("email") String email) {
 		return getManager().listar(email);
 	}
 

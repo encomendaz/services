@@ -35,9 +35,9 @@ import net.encomendaz.rest.AlreadyExistsException;
 @Produces("application/json;charset=UTF-8")
 public class MonitoramentoService {
 
-	@PUT
 	// curl -i -X PUT -d "id=PB848981335BR&email=cleverson.sacramento@gmail.com"
 	// http://localhost:8080/encomendaz-rest/monitoramento.json
+	@PUT
 	public void cadastrar(@FormParam("id") String id, @FormParam("email") String email) throws AlreadyExistsException {
 		Monitoramento monitoramento = new Monitoramento();
 		monitoramento.setId(id);

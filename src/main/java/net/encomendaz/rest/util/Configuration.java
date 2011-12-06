@@ -72,7 +72,7 @@ public class Configuration {
 	public Integer getIntervaloMonitoramento() {
 		if (intervaloMonitoramento == null) {
 			String value = getResourceBundle().getString("monitoramento.intervalo");
-			intervaloMonitoramento = Integer.parseInt(value) * 1000; // * 60;
+			intervaloMonitoramento = Integer.parseInt(value) * 1000 * 60;
 		}
 
 		return intervaloMonitoramento;

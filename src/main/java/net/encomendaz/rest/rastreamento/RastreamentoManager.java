@@ -20,9 +20,13 @@
  */
 package net.encomendaz.rest.rastreamento;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+
+import net.encomendaz.rest.util.Hasher;
+import net.encomendaz.rest.util.Serializer;
 
 import org.alfredlibrary.utilitarios.correios.RegistroRastreamento;
 
@@ -36,6 +40,10 @@ public class RastreamentoManager {
 		if (ordem != null && !("asc".equals(ordem) || "desc".equals(ordem))) {
 			throw new IllegalArgumentException("O parâmetro \"ordem\" só aceita os valores \"asc\" ou \"desc\"");
 		}
+	}
+
+	public List<Rastreamento> pesquisar(String id) {
+		return this.pesquisar(id, null, null, null);
 	}
 
 	public List<Rastreamento> pesquisar(String id, Integer inicio, Integer fim, String ordem) {
@@ -58,5 +66,20 @@ public class RastreamentoManager {
 		}
 
 		return response;
+	}
+
+	public String hash(String id) {
+		String json;
+
+		try {
+			RastreamentoManager rastreamentoManager = new RastreamentoManager();
+			List<Rastreamento> rastreamentos = rastreamentoManager.pesquisar(id);
+
+			json = Serializer.getInstance().json(rastreamentos);
+		} catch (IOException e) {
+			json = null;
+		}
+
+		return Hasher.getInstance().md5(json);
 	}
 }

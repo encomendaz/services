@@ -2,8 +2,15 @@ package net.encomendaz.rest;
 
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
-import net.encomendaz.rest.Configuration;
 
+import java.io.IOException;
+
+import net.encomendaz.rest.monitoramento.Monitoramento;
+import net.encomendaz.rest.util.Configuration;
+
+import org.codehaus.jackson.JsonGenerationException;
+import org.codehaus.jackson.map.JsonMappingException;
+import org.codehaus.jackson.map.ObjectMapper;
 import org.junit.Test;
 
 public class ConfigurationTest {
@@ -22,5 +29,17 @@ public class ConfigurationTest {
 	public void notEmptyAwsSecretKey() {
 		assertNotNull(EMPTY_AWS_KEY_MESSAGE, configuration.getAwsSecretKey());
 		assertFalse(EMPTY_AWS_KEY_MESSAGE, configuration.getAwsSecretKey().trim().equals(""));
+	}
+	
+	@Test
+	public void x() throws JsonGenerationException, JsonMappingException, IOException {
+		ObjectMapper mapper = new ObjectMapper();
+		
+		Monitoramento  monitoramento= new Monitoramento();
+		monitoramento.setId("asdasdas");
+		
+		String x = mapper.writeValueAsString(monitoramento);
+		
+		System.out.println(x);
 	}
 }

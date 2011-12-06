@@ -31,9 +31,9 @@ import org.junit.Test;
 
 public class MonitoramentoManagerTest {
 
-	private static final String ID_TEST = "xcxxxx";
-
 	private static final String EMAIL_TEST = "fake@fake.com";
+
+	private static final Monitoramento MONITORAMENTO_TEST = new Monitoramento(EMAIL_TEST, "PB848981335BR");
 
 	private MonitoramentoManager manager = new MonitoramentoManager();
 
@@ -47,29 +47,29 @@ public class MonitoramentoManagerTest {
 
 	@Test
 	public void cadastrarComSucesso() throws AlreadyExistsException {
-		manager.cadastrar(EMAIL_TEST, ID_TEST);
+		manager.cadastrar(MONITORAMENTO_TEST);
 
-		assertTrue(manager.existe(EMAIL_TEST, ID_TEST));
+		assertTrue(manager.existe(MONITORAMENTO_TEST));
 	}
 
 	@Test
 	public void removerComSucesso() throws AlreadyExistsException, DoesNotExistException {
-		manager.cadastrar(EMAIL_TEST, ID_TEST);
-		manager.remover(EMAIL_TEST, ID_TEST);
+		manager.cadastrar(MONITORAMENTO_TEST);
+		manager.remover(MONITORAMENTO_TEST);
 
-		assertFalse(manager.existe(EMAIL_TEST, ID_TEST));
+		assertFalse(manager.existe(MONITORAMENTO_TEST));
 	}
 
 	@Test
 	public void falhaAoCadastrarDuplicado() throws AlreadyExistsException {
-		manager.cadastrar(EMAIL_TEST, ID_TEST);
+		manager.cadastrar(MONITORAMENTO_TEST);
 
 		try {
-			manager.cadastrar(EMAIL_TEST, ID_TEST);
+			manager.cadastrar(MONITORAMENTO_TEST);
 			fail();
 
 		} catch (AlreadyExistsException cause) {
-			assertTrue(manager.existe(EMAIL_TEST, ID_TEST));
+			assertTrue(manager.existe(MONITORAMENTO_TEST));
 		}
 	}
 }

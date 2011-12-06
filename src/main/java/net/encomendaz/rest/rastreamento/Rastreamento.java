@@ -23,6 +23,7 @@ package net.encomendaz.rest.rastreamento;
 import static javax.xml.bind.annotation.XmlAccessType.FIELD;
 import static org.codehaus.jackson.map.annotate.JsonSerialize.Inclusion.NON_NULL;
 
+import java.io.IOException;
 import java.util.Date;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -35,10 +36,11 @@ import javax.xml.bind.annotation.XmlType;
 import net.encomendaz.rest.DateSerializer;
 
 import org.alfredlibrary.utilitarios.correios.RegistroRastreamento;
+import org.codehaus.jackson.map.ObjectMapper;
 import org.codehaus.jackson.map.annotate.JsonSerialize;
 
+@XmlRootElement
 @XmlAccessorType(FIELD)
-@XmlRootElement(name = "registro")
 @XmlType(propOrder = { "data", "local", "situacao", "observacao" })
 public class Rastreamento {
 
@@ -104,6 +106,21 @@ public class Rastreamento {
 		}
 
 		return buffer.toString().trim();
+	}
+
+	@Override
+	public String toString() {
+		ObjectMapper mapper = new ObjectMapper();
+		String result;
+
+		try {
+			result = mapper.writeValueAsString(this);
+
+		} catch (IOException e) {
+			result = super.toString();
+		}
+
+		return result;
 	}
 
 	public String getSituacao() {

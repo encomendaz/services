@@ -21,7 +21,9 @@
 package net.encomendaz.rest.monitoramento;
 
 import static javax.xml.bind.annotation.XmlAccessType.FIELD;
+import static org.codehaus.jackson.map.annotate.JsonSerialize.Inclusion.NON_NULL;
 
+import java.io.IOException;
 import java.util.Date;
 
 import javax.xml.bind.annotation.XmlAccessorType;
@@ -30,13 +32,22 @@ import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlTransient;
 import javax.xml.bind.annotation.XmlType;
 
+import net.encomendaz.rest.DateSerializer;
+
+import org.codehaus.jackson.annotate.JsonIgnore;
+import org.codehaus.jackson.map.ObjectMapper;
+import org.codehaus.jackson.map.annotate.JsonSerialize;
+
+@XmlRootElement
 @XmlAccessorType(FIELD)
-@XmlRootElement(name = "registro")
 @XmlType(propOrder = { "id", "updated" })
 public class Monitoramento {
 
 	@XmlElement(required = true)
 	private String id;
+
+	@XmlTransient
+	private String email;
 
 	@XmlElement
 	private Date updated;
@@ -47,39 +58,16 @@ public class Monitoramento {
 	public Monitoramento() {
 	}
 
-	public Monitoramento(String id) {
+	public Monitoramento(String email, String id) {
+		this.email = email;
 		this.id = id;
-	}
-
-	public String getId() {
-		return id;
-	}
-
-	public void setId(String id) {
-		this.id = id;
-	}
-
-	public Date getUpdated() {
-		return updated;
-	}
-
-	public void setUpdated(Date updated) {
-		this.updated = updated;
-
-	}
-
-	public String getHash() {
-		return hash;
-	}
-
-	public void setHash(String hash) {
-		this.hash = hash;
 	}
 
 	@Override
 	public int hashCode() {
 		final int prime = 31;
 		int result = 1;
+		result = prime * result + ((email == null) ? 0 : email.hashCode());
 		result = prime * result + ((id == null) ? 0 : id.hashCode());
 		return result;
 	}
@@ -93,11 +81,67 @@ public class Monitoramento {
 		if (!(obj instanceof Monitoramento))
 			return false;
 		Monitoramento other = (Monitoramento) obj;
+		if (email == null) {
+			if (other.email != null)
+				return false;
+		} else if (!email.equals(other.email))
+			return false;
 		if (id == null) {
 			if (other.id != null)
 				return false;
 		} else if (!id.equals(other.id))
 			return false;
 		return true;
+	}
+
+	@Override
+	public String toString() {
+		ObjectMapper mapper = new ObjectMapper();
+		String result;
+
+		try {
+			result = mapper.writeValueAsString(this);
+
+		} catch (IOException e) {
+			result = super.toString();
+		}
+
+		return result;
+	}
+
+	public String getId() {
+		return id;
+	}
+
+	public void setId(String id) {
+		this.id = id;
+	}
+
+	@JsonIgnore
+	public String getEmail() {
+		return email;
+	}
+
+	public void setEmail(String email) {
+		this.email = email;
+	}
+
+	@JsonSerialize(include = NON_NULL, using = DateSerializer.class)
+	public Date getUpdated() {
+		return updated;
+	}
+
+	public void setUpdated(Date updated) {
+		this.updated = updated;
+
+	}
+
+	@JsonIgnore
+	public String getHash() {
+		return hash;
+	}
+
+	public void setHash(String hash) {
+		this.hash = hash;
 	}
 }

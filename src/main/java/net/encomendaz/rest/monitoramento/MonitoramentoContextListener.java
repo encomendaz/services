@@ -6,7 +6,7 @@ import java.util.TimerTask;
 import javax.servlet.ServletContextEvent;
 import javax.servlet.ServletContextListener;
 
-import net.encomendaz.rest.Configuration;
+import net.encomendaz.rest.util.Configuration;
 
 public final class MonitoramentoContextListener implements ServletContextListener {
 

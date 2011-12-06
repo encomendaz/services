@@ -5,28 +5,33 @@ import java.util.Date;
 import java.util.List;
 import java.util.TimerTask;
 
+import net.encomendaz.rest.rastreamento.RastreamentoManager;
+
 public class MonitoramentoTask extends TimerTask {
 
-	private MonitoramentoManager manager;
+	private MonitoramentoManager monitoramentoManager;
+
+	private RastreamentoManager rastreamentoManager;
 
 	public MonitoramentoTask() {
-		manager = new MonitoramentoManager();
+		monitoramentoManager = new MonitoramentoManager();
+		rastreamentoManager = new RastreamentoManager();
 	}
 
 	@Override
 	public void run() {
 		System.out.println("verificando... " + new Date().toString());
 
-		List<String> emails = manager.obter();
+		List<String> emails = monitoramentoManager.obter();
 		List<Monitoramento> monitoramentos;
 		List<Monitoramento> atualizados;
 
 		for (String email : emails) {
 			atualizados = new ArrayList<Monitoramento>();
-			monitoramentos = manager.obter(email);
+			monitoramentos = monitoramentoManager.obter(email);
 
 			for (Monitoramento monitoramento : monitoramentos) {
-				if (atualizado(monitoramento)) {
+				if (atualizou(monitoramento)) {
 					atualizados.add(monitoramento);
 				}
 			}
@@ -37,9 +42,14 @@ public class MonitoramentoTask extends TimerTask {
 		}
 	}
 
-	private boolean atualizado(Monitoramento monitoramento) {
-		System.out.println(monitoramento.toString());
-		return true;
+	private boolean atualizou(Monitoramento monitoramento) {
+		String md5 = rastreamentoManager.hash(monitoramento.getId());
+		boolean result = !md5.equals(monitoramento.getHash());
+
+		monitoramento.setHash(md5);
+		monitoramento.setUpdated(new Date());
+
+		return result;
 	}
 
 	private void notificar(String email, Monitoramento atualizado) {

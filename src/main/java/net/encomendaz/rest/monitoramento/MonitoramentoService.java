@@ -22,8 +22,9 @@ package net.encomendaz.rest.monitoramento;
 
 import java.util.List;
 
+import javax.ws.rs.FormParam;
 import javax.ws.rs.GET;
-import javax.ws.rs.PUT;
+import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
@@ -36,9 +37,14 @@ public class MonitoramentoService {
 
 	private MonitoramentoManager manager;
 
-	@PUT
-	public void cadastrar(@QueryParam("id") String id, @QueryParam("email") String email) throws AlreadyExistsException {
-		getManager().cadastrar(email, id);
+	// @PUT
+	@POST
+	public void cadastrar(@FormParam("id") String id, @FormParam("email") String email) throws AlreadyExistsException {
+		Monitoramento monitoramento = new Monitoramento();
+		monitoramento.setId(id);
+		monitoramento.setEmail(email);
+
+		getManager().cadastrar(monitoramento);
 	}
 
 	@GET

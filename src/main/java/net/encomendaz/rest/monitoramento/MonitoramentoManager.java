@@ -28,34 +28,35 @@ import java.util.Map;
 
 import net.encomendaz.rest.AlreadyExistsException;
 import net.encomendaz.rest.DoesNotExistException;
+import net.encomendaz.rest.rastreamento.RastreamentoManager;
 
 public class MonitoramentoManager {
 
 	protected static Map<String, List<Monitoramento>> emails = Collections
 			.synchronizedMap(new HashMap<String, List<Monitoramento>>());
 
-	public void cadastrar(String email, String id) throws AlreadyExistsException {
-		Monitoramento monitoramento = new Monitoramento();
-		monitoramento.setId(id);
-
+	public void cadastrar(Monitoramento monitoramento) throws AlreadyExistsException {
 		List<Monitoramento> ids;
 
-		if (obter(email) == null) {
+		if (obter(monitoramento.getEmail()) == null) {
 			ids = new ArrayList<Monitoramento>();
-			emails.put(email, ids);
+			emails.put(monitoramento.getEmail(), ids);
 
-		} else if (existe(email, id)) {
+		} else if (existe(monitoramento)) {
 			throw new AlreadyExistsException();
 		}
 
-		ids = emails.get(email);
+		ids = emails.get(monitoramento.getEmail());
 		ids.add(monitoramento);
+
+		RastreamentoManager rastreamentoManager = new RastreamentoManager();
+		String hash = rastreamentoManager.hash(monitoramento.getId());
+		monitoramento.setHash(hash);
 	}
 
-	public void remover(String email, String id) throws DoesNotExistException {
-		if (existe(email, id)) {
-			Monitoramento monitoramento = obter(email, id);
-			emails.get(email).remove(monitoramento);
+	public void remover(Monitoramento monitoramento) throws DoesNotExistException {
+		if (existe(monitoramento)) {
+			emails.get(monitoramento.getEmail()).remove(monitoramento);
 
 		} else {
 			throw new DoesNotExistException();
@@ -79,19 +80,19 @@ public class MonitoramentoManager {
 		return emails.get(email);
 	}
 
-	public Monitoramento obter(String email, String id) {
+	public Monitoramento obter(Monitoramento monitoramento) {
 		Monitoramento result = null;
-		Monitoramento monitoramento = new Monitoramento(id);
 
-		if (emails.containsKey(email) && emails.get(email).contains(monitoramento)) {
-			int i = emails.get(email).indexOf(monitoramento);
-			result = emails.get(email).get(i);
+		if (emails.containsKey(monitoramento.getEmail())
+				&& emails.get(monitoramento.getEmail()).contains(monitoramento)) {
+			int i = emails.get(monitoramento.getEmail()).indexOf(monitoramento);
+			result = emails.get(monitoramento.getEmail()).get(i);
 		}
 
 		return result;
 	}
 
-	public boolean existe(String email, String id) {
-		return obter(email, id) != null;
+	public boolean existe(Monitoramento monitoramento) {
+		return obter(monitoramento) != null;
 	}
 }

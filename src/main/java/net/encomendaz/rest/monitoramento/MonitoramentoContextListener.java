@@ -14,7 +14,7 @@ public final class MonitoramentoContextListener implements ServletContextListene
 
 	public void contextInitialized(ServletContextEvent event) {
 		TimerTask task = new MonitoramentoTask();
-		Integer period = Configuration.getInstance().getIntervaloMonitoramento();
+		Integer period = Configuration.intervaloMonitoramento();
 
 		timer = new Timer(true);
 		timer.schedule(task, period, period);

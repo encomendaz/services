@@ -24,57 +24,20 @@ import java.util.ResourceBundle;
 
 public class Configuration {
 
-	private static Configuration instance;
-
-	private ResourceBundle resourceBundle;
-
-	private String awsAccessKey;
-
-	private String awsSecretKey;
-
-	private Integer intervaloMonitoramento;
-
-	private Configuration() {
+	private static ResourceBundle resourceBundle() {
+		return ResourceBundle.getBundle("META-INF/configuration");
 	}
 
-	public static Configuration getInstance() {
-		if (instance == null) {
-			instance = new Configuration();
-		}
-
-		return instance;
+	public static String awsAccessKey() {
+		return resourceBundle().getString("aws.access.key");
 	}
 
-	private ResourceBundle getResourceBundle() {
-		if (resourceBundle == null) {
-			resourceBundle = ResourceBundle.getBundle("META-INF/configuration");
-		}
-
-		return resourceBundle;
+	public static String awsSecretKey() {
+		return resourceBundle().getString("aws.secret.key");
 	}
 
-	public String getAwsAccessKey() {
-		if (awsAccessKey == null) {
-			awsAccessKey = getResourceBundle().getString("aws.access.key");
-		}
-
-		return awsAccessKey;
-	}
-
-	public String getAwsSecretKey() {
-		if (awsSecretKey == null) {
-			awsSecretKey = getResourceBundle().getString("aws.secret.key");
-		}
-
-		return awsSecretKey;
-	}
-
-	public Integer getIntervaloMonitoramento() {
-		if (intervaloMonitoramento == null) {
-			String value = getResourceBundle().getString("monitoramento.intervalo");
-			intervaloMonitoramento = Integer.parseInt(value) * 1000 * 60;
-		}
-
-		return intervaloMonitoramento;
+	public static Integer intervaloMonitoramento() {
+		String value = resourceBundle().getString("monitoramento.intervalo");
+		return Integer.parseInt(value) * 1000 * 60;
 	}
 }

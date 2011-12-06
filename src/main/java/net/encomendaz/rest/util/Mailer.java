@@ -28,8 +28,8 @@ import com.amazonaws.services.simpleemail.AmazonSimpleEmailServiceAsyncClient;
 public class Mailer {
 
 	public static AmazonSimpleEmailServiceAsync client() {
-		String accessKey = Configuration.getInstance().getAwsAccessKey();
-		String secretKey = Configuration.getInstance().getAwsSecretKey();
+		String accessKey = Configuration.awsAccessKey();
+		String secretKey = Configuration.awsSecretKey();
 
 		AWSCredentials credentials = new BasicAWSCredentials(accessKey, secretKey);
 		return new AmazonSimpleEmailServiceAsyncClient(credentials);

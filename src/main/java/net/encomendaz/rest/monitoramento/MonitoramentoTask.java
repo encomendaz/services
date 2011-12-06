@@ -9,26 +9,15 @@ import net.encomendaz.rest.rastreamento.RastreamentoManager;
 
 public class MonitoramentoTask extends TimerTask {
 
-	private MonitoramentoManager monitoramentoManager;
-
-	private RastreamentoManager rastreamentoManager;
-
-	public MonitoramentoTask() {
-		monitoramentoManager = new MonitoramentoManager();
-		rastreamentoManager = new RastreamentoManager();
-	}
-
 	@Override
 	public void run() {
-		System.out.println("verificando... " + new Date().toString());
-
-		List<String> emails = monitoramentoManager.obter();
+		List<String> emails = MonitoramentoManager.getInstance().obter();
 		List<Monitoramento> monitoramentos;
 		List<Monitoramento> atualizados;
 
 		for (String email : emails) {
 			atualizados = new ArrayList<Monitoramento>();
-			monitoramentos = monitoramentoManager.obter(email);
+			monitoramentos = MonitoramentoManager.getInstance().obter(email);
 
 			for (Monitoramento monitoramento : monitoramentos) {
 				if (atualizou(monitoramento)) {
@@ -43,11 +32,19 @@ public class MonitoramentoTask extends TimerTask {
 	}
 
 	private boolean atualizou(Monitoramento monitoramento) {
-		String md5 = rastreamentoManager.hash(monitoramento.getId());
-		boolean result = !md5.equals(monitoramento.getHash());
+		String hash = RastreamentoManager.getInstance().hash(monitoramento.getId());
+		boolean result = !hash.equals(monitoramento.getHash());
 
-		monitoramento.setHash(md5);
-		monitoramento.setUpdated(new Date());
+		System.out.print(monitoramento.toString() + " ");
+		
+		if (result) {
+			monitoramento.setHash(hash);
+			monitoramento.setUpdated(new Date());
+			
+			System.out.println("mudou");
+		} else {
+			System.out.println("não mudou");
+		}
 
 		return result;
 	}

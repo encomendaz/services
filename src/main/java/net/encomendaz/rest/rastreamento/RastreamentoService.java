@@ -31,20 +31,9 @@ import javax.ws.rs.QueryParam;
 @Produces("application/json;charset=UTF-8")
 public class RastreamentoService {
 
-	private RastreamentoManager manager;
-
 	@GET
 	public List<Rastreamento> pesquisar(@QueryParam("id") String id, @QueryParam("inicio") Integer inicio,
 			@QueryParam("fim") Integer fim, @QueryParam("ordem") String ordem) {
-
-		return getManager().pesquisar(id, inicio, fim, ordem);
-	}
-
-	private RastreamentoManager getManager() {
-		if (manager == null) {
-			manager = new RastreamentoManager();
-		}
-
-		return manager;
+		return RastreamentoManager.getInstance().pesquisar(id, inicio, fim, ordem);
 	}
 }

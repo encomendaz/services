@@ -22,6 +22,7 @@ package net.encomendaz.rest.monitoramento;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -31,6 +32,19 @@ import net.encomendaz.rest.DoesNotExistException;
 import net.encomendaz.rest.rastreamento.RastreamentoManager;
 
 public class MonitoramentoManager {
+
+	private static MonitoramentoManager instance;
+
+	private MonitoramentoManager() {
+	}
+
+	public static synchronized MonitoramentoManager getInstance() {
+		if (instance == null) {
+			instance = new MonitoramentoManager();
+		}
+
+		return instance;
+	}
 
 	protected static Map<String, List<Monitoramento>> emails = Collections
 			.synchronizedMap(new HashMap<String, List<Monitoramento>>());
@@ -49,9 +63,9 @@ public class MonitoramentoManager {
 		ids = emails.get(monitoramento.getEmail());
 		ids.add(monitoramento);
 
-		RastreamentoManager rastreamentoManager = new RastreamentoManager();
-		String hash = rastreamentoManager.hash(monitoramento.getId());
+		String hash = RastreamentoManager.getInstance().hash(monitoramento.getId());
 		monitoramento.setHash(hash);
+		monitoramento.setUpdated(new Date());
 	}
 
 	public void remover(Monitoramento monitoramento) throws DoesNotExistException {

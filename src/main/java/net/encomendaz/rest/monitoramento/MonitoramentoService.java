@@ -24,7 +24,7 @@ import java.util.List;
 
 import javax.ws.rs.FormParam;
 import javax.ws.rs.GET;
-import javax.ws.rs.POST;
+import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
@@ -35,28 +35,19 @@ import net.encomendaz.rest.AlreadyExistsException;
 @Produces("application/json;charset=UTF-8")
 public class MonitoramentoService {
 
-	private MonitoramentoManager manager;
-
-	// @PUT
-	@POST
+	@PUT
+	// curl -i -X PUT -d "id=PB848981335BR&email=cleverson.sacramento@gmail.com"
+	// http://localhost:8080/encomendaz-rest/monitoramento.json
 	public void cadastrar(@FormParam("id") String id, @FormParam("email") String email) throws AlreadyExistsException {
 		Monitoramento monitoramento = new Monitoramento();
 		monitoramento.setId(id);
 		monitoramento.setEmail(email);
 
-		getManager().cadastrar(monitoramento);
+		MonitoramentoManager.getInstance().cadastrar(monitoramento);
 	}
 
 	@GET
 	public List<Monitoramento> listar(@QueryParam("email") String email) {
-		return getManager().obter(email);
-	}
-
-	private MonitoramentoManager getManager() {
-		if (manager == null) {
-			manager = new MonitoramentoManager();
-		}
-
-		return manager;
+		return MonitoramentoManager.getInstance().obter(email);
 	}
 }

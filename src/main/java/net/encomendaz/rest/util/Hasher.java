@@ -26,20 +26,7 @@ import java.security.NoSuchAlgorithmException;
 
 public class Hasher {
 
-	private static Hasher instance;
-
-	private Hasher() {
-	}
-
-	public static synchronized Hasher getInstance() {
-		if (instance == null) {
-			instance = new Hasher();
-		}
-
-		return instance;
-	}
-
-	public String md5(final String message) {
+	public static String md5(final String message) {
 		String hash = null;
 
 		if (message != null) {
@@ -58,7 +45,7 @@ public class Hasher {
 		return hash;
 	}
 
-	private String hex(final byte[] array) {
+	private static String hex(final byte[] array) {
 		StringBuffer sb = new StringBuffer();
 		for (int i = 0; i < array.length; ++i)
 			sb.append(Integer.toHexString((array[i] & 0xFF) | 0x100).substring(1, 3));

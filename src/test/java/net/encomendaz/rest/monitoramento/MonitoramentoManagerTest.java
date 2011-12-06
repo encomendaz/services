@@ -35,7 +35,7 @@ public class MonitoramentoManagerTest {
 
 	private static final Monitoramento MONITORAMENTO_TEST = new Monitoramento(EMAIL_TEST, "PB848981335BR");
 
-	private MonitoramentoManager manager = new MonitoramentoManager();
+	private MonitoramentoManager manager = MonitoramentoManager.getInstance();
 
 	@Before
 	public void before() {

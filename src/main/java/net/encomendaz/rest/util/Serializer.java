@@ -37,16 +37,16 @@ public class Serializer {
 	}
 
 	public static String json(Object object) {
-		ObjectMapper mapper = new ObjectMapper();
 		String serialized;
 
 		try {
+			ObjectMapper mapper = new ObjectMapper();
 			serialized = mapper.writeValueAsString(object);
 
 		} catch (IOException e) {
 			serialized = "";
 		}
 
-		return "null".equals(serialized) ? "" : serialized;
+		return serialized;
 	}
 }

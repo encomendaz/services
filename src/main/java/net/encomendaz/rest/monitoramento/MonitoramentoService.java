@@ -30,6 +30,7 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
 
 import net.encomendaz.rest.AlreadyExistsException;
+import net.encomendaz.rest.util.Serializer;
 
 @Path("/monitoramento.json")
 @Produces("application/json;charset=UTF-8")
@@ -45,7 +46,8 @@ public class MonitoramentoService {
 	}
 
 	@GET
-	public List<Monitoramento> listar(@QueryParam("email") String email) {
-		return MonitoramentoManager.getInstance().obter(email);
+	public String listar(@QueryParam("email") String email, @QueryParam("jsonp") String jsonp) {
+		List<Monitoramento> monitoramentos = MonitoramentoManager.getInstance().obter(email);
+		return Serializer.json(monitoramentos, jsonp);
 	}
 }

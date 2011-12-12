@@ -26,6 +26,16 @@ import org.codehaus.jackson.map.ObjectMapper;
 
 public class Serializer {
 
+	public static String json(Object object, String jsonp) {
+		String serialized = json(object);
+
+		if (jsonp != null && jsonp.trim().length() > 0) {
+			serialized = jsonp + "(" + serialized + ")";
+		}
+
+		return serialized;
+	}
+
 	public static String json(Object object) {
 		ObjectMapper mapper = new ObjectMapper();
 		String serialized;
@@ -34,9 +44,9 @@ public class Serializer {
 			serialized = mapper.writeValueAsString(object);
 
 		} catch (IOException e) {
-			serialized = null;
+			serialized = "";
 		}
 
-		return serialized;
+		return "null".equals(serialized) ? "" : serialized;
 	}
 }

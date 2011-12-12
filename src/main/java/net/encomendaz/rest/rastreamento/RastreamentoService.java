@@ -35,9 +35,8 @@ public class RastreamentoService {
 
 	@GET
 	public String pesquisar(@QueryParam("id") String id, @QueryParam("inicio") Integer inicio,
-			@QueryParam("fim") Integer fim, @QueryParam("ordem") String ordem) {
-
+			@QueryParam("fim") Integer fim, @QueryParam("ordem") String ordem, @QueryParam("jsonp") String jsonp) {
 		List<Rastreamento> rastreamentos = RastreamentoManager.getInstance().pesquisar(id, inicio, fim, ordem);
-		return Serializer.json(rastreamentos);
+		return Serializer.json(rastreamentos, jsonp);
 	}
 }

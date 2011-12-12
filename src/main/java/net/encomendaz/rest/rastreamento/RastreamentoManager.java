@@ -30,20 +30,7 @@ import org.alfredlibrary.utilitarios.correios.RegistroRastreamento;
 
 public class RastreamentoManager {
 
-	private static RastreamentoManager instance;
-
-	private RastreamentoManager() {
-	}
-
-	public static synchronized RastreamentoManager getInstance() {
-		if (instance == null) {
-			instance = new RastreamentoManager();
-		}
-
-		return instance;
-	}
-
-	private void validarParametrosPesquisar(String id, String ordem) {
+	private static void validarParametrosPesquisar(String id, String ordem) {
 		if (id == null || id.isEmpty()) {
 			throw new IllegalArgumentException("É necessário informar a identificação do objeto via parâmetro \"id\"");
 		}
@@ -54,10 +41,10 @@ public class RastreamentoManager {
 	}
 
 	public List<Rastreamento> pesquisar(String id) {
-		return this.pesquisar(id, null, null, null);
+		return pesquisar(id, null, null, null);
 	}
 
-	public List<Rastreamento> pesquisar(String id, Integer inicio, Integer fim, String ordem) {
+	public static List<Rastreamento> pesquisar(String id, Integer inicio, Integer fim, String ordem) {
 
 		validarParametrosPesquisar(id, ordem);
 
@@ -79,7 +66,7 @@ public class RastreamentoManager {
 		return response;
 	}
 
-	public String hash(String id) {
+	public static String hash(String id) {
 		RastreamentoManager rastreamentoManager = new RastreamentoManager();
 		List<Rastreamento> rastreamentos = rastreamentoManager.pesquisar(id);
 		return Serializer.json(rastreamentos);

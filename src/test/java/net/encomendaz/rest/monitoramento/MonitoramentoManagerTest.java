@@ -20,6 +20,9 @@
  */
 package net.encomendaz.rest.monitoramento;
 
+import static net.encomendaz.rest.monitoramento.MonitoramentoManager.cadastrar;
+import static net.encomendaz.rest.monitoramento.MonitoramentoManager.existe;
+import static net.encomendaz.rest.monitoramento.MonitoramentoManager.remover;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
@@ -35,41 +38,39 @@ public class MonitoramentoManagerTest {
 
 	private static final Monitoramento MONITORAMENTO_TEST = new Monitoramento(EMAIL_TEST, "PB848981335BR");
 
-	private MonitoramentoManager manager = MonitoramentoManager.getInstance();
-
 	@Before
 	public void before() {
 		try {
-			manager.remover(EMAIL_TEST);
+			remover(EMAIL_TEST);
 		} catch (DoesNotExistException e) {
 		}
 	}
 
 	@Test
 	public void cadastrarComSucesso() throws AlreadyExistsException {
-		manager.cadastrar(MONITORAMENTO_TEST);
+		cadastrar(MONITORAMENTO_TEST);
 
-		assertTrue(manager.existe(MONITORAMENTO_TEST));
+		assertTrue(existe(MONITORAMENTO_TEST));
 	}
 
 	@Test
 	public void removerComSucesso() throws AlreadyExistsException, DoesNotExistException {
-		manager.cadastrar(MONITORAMENTO_TEST);
-		manager.remover(MONITORAMENTO_TEST);
+		cadastrar(MONITORAMENTO_TEST);
+		remover(MONITORAMENTO_TEST);
 
-		assertFalse(manager.existe(MONITORAMENTO_TEST));
+		assertFalse(existe(MONITORAMENTO_TEST));
 	}
 
 	@Test
 	public void falhaAoCadastrarDuplicado() throws AlreadyExistsException {
-		manager.cadastrar(MONITORAMENTO_TEST);
+		cadastrar(MONITORAMENTO_TEST);
 
 		try {
-			manager.cadastrar(MONITORAMENTO_TEST);
+			cadastrar(MONITORAMENTO_TEST);
 			fail();
 
 		} catch (AlreadyExistsException cause) {
-			assertTrue(manager.existe(MONITORAMENTO_TEST));
+			assertTrue(existe(MONITORAMENTO_TEST));
 		}
 	}
 }

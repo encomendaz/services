@@ -42,12 +42,12 @@ public class MonitoramentoService {
 		monitoramento.setId(id);
 		monitoramento.setEmail(email);
 
-		MonitoramentoManager.getInstance().cadastrar(monitoramento);
+		MonitoramentoManager.cadastrar(monitoramento);
 	}
 
 	@GET
 	public String listar(@QueryParam("email") String email, @QueryParam("jsonp") String jsonp) {
-		List<Monitoramento> monitoramentos = MonitoramentoManager.getInstance().obter(email);
+		List<Monitoramento> monitoramentos = MonitoramentoManager.obter(email);
 		return Serializer.json(monitoramentos, jsonp);
 	}
 }

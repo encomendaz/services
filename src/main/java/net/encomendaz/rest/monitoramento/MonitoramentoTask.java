@@ -19,13 +19,13 @@ public class MonitoramentoTask extends TimerTask {
 
 	@Override
 	public void run() {
-		List<String> emails = MonitoramentoManager.getInstance().obter();
+		List<String> emails = MonitoramentoManager.obter();
 		List<Monitoramento> monitoramentos;
 		List<Monitoramento> atualizados;
 
 		for (String email : emails) {
 			atualizados = new ArrayList<Monitoramento>();
-			monitoramentos = MonitoramentoManager.getInstance().obter(email);
+			monitoramentos = MonitoramentoManager.obter(email);
 
 			for (Monitoramento monitoramento : monitoramentos) {
 				if (atualizou(monitoramento)) {
@@ -40,7 +40,7 @@ public class MonitoramentoTask extends TimerTask {
 	}
 
 	private boolean atualizou(Monitoramento monitoramento) {
-		String hash = RastreamentoManager.getInstance().hash(monitoramento.getId());
+		String hash = RastreamentoManager.hash(monitoramento.getId());
 		boolean result = !hash.equals(monitoramento.getHash());
 
 		System.out.print(monitoramento.toString() + " ");

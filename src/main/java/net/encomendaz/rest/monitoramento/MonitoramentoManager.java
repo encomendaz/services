@@ -33,23 +33,10 @@ import net.encomendaz.rest.rastreamento.RastreamentoManager;
 
 public class MonitoramentoManager {
 
-	private static MonitoramentoManager instance;
-
-	private MonitoramentoManager() {
-	}
-
-	public static synchronized MonitoramentoManager getInstance() {
-		if (instance == null) {
-			instance = new MonitoramentoManager();
-		}
-
-		return instance;
-	}
-
 	protected static Map<String, List<Monitoramento>> emails = Collections
 			.synchronizedMap(new HashMap<String, List<Monitoramento>>());
 
-	public void cadastrar(Monitoramento monitoramento) throws AlreadyExistsException {
+	public static void cadastrar(Monitoramento monitoramento) throws AlreadyExistsException {
 		List<Monitoramento> ids;
 
 		if (obter(monitoramento.getEmail()) == null) {
@@ -63,12 +50,12 @@ public class MonitoramentoManager {
 		ids = emails.get(monitoramento.getEmail());
 		ids.add(monitoramento);
 
-		String hash = RastreamentoManager.getInstance().hash(monitoramento.getId());
+		String hash = RastreamentoManager.hash(monitoramento.getId());
 		monitoramento.setHash(hash);
 		monitoramento.setUpdated(new Date());
 	}
 
-	public void remover(Monitoramento monitoramento) throws DoesNotExistException {
+	public static void remover(Monitoramento monitoramento) throws DoesNotExistException {
 		if (existe(monitoramento)) {
 			emails.get(monitoramento.getEmail()).remove(monitoramento);
 
@@ -77,7 +64,7 @@ public class MonitoramentoManager {
 		}
 	}
 
-	public void remover(String email) throws DoesNotExistException {
+	public static void remover(String email) throws DoesNotExistException {
 		if (emails.containsKey(email)) {
 			emails.remove(email);
 
@@ -86,15 +73,15 @@ public class MonitoramentoManager {
 		}
 	}
 
-	public List<String> obter() {
+	public static List<String> obter() {
 		return new ArrayList<String>(emails.keySet());
 	}
 
-	public List<Monitoramento> obter(String email) {
+	public static List<Monitoramento> obter(String email) {
 		return emails.get(email);
 	}
 
-	public Monitoramento obter(Monitoramento monitoramento) {
+	public static Monitoramento obter(Monitoramento monitoramento) {
 		Monitoramento result = null;
 
 		if (emails.containsKey(monitoramento.getEmail())
@@ -106,7 +93,7 @@ public class MonitoramentoManager {
 		return result;
 	}
 
-	public boolean existe(Monitoramento monitoramento) {
+	public static boolean existe(Monitoramento monitoramento) {
 		return obter(monitoramento) != null;
 	}
 }

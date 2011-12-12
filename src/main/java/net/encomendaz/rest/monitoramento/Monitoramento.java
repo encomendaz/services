@@ -20,17 +20,10 @@
  */
 package net.encomendaz.rest.monitoramento;
 
-import static javax.xml.bind.annotation.XmlAccessType.FIELD;
 import static org.codehaus.jackson.map.annotate.JsonSerialize.Inclusion.NON_NULL;
 
 import java.io.IOException;
 import java.util.Date;
-
-import javax.xml.bind.annotation.XmlAccessorType;
-import javax.xml.bind.annotation.XmlElement;
-import javax.xml.bind.annotation.XmlRootElement;
-import javax.xml.bind.annotation.XmlTransient;
-import javax.xml.bind.annotation.XmlType;
 
 import net.encomendaz.rest.DateSerializer;
 
@@ -38,21 +31,14 @@ import org.codehaus.jackson.annotate.JsonIgnore;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.codehaus.jackson.map.annotate.JsonSerialize;
 
-@XmlRootElement
-@XmlAccessorType(FIELD)
-@XmlType(propOrder = { "id", "updated" })
 public class Monitoramento {
 
-	@XmlElement(required = true)
 	private String id;
 
-	@XmlTransient
 	private String email;
 
-	@XmlElement
 	private Date updated;
 
-	@XmlTransient
 	private String hash;
 
 	public Monitoramento() {

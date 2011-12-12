@@ -26,9 +26,17 @@ import org.codehaus.jackson.map.ObjectMapper;
 
 public class Serializer {
 
-	public static String json(Object object) throws IOException {
+	public static String json(Object object) {
 		ObjectMapper mapper = new ObjectMapper();
+		String serialized;
 
-		return mapper.writeValueAsString(object);
+		try {
+			serialized = mapper.writeValueAsString(object);
+
+		} catch (IOException e) {
+			serialized = null;
+		}
+
+		return serialized;
 	}
 }

@@ -27,13 +27,17 @@ import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
 
+import net.encomendaz.rest.util.Serializer;
+
 @Path("/rastreamento.json")
 @Produces("application/json;charset=UTF-8")
 public class RastreamentoService {
 
 	@GET
-	public List<Rastreamento> pesquisar(@QueryParam("id") String id, @QueryParam("inicio") Integer inicio,
+	public String pesquisar(@QueryParam("id") String id, @QueryParam("inicio") Integer inicio,
 			@QueryParam("fim") Integer fim, @QueryParam("ordem") String ordem) {
-		return RastreamentoManager.getInstance().pesquisar(id, inicio, fim, ordem);
+
+		List<Rastreamento> rastreamentos = RastreamentoManager.getInstance().pesquisar(id, inicio, fim, ordem);
+		return Serializer.json(rastreamentos);
 	}
 }

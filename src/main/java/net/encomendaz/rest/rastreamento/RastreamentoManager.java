@@ -20,12 +20,10 @@
  */
 package net.encomendaz.rest.rastreamento;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-import net.encomendaz.rest.util.Hasher;
 import net.encomendaz.rest.util.Serializer;
 
 import org.alfredlibrary.utilitarios.correios.RegistroRastreamento;
@@ -82,17 +80,8 @@ public class RastreamentoManager {
 	}
 
 	public String hash(String id) {
-		String json;
-
-		try {
-			RastreamentoManager rastreamentoManager = new RastreamentoManager();
-			List<Rastreamento> rastreamentos = rastreamentoManager.pesquisar(id);
-
-			json = Serializer.json(rastreamentos);
-		} catch (IOException e) {
-			json = null;
-		}
-
-		return Hasher.md5(json);
+		RastreamentoManager rastreamentoManager = new RastreamentoManager();
+		List<Rastreamento> rastreamentos = rastreamentoManager.pesquisar(id);
+		return Serializer.json(rastreamentos);
 	}
 }

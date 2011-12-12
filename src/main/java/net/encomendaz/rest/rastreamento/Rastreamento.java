@@ -20,7 +20,6 @@
  */
 package net.encomendaz.rest.rastreamento;
 
-import static javax.xml.bind.annotation.XmlAccessType.FIELD;
 import static org.codehaus.jackson.map.annotate.JsonSerialize.Inclusion.NON_NULL;
 
 import java.io.IOException;
@@ -28,32 +27,20 @@ import java.util.Date;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import javax.xml.bind.annotation.XmlAccessorType;
-import javax.xml.bind.annotation.XmlElement;
-import javax.xml.bind.annotation.XmlRootElement;
-import javax.xml.bind.annotation.XmlType;
-
 import net.encomendaz.rest.DateSerializer;
 
 import org.alfredlibrary.utilitarios.correios.RegistroRastreamento;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.codehaus.jackson.map.annotate.JsonSerialize;
 
-@XmlRootElement
-@XmlAccessorType(FIELD)
-@XmlType(propOrder = { "data", "local", "situacao", "observacao" })
 public class Rastreamento {
 
-	@XmlElement(required = true)
 	private Date data;
 
-	@XmlElement
 	private String local;
 
-	@XmlElement
 	private String situacao;
 
-	@XmlElement(nillable = true)
 	private String observacao;
 
 	public static Rastreamento parse(RegistroRastreamento registro) {

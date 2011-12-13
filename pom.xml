@@ -32,11 +32,23 @@
 
 	<modules>
 		<module>api</module>
+		<module>parent</module>
 		<module>client</module>
 		<module>server</module>
 		<module>examples</module>
-		<module>parent</module>
 	</modules>
+
+	<build>
+		<plugins>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-deploy-plugin</artifactId>
+				<configuration>
+					<skip>true</skip>
+				</configuration>
+			</plugin>
+		</plugins>
+	</build>
 
 	<scm>
 		<connection>scm:git:git@github.com:encomendaz/rest.git</connection>

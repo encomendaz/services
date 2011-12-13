@@ -23,12 +23,17 @@
 
 	<modelVersion>4.0.0</modelVersion>
 
-	<groupId>net.encomendaz.rest</groupId>
 	<artifactId>encomendaz-rest-server</artifactId>
-	<version>1.0.0.Alpha1-SNAPSHOT</version>
 	<packaging>war</packaging>
 
-	<name>EncomendaZ RESTful Web Services</name>
+	<parent>
+		<groupId>net.encomendaz.rest</groupId>
+		<artifactId>encomendaz-rest-parent</artifactId>
+		<version>1.0.0-SNAPSHOT</version>
+		<relativePath>../parent</relativePath>
+	</parent>
+
+	<name>Server</name>
 
 	<dependencies>
 		<dependency>
@@ -85,13 +90,7 @@
 	</dependencies>
 
 	<build>
-		<finalName>${project.artifactId}</finalName>
-		<resources>
-			<resource>
-				<directory>src/main/resources</directory>
-				<filtering>true</filtering>
-			</resource>
-		</resources>
+		<finalName>encomendaz-rest</finalName>
 		<plugins>
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
@@ -128,31 +127,6 @@
 			</plugin>
 		</plugins>
 	</build>
-
-	<scm>
-		<connection>scm:git:git@github.com:encomendaz/rest.git</connection>
-		<url>scm:git:git@github.com:encomendaz/rest.git</url>
-		<developerConnection>scm:git:git@github.com:encomendaz/rest.git</developerConnection>
-	</scm>
-
-	<repositories>
-		<repository>
-			<id>nexus.jboss.org</id>
-			<name>JBoss Maven Repository</name>
-			<url>https://repository.jboss.org/nexus/content/repositories/releases/</url>
-			<snapshots>
-				<enabled>false</enabled>
-			</snapshots>
-			<releases>
-				<enabled>true</enabled>
-			</releases>
-		</repository>
-		<repository>
-			<id>alfredlibrary.org</id>
-			<name>Alfred Library</name>
-			<url>http://alfredlibrary.googlecode.com/svn/repository/release</url>
-		</repository>
-	</repositories>
 
 	<properties>
 		<java.version>1.6</java.version>

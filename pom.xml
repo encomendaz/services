@@ -28,6 +28,8 @@
 	<version>1.0.0-SNAPSHOT</version>
 	<packaging>pom</packaging>
 
+	<name>Build</name>
+
 	<modules>
 		<module>api</module>
 		<module>client</module>
@@ -36,4 +38,9 @@
 		<module>parent</module>
 	</modules>
 
+	<scm>
+		<connection>scm:git:git@github.com:encomendaz/rest.git</connection>
+		<url>scm:git:git@github.com:encomendaz/rest.git</url>
+		<developerConnection>scm:git:git@github.com:encomendaz/rest.git</developerConnection>
+	</scm>
 </project>

@@ -29,10 +29,11 @@
 	<packaging>pom</packaging>
 
 	<modules>
-		<module>examples</module>
 		<module>api</module>
 		<module>client</module>
 		<module>server</module>
+		<module>examples</module>
+		<module>parent</module>
 	</modules>
 
 </project>

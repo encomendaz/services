@@ -27,28 +27,37 @@ import java.security.NoSuchAlgorithmException;
 public class Hasher {
 
 	public static String md5(final String message) {
-		String hash = null;
+		byte[] hash = null;
 
 		if (message != null) {
 			try {
 				MessageDigest md = MessageDigest.getInstance("MD5");
-				hash = hex(md.digest(message.getBytes("UTF-8")));
+				hash = md.digest(message.getBytes("UTF-8"));
 
 			} catch (NoSuchAlgorithmException cause) {
-				cause.printStackTrace();
+				new RuntimeException(cause);
 
 			} catch (UnsupportedEncodingException cause) {
-				cause.printStackTrace();
+				new RuntimeException(cause);
 			}
 		}
 
-		return hash;
+		return hex(hash);
 	}
 
 	private static String hex(final byte[] array) {
-		StringBuffer sb = new StringBuffer();
-		for (int i = 0; i < array.length; ++i)
-			sb.append(Integer.toHexString((array[i] & 0xFF) | 0x100).substring(1, 3));
-		return sb.toString();
+		String parsed = null;
+
+		if (array != null) {
+			StringBuffer sb = new StringBuffer();
+
+			for (int i = 0; i < array.length; ++i) {
+				sb.append(Integer.toHexString((array[i] & 0xFF) | 0x100).substring(1, 3));
+			}
+
+			parsed = sb.toString();
+		}
+
+		return parsed;
 	}
 }

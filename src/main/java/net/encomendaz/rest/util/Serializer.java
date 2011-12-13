@@ -37,14 +37,14 @@ public class Serializer {
 	}
 
 	public static String json(Object object) {
-		String serialized;
+		String serialized = null;
 
 		try {
 			ObjectMapper mapper = new ObjectMapper();
 			serialized = mapper.writeValueAsString(object);
 
-		} catch (IOException e) {
-			serialized = "";
+		} catch (IOException cause) {
+			new RuntimeException(cause);
 		}
 
 		return serialized;

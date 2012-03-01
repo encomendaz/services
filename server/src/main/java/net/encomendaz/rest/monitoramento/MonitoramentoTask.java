@@ -6,14 +6,6 @@ import java.util.List;
 import java.util.TimerTask;
 
 import net.encomendaz.rest.rastreamento.RastreamentoManager;
-import net.encomendaz.rest.util.Mailer;
-
-import com.amazonaws.services.simpleemail.AmazonSimpleEmailServiceAsync;
-import com.amazonaws.services.simpleemail.model.Body;
-import com.amazonaws.services.simpleemail.model.Content;
-import com.amazonaws.services.simpleemail.model.Destination;
-import com.amazonaws.services.simpleemail.model.Message;
-import com.amazonaws.services.simpleemail.model.SendEmailRequest;
 
 public class MonitoramentoTask extends TimerTask {
 
@@ -34,7 +26,7 @@ public class MonitoramentoTask extends TimerTask {
 			}
 
 			for (Monitoramento atualizado : atualizados) {
-				notificar(atualizado);
+//				notificar(atualizado);
 			}
 		}
 	}
@@ -57,29 +49,29 @@ public class MonitoramentoTask extends TimerTask {
 		return result;
 	}
 
-	private void notificar(Monitoramento monitoramento) {
-		Destination to = new Destination().withToAddresses(monitoramento.getEmail());
-
-		Content subject = new Content();
-		subject.setCharset("UTF-8");
-		subject.setData("EncomendaZ: status atualizado");
-
-		Content content = new Content();
-		content.setCharset("UTF-8");
-		content.setData(String
-				.format("O status do item %s mudou!\n\nClique aqui e confira: http://rest.encomendaz.net/rastreamento.json?id=%s",
-						monitoramento.getId(), monitoramento.getId()));
-
-		Body body = new Body();
-		body.setText(content);
-
-		Message message = new Message(subject, body);
-
-		SendEmailRequest request = new SendEmailRequest("no-reply@rasea.org", to, message);
-
-		AmazonSimpleEmailServiceAsync client = Mailer.client();
-		client.sendEmailAsync(request);
-
-		System.out.println("notificando " + monitoramento.getEmail() + ", " + monitoramento.toString());
-	}
+//	private void notificar(Monitoramento monitoramento) {
+//		Destination to = new Destination().withToAddresses(monitoramento.getEmail());
+//
+//		Content subject = new Content();
+//		subject.setCharset("UTF-8");
+//		subject.setData("EncomendaZ: status atualizado");
+//
+//		Content content = new Content();
+//		content.setCharset("UTF-8");
+//		content.setData(String
+//				.format("O status do item %s mudou!\n\nClique aqui e confira: http://rest.encomendaz.net/rastreamento.json?id=%s",
+//						monitoramento.getId(), monitoramento.getId()));
+//
+//		Body body = new Body();
+//		body.setText(content);
+//
+//		Message message = new Message(subject, body);
+//
+//		SendEmailRequest request = new SendEmailRequest("no-reply@rasea.org", to, message);
+//
+//		AmazonSimpleEmailServiceAsync client = Mailer.client();
+//		client.sendEmailAsync(request);
+//
+//		System.out.println("notificando " + monitoramento.getEmail() + ", " + monitoramento.toString());
+//	}
 }

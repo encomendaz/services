@@ -20,17 +20,41 @@
  */
 package net.encomendaz.rest;
 
-import javax.ws.rs.core.Response;
-import javax.ws.rs.ext.ExceptionMapper;
-import javax.ws.rs.ext.Provider;
+import static org.codehaus.jackson.map.annotate.JsonSerialize.Inclusion.NON_NULL;
 
-import org.alfredlibrary.AlfredException;
+import org.codehaus.jackson.map.annotate.JsonSerialize;
 
-@Provider
-public class AlfredExceptionMapper implements ExceptionMapper<AlfredException> {
+public class Response<D> {
 
-	@Override
-	public Response toResponse(AlfredException cause) {
-		return Response.status(404).build();
+	private String status;
+
+	private String mensagem;
+
+	private D dados;
+
+	public String getStatus() {
+		return status;
+	}
+
+	public void setStatus(String status) {
+		this.status = status;
+	}
+
+	@JsonSerialize(include = NON_NULL)
+	public String getMensagem() {
+		return mensagem;
+	}
+
+	public void setMensagem(String mensagem) {
+		this.mensagem = mensagem;
+	}
+
+	@JsonSerialize(include = NON_NULL)
+	public D getDados() {
+		return dados;
+	}
+
+	public void setDados(D dados) {
+		this.dados = dados;
 	}
 }

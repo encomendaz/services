@@ -27,6 +27,7 @@ import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
 
+import net.encomendaz.rest.Response;
 import net.encomendaz.rest.util.Serializer;
 
 @Path("/rastreamento.json")
@@ -36,7 +37,19 @@ public class RastreamentoService {
 	@GET
 	public String pesquisar(@QueryParam("id") String id, @QueryParam("inicio") Integer inicio,
 			@QueryParam("fim") Integer fim, @QueryParam("ordem") String ordem, @QueryParam("jsonp") String jsonp) {
-		List<Rastreamento> rastreamentos = RastreamentoManager.pesquisar(id, inicio, fim, ordem);
-		return Serializer.json(rastreamentos, jsonp);
+
+		Response<List<Rastreamento>> response = new Response<List<Rastreamento>>();
+
+		try {
+			List<Rastreamento> rastreamentos = RastreamentoManager.pesquisar(id, inicio, fim, ordem);
+			response.setStatus("ok");
+			response.setDados(rastreamentos);
+
+		} catch (Exception cause) {
+			response.setStatus("erro");
+			response.setMensagem(cause.getMessage());
+		}
+
+		return Serializer.json(response, jsonp);
 	}
 }

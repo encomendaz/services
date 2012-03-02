@@ -24,9 +24,11 @@
 
 	<distributable />
 
+	<!--
 	<listener>
 		<listener-class>net.encomendaz.rest.monitoramento.MonitoramentoContextListener</listener-class>
 	</listener>
+	-->
 
 	<filter>
 		<filter-name>Resteasy</filter-name>

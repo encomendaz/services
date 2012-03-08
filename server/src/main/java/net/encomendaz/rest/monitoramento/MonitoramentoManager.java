@@ -27,9 +27,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import net.encomendaz.rest.AlreadyExistsException;
-import net.encomendaz.rest.DoesNotExistException;
-import net.encomendaz.rest.rastreamento.RastreamentoManager;
+import net.encomendaz.rest.tracking.TrackingManager;
 
 public class MonitoramentoManager {
 
@@ -50,7 +48,7 @@ public class MonitoramentoManager {
 		ids = emails.get(monitoramento.getEmail());
 		ids.add(monitoramento);
 
-		String hash = RastreamentoManager.hash(monitoramento.getId());
+		String hash = TrackingManager.hash(monitoramento.getId());
 		monitoramento.setHash(hash);
 		monitoramento.setUpdated(new Date());
 	}

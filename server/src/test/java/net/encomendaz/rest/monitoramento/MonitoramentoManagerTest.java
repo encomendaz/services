@@ -26,8 +26,6 @@ import static net.encomendaz.rest.monitoramento.MonitoramentoManager.remover;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
-import net.encomendaz.rest.AlreadyExistsException;
-import net.encomendaz.rest.DoesNotExistException;
 
 import org.junit.Before;
 import org.junit.Test;

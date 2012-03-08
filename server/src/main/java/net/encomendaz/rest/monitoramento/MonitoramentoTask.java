@@ -5,7 +5,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.TimerTask;
 
-import net.encomendaz.rest.rastreamento.RastreamentoManager;
+import net.encomendaz.rest.tracking.TrackingManager;
 
 public class MonitoramentoTask extends TimerTask {
 
@@ -32,7 +32,7 @@ public class MonitoramentoTask extends TimerTask {
 	}
 
 	private boolean atualizou(Monitoramento monitoramento) {
-		String hash = RastreamentoManager.hash(monitoramento.getId());
+		String hash = TrackingManager.hash(monitoramento.getId());
 		boolean result = !hash.equals(monitoramento.getHash());
 
 		System.out.print(monitoramento.toString() + " ");

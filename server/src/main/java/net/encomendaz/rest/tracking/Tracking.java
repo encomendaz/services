@@ -18,7 +18,7 @@
  * or write to the Free Software Foundation, Inc., 51 Franklin Street,
  * Fifth Floor, Boston, MA  02110-1301, USA.
  */
-package net.encomendaz.rest.rastreamento;
+package net.encomendaz.rest.tracking;
 
 import static org.codehaus.jackson.map.annotate.JsonSerialize.Inclusion.NON_NULL;
 
@@ -33,7 +33,7 @@ import org.alfredlibrary.utilitarios.correios.RegistroRastreamento;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.codehaus.jackson.map.annotate.JsonSerialize;
 
-public class Rastreamento {
+public class Tracking {
 
 	private Date data;
 
@@ -43,12 +43,12 @@ public class Rastreamento {
 
 	private String observacao;
 
-	public static Rastreamento parse(RegistroRastreamento registro) {
+	public static Tracking parse(RegistroRastreamento registro) {
 		if (registro == null) {
 			throw new IllegalArgumentException("O registro de rastreamento não pode ser nulo.");
 		}
 
-		Rastreamento response = new Rastreamento();
+		Tracking response = new Tracking();
 		response.data = registro.getDataHora();
 		response.local = parse(registro.getLocal());
 		response.situacao = registro.getAcao();

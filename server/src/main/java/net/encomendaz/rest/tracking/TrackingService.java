@@ -18,7 +18,7 @@
  * or write to the Free Software Foundation, Inc., 51 Franklin Street,
  * Fifth Floor, Boston, MA  02110-1301, USA.
  */
-package net.encomendaz.rest.rastreamento;
+package net.encomendaz.rest.tracking;
 
 import java.util.List;
 
@@ -30,20 +30,20 @@ import javax.ws.rs.QueryParam;
 import net.encomendaz.rest.Response;
 import net.encomendaz.rest.util.Serializer;
 
-@Path("/rastreamento.json")
+@Path("/tracking.json")
 @Produces("application/json;charset=UTF-8")
-public class RastreamentoService {
+public class TrackingService {
 
 	@GET
 	public String pesquisar(@QueryParam("id") String id, @QueryParam("inicio") Integer inicio,
 			@QueryParam("fim") Integer fim, @QueryParam("ordem") String ordem, @QueryParam("jsonp") String jsonp) {
 
-		Response<List<Rastreamento>> response = new Response<List<Rastreamento>>();
+		Response<List<Tracking>> response = new Response<List<Tracking>>();
 
 		try {
-			List<Rastreamento> rastreamentos = RastreamentoManager.pesquisar(id, inicio, fim, ordem);
+			List<Tracking> trackings = TrackingManager.pesquisar(id, inicio, fim, ordem);
 			response.setStatus("ok");
-			response.setDados(rastreamentos);
+			response.setDados(trackings);
 
 		} catch (Exception cause) {
 			response.setStatus("erro");

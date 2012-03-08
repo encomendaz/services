@@ -18,7 +18,7 @@
  * or write to the Free Software Foundation, Inc., 51 Franklin Street,
  * Fifth Floor, Boston, MA  02110-1301, USA.
  */
-package net.encomendaz.rest.rastreamento;
+package net.encomendaz.rest.tracking;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -28,7 +28,7 @@ import net.encomendaz.rest.util.Serializer;
 
 import org.alfredlibrary.utilitarios.correios.RegistroRastreamento;
 
-public class RastreamentoManager {
+public class TrackingManager {
 
 	private static void validarParametrosPesquisar(String id, String ordem) {
 		if (id == null || id.isEmpty()) {
@@ -40,15 +40,15 @@ public class RastreamentoManager {
 		}
 	}
 
-	public List<Rastreamento> pesquisar(String id) {
+	public List<Tracking> pesquisar(String id) {
 		return pesquisar(id, null, null, null);
 	}
 
-	public static List<Rastreamento> pesquisar(String id, Integer inicio, Integer fim, String ordem) {
+	public static List<Tracking> pesquisar(String id, Integer inicio, Integer fim, String ordem) {
 
 		validarParametrosPesquisar(id, ordem);
 
-		List<Rastreamento> response = new ArrayList<Rastreamento>();
+		List<Tracking> response = new ArrayList<Tracking>();
 		List<RegistroRastreamento> registros = org.alfredlibrary.utilitarios.correios.Rastreamento.rastrear(id);
 		Collections.reverse(registros);
 
@@ -56,7 +56,7 @@ public class RastreamentoManager {
 		int _fim = (fim == null || fim > registros.size() ? registros.size() : fim);
 
 		for (int i = _ini; i <= _fim; i++) {
-			response.add(Rastreamento.parse(registros.get(i - 1)));
+			response.add(Tracking.parse(registros.get(i - 1)));
 		}
 
 		if ("desc".equals(ordem)) {
@@ -67,8 +67,8 @@ public class RastreamentoManager {
 	}
 
 	public static String hash(String id) {
-		RastreamentoManager rastreamentoManager = new RastreamentoManager();
-		List<Rastreamento> rastreamentos = rastreamentoManager.pesquisar(id);
-		return Serializer.json(rastreamentos);
+		TrackingManager trackingManager = new TrackingManager();
+		List<Tracking> trackings = trackingManager.pesquisar(id);
+		return Serializer.json(trackings);
 	}
 }

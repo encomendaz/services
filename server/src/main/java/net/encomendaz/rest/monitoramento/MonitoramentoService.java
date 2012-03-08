@@ -29,7 +29,6 @@ import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
 
-import net.encomendaz.rest.AlreadyExistsException;
 import net.encomendaz.rest.util.Serializer;
 
 @Path("/monitoramento.json")

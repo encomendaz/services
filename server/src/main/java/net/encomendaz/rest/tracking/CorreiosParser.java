@@ -68,10 +68,7 @@ public class CorreiosParser implements Parser {
 	}
 
 	private void initDescription() {
-		if (registro.getDetalhe() == null) {
-			description = registro.getAcao();
-
-		} else {
+		if (registro.getDetalhe() != null) {
 			Matcher matcher = pattern.matcher(registro.getDetalhe());
 
 			if (matcher.matches()) {
@@ -87,6 +84,9 @@ public class CorreiosParser implements Parser {
 
 				description = p1 + " " + Strings.firstToUpper(p2) + "/" + p3;
 			}
+
+		} else if (registro.getAcao().indexOf(" ") > 0) {
+			description = registro.getAcao();
 		}
 	}
 
@@ -112,9 +112,14 @@ public class CorreiosParser implements Parser {
 
 	@Override
 	public Status getStatus() {
+		final String acao = registro.getAcao().toLowerCase();
+
 		if (status == null) {
-			if ("entregue".equals(registro.getAcao().toLowerCase())) {
+			if ("entregue".equals(acao)) {
 				status = Status.DELIVERED;
+
+			} else if ("postado".equals(acao)) {
+				status = Status.ACCEPTANCE;
 
 			} else {
 				status = Status.ENROUTE;

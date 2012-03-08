@@ -35,13 +35,13 @@ import net.encomendaz.rest.util.Serializer;
 public class TrackingService {
 
 	@GET
-	public String track(@QueryParam("id") String id, @QueryParam("begin") Integer begin,
+	public String track(@QueryParam("id") String id, @QueryParam("start") Integer start,
 			@QueryParam("end") Integer end, @QueryParam("jsonp") String jsonp) {
 
 		Response<List<Tracking>> response = new Response<List<Tracking>>();
 
 		try {
-			List<Tracking> trackings = TrackingManager.track(id, begin, end);
+			List<Tracking> trackings = TrackingManager.track(id, start, end);
 			response.setStatus("ok");
 			response.setData(trackings);
 

@@ -2,7 +2,7 @@ package net.encomendaz.rest.tracking;
 
 public enum Status {
 
-	DELIVERED, ENROUTE;
+	DELIVERED, ENROUTE, ACCEPTANCE;
 
 	public String toString() {
 		return name().toLowerCase();

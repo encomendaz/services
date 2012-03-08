@@ -22,18 +22,17 @@ package net.encomendaz.rest.tracking;
 
 import static org.codehaus.jackson.map.annotate.JsonSerialize.Inclusion.NON_NULL;
 
-import java.io.IOException;
 import java.util.Date;
 
 import net.encomendaz.rest.DateSerializer;
 import net.encomendaz.rest.EnumSerializer;
 
 import org.alfredlibrary.utilitarios.correios.RegistroRastreamento;
+import org.codehaus.jackson.annotate.JsonProperty;
 import org.codehaus.jackson.annotate.JsonPropertyOrder;
-import org.codehaus.jackson.map.ObjectMapper;
 import org.codehaus.jackson.map.annotate.JsonSerialize;
 
-@JsonPropertyOrder({ "date", "city", "state", "country", "description", "status" })
+@JsonPropertyOrder({ "date", "city", "state", "country", "status", "desc" })
 public class Tracking {
 
 	private Parser parser;
@@ -53,45 +52,34 @@ public class Tracking {
 		return tracking;
 	}
 
-	@Override
-	public String toString() {
-		ObjectMapper mapper = new ObjectMapper();
-		String result;
-
-		try {
-			result = mapper.writeValueAsString(this);
-
-		} catch (IOException e) {
-			result = super.toString();
-		}
-
-		return result;
-	}
-
-	@JsonSerialize(using = EnumSerializer.class)
-	public Status getStatus() {
-		return parser.getStatus();
+	@JsonSerialize(using = DateSerializer.class)
+	public Date getDate() {
+		return parser.getDate();
 	}
 
 	@JsonSerialize(include = NON_NULL)
-	public String getDescription() {
-		return parser.getDescription();
-	}
-
 	public String getCity() {
 		return parser.getCity();
 	}
 
+	@JsonSerialize(include = NON_NULL)
 	public String getState() {
 		return parser.getState();
 	}
 
+	@JsonSerialize(include = NON_NULL)
 	public String getCountry() {
 		return parser.getCountry();
 	}
 
-	@JsonSerialize(using = DateSerializer.class)
-	public Date getDate() {
-		return parser.getDate();
+	@JsonSerialize(using = EnumSerializer.class, include = NON_NULL)
+	public Status getStatus() {
+		return parser.getStatus();
+	}
+
+	@JsonProperty("desc")
+	@JsonSerialize(include = NON_NULL)
+	public String getDescription() {
+		return parser.getDescription();
 	}
 }

@@ -40,19 +40,19 @@ public class TrackingManager {
 		return track(id, null, null);
 	}
 
-	public static List<Tracking> track(String id, Integer begin, Integer end) {
+	public static List<Tracking> track(String id, Integer start, Integer end) {
 
 		validateParameters(id);
 
 		List<Tracking> response = new ArrayList<Tracking>();
-		List<RegistroRastreamento> registros = org.alfredlibrary.utilitarios.correios.Rastreamento.rastrear(id);
-		Collections.reverse(registros);
+		List<RegistroRastreamento> infos = org.alfredlibrary.utilitarios.correios.Rastreamento.rastrear(id);
+		Collections.reverse(infos);
 
-		int _ini = (begin == null || begin < 1 ? 1 : begin);
-		int _fim = (end == null || end > registros.size() ? registros.size() : end);
+		int _start = (start == null || start < 1 ? 1 : start);
+		int _end = (end == null || end > infos.size() ? infos.size() : end);
 
-		for (int i = _ini; i <= _fim; i++) {
-			response.add(Tracking.parse(registros.get(i - 1)));
+		for (int i = _start; i <= _end; i++) {
+			response.add(Tracking.parse(infos.get(i - 1)));
 		}
 
 		return response;

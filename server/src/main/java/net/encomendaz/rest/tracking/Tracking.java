@@ -30,18 +30,23 @@ import java.util.regex.Pattern;
 import net.encomendaz.rest.DateSerializer;
 
 import org.alfredlibrary.utilitarios.correios.RegistroRastreamento;
+import org.codehaus.jackson.annotate.JsonPropertyOrder;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.codehaus.jackson.map.annotate.JsonSerialize;
 
+@JsonPropertyOrder({ "date", "city", "description", "status" })
 public class Tracking {
 
-	private Date data;
+	private Date date;
 
-	private String local;
+	private String city;
 
-	private String situacao;
+	private String status;
 
-	private String observacao;
+	private String description;
+
+	private Tracking() {
+	}
 
 	public static Tracking parse(RegistroRastreamento registro) {
 		if (registro == null) {
@@ -49,10 +54,10 @@ public class Tracking {
 		}
 
 		Tracking response = new Tracking();
-		response.data = registro.getDataHora();
-		response.local = parse(registro.getLocal());
-		response.situacao = registro.getAcao();
-		response.observacao = parse(registro.getDetalhe());
+		response.date = registro.getDataHora();
+		response.city = parse(registro.getLocal());
+		response.status = registro.getAcao();
+		response.description = parse(registro.getDetalhe());
 
 		return response;
 	}
@@ -110,37 +115,21 @@ public class Tracking {
 		return result;
 	}
 
-	public String getSituacao() {
-		return situacao;
-	}
-
-	public void setSituacao(String situacao) {
-		this.situacao = situacao;
+	public String getStatus() {
+		return status;
 	}
 
 	@JsonSerialize(include = NON_NULL)
-	public String getObservacao() {
-		return observacao;
+	public String getDescription() {
+		return description;
 	}
 
-	public void setObservacao(String observacao) {
-		this.observacao = observacao;
-	}
-
-	public String getLocal() {
-		return local;
-	}
-
-	public void setLocal(String local) {
-		this.local = local;
+	public String getCity() {
+		return city;
 	}
 
 	@JsonSerialize(using = DateSerializer.class)
-	public Date getData() {
-		return data;
-	}
-
-	public void setData(Date data) {
-		this.data = data;
+	public Date getDate() {
+		return date;
 	}
 }

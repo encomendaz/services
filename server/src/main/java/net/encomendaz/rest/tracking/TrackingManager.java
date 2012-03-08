@@ -30,19 +30,19 @@ import org.alfredlibrary.utilitarios.correios.RegistroRastreamento;
 
 public class TrackingManager {
 
-	private static void validarParametrosPesquisar(String id) {
+	private static void validateParameters(String id) {
 		if (id == null || id.isEmpty()) {
 			throw new IllegalArgumentException("É necessário informar a identificação do objeto via parâmetro \"id\"");
 		}
 	}
 
-	public List<Tracking> pesquisar(String id) {
-		return pesquisar(id, null, null);
+	public List<Tracking> track(String id) {
+		return track(id, null, null);
 	}
 
-	public static List<Tracking> pesquisar(String id, Integer begin, Integer end) {
+	public static List<Tracking> track(String id, Integer begin, Integer end) {
 
-		validarParametrosPesquisar(id);
+		validateParameters(id);
 
 		List<Tracking> response = new ArrayList<Tracking>();
 		List<RegistroRastreamento> registros = org.alfredlibrary.utilitarios.correios.Rastreamento.rastrear(id);
@@ -60,7 +60,7 @@ public class TrackingManager {
 
 	public static String hash(String id) {
 		TrackingManager trackingManager = new TrackingManager();
-		List<Tracking> trackings = trackingManager.pesquisar(id);
+		List<Tracking> trackings = trackingManager.track(id);
 		return Serializer.json(trackings);
 	}
 }

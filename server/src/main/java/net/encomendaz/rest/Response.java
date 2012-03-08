@@ -22,15 +22,17 @@ package net.encomendaz.rest;
 
 import static org.codehaus.jackson.map.annotate.JsonSerialize.Inclusion.NON_NULL;
 
+import org.codehaus.jackson.annotate.JsonPropertyOrder;
 import org.codehaus.jackson.map.annotate.JsonSerialize;
 
+@JsonPropertyOrder({ "status", "message", "data" })
 public class Response<D> {
 
 	private String status;
 
-	private String mensagem;
+	private String message;
 
-	private D dados;
+	private D data;
 
 	public String getStatus() {
 		return status;
@@ -41,20 +43,20 @@ public class Response<D> {
 	}
 
 	@JsonSerialize(include = NON_NULL)
-	public String getMensagem() {
-		return mensagem;
+	public String getMessage() {
+		return message;
 	}
 
-	public void setMensagem(String mensagem) {
-		this.mensagem = mensagem;
+	public void setMessage(String message) {
+		this.message = message;
 	}
 
 	@JsonSerialize(include = NON_NULL)
-	public D getDados() {
-		return dados;
+	public D getData() {
+		return data;
 	}
 
-	public void setDados(D dados) {
-		this.dados = dados;
+	public void setData(D data) {
+		this.data = data;
 	}
 }

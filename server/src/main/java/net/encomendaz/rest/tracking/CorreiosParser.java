@@ -40,6 +40,8 @@ public class CorreiosParser implements Parser {
 
 	private String description;
 
+	private Status status;
+
 	public CorreiosParser(RegistroRastreamento registro) {
 		this.registro = registro;
 
@@ -60,27 +62,31 @@ public class CorreiosParser implements Parser {
 				city = matcher.group(2) + " – " + matcher.group(3);
 			}
 
-			city = Strings.parseToFirstUpper(city);
+			city = Strings.firstToUpper(city);
 			country = "BR";
 		}
 	}
 
 	private void initDescription() {
-		String text = registro.getDetalhe();
-		Matcher matcher = pattern.matcher(text == null ? "" : text);
+		if (registro.getDetalhe() == null) {
+			description = registro.getAcao();
 
-		if (matcher.matches()) {
-			String p1 = matcher.group(1);
-			String p2;
-			String p3 = matcher.group(4);
+		} else {
+			Matcher matcher = pattern.matcher(registro.getDetalhe());
 
-			if (matcher.group(2).equals(matcher.group(3))) {
-				p2 = matcher.group(2);
-			} else {
-				p2 = matcher.group(2) + " – " + matcher.group(3);
+			if (matcher.matches()) {
+				String p1 = matcher.group(1);
+				String p2;
+				String p3 = matcher.group(4);
+
+				if (matcher.group(2).equals(matcher.group(3))) {
+					p2 = matcher.group(2);
+				} else {
+					p2 = matcher.group(2) + " – " + matcher.group(3);
+				}
+
+				description = p1 + " " + Strings.firstToUpper(p2) + "/" + p3;
 			}
-
-			description = p1 + " " + Strings.parseToFirstUpper(p2) + "/" + p3;
 		}
 	}
 
@@ -105,8 +111,17 @@ public class CorreiosParser implements Parser {
 	}
 
 	@Override
-	public String getStatus() {
-		return registro.getAcao();
+	public Status getStatus() {
+		if (status == null) {
+			if ("entregue".equals(registro.getAcao().toLowerCase())) {
+				status = Status.DELIVERED;
+
+			} else {
+				status = Status.ENROUTE;
+			}
+		}
+
+		return status;
 	}
 
 	@Override

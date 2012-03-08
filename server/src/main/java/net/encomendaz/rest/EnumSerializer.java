@@ -18,21 +18,20 @@
  * or write to the Free Software Foundation, Inc., 51 Franklin Street,
  * Fifth Floor, Boston, MA  02110-1301, USA.
  */
-package net.encomendaz.rest.tracking;
+package net.encomendaz.rest;
 
-import java.util.Date;
+import java.io.IOException;
 
-public interface Parser {
+import org.codehaus.jackson.JsonGenerator;
+import org.codehaus.jackson.JsonProcessingException;
+import org.codehaus.jackson.map.JsonSerializer;
+import org.codehaus.jackson.map.SerializerProvider;
 
-	Date getDate();
+public class EnumSerializer extends JsonSerializer<Enum<?>> {
 
-	String getCity();
-
-	String getState();
-
-	String getCountry();
-
-	Status getStatus();
-
-	String getDescription();
+	@Override
+	public void serialize(Enum<?> status, JsonGenerator gen, SerializerProvider provider) throws IOException,
+			JsonProcessingException {
+		gen.writeString(status.toString());
+	}
 }

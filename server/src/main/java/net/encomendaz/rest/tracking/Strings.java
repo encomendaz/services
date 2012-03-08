@@ -2,7 +2,7 @@ package net.encomendaz.rest.tracking;
 
 public class Strings {
 
-	public static String parseToFirstUpper(String texto) {
+	public static String firstToUpper(String texto) {
 		StringBuffer buffer = new StringBuffer();
 
 		for (String palavra : texto.split(" ")) {

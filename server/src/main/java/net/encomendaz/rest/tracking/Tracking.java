@@ -26,6 +26,7 @@ import java.io.IOException;
 import java.util.Date;
 
 import net.encomendaz.rest.DateSerializer;
+import net.encomendaz.rest.EnumSerializer;
 
 import org.alfredlibrary.utilitarios.correios.RegistroRastreamento;
 import org.codehaus.jackson.annotate.JsonPropertyOrder;
@@ -67,7 +68,8 @@ public class Tracking {
 		return result;
 	}
 
-	public String getStatus() {
+	@JsonSerialize(using = EnumSerializer.class)
+	public Status getStatus() {
 		return parser.getStatus();
 	}
 

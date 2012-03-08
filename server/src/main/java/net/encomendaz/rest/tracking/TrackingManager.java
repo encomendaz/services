@@ -30,37 +30,29 @@ import org.alfredlibrary.utilitarios.correios.RegistroRastreamento;
 
 public class TrackingManager {
 
-	private static void validarParametrosPesquisar(String id, String ordem) {
+	private static void validarParametrosPesquisar(String id) {
 		if (id == null || id.isEmpty()) {
 			throw new IllegalArgumentException("É necessário informar a identificação do objeto via parâmetro \"id\"");
-		}
-
-		if (ordem != null && !("asc".equals(ordem) || "desc".equals(ordem))) {
-			throw new IllegalArgumentException("O parâmetro \"ordem\" só aceita os valores \"asc\" ou \"desc\"");
 		}
 	}
 
 	public List<Tracking> pesquisar(String id) {
-		return pesquisar(id, null, null, null);
+		return pesquisar(id, null, null);
 	}
 
-	public static List<Tracking> pesquisar(String id, Integer inicio, Integer fim, String ordem) {
+	public static List<Tracking> pesquisar(String id, Integer begin, Integer end) {
 
-		validarParametrosPesquisar(id, ordem);
+		validarParametrosPesquisar(id);
 
 		List<Tracking> response = new ArrayList<Tracking>();
 		List<RegistroRastreamento> registros = org.alfredlibrary.utilitarios.correios.Rastreamento.rastrear(id);
 		Collections.reverse(registros);
 
-		int _ini = (inicio == null || inicio < 1 ? 1 : inicio);
-		int _fim = (fim == null || fim > registros.size() ? registros.size() : fim);
+		int _ini = (begin == null || begin < 1 ? 1 : begin);
+		int _fim = (end == null || end > registros.size() ? registros.size() : end);
 
 		for (int i = _ini; i <= _fim; i++) {
 			response.add(Tracking.parse(registros.get(i - 1)));
-		}
-
-		if ("desc".equals(ordem)) {
-			Collections.reverse(response);
 		}
 
 		return response;

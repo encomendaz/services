@@ -28,11 +28,10 @@ import net.encomendaz.rest.DateSerializer;
 import net.encomendaz.rest.EnumSerializer;
 
 import org.alfredlibrary.utilitarios.correios.RegistroRastreamento;
-import org.codehaus.jackson.annotate.JsonProperty;
 import org.codehaus.jackson.annotate.JsonPropertyOrder;
 import org.codehaus.jackson.map.annotate.JsonSerialize;
 
-@JsonPropertyOrder({ "date", "city", "state", "country", "status", "desc" })
+@JsonPropertyOrder({ "date", "city", "state", "country", "status", "description" })
 public class Tracking {
 
 	private Parser parser;
@@ -77,7 +76,6 @@ public class Tracking {
 		return parser.getStatus();
 	}
 
-	@JsonProperty("desc")
 	@JsonSerialize(include = NON_NULL)
 	public String getDescription() {
 		return parser.getDescription();

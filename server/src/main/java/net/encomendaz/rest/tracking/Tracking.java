@@ -24,8 +24,6 @@ import static org.codehaus.jackson.map.annotate.JsonSerialize.Inclusion.NON_NULL
 
 import java.io.IOException;
 import java.util.Date;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 import net.encomendaz.rest.DateSerializer;
 
@@ -34,18 +32,13 @@ import org.codehaus.jackson.annotate.JsonPropertyOrder;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.codehaus.jackson.map.annotate.JsonSerialize;
 
-@JsonPropertyOrder({ "date", "city", "description", "status" })
+@JsonPropertyOrder({ "date", "city", "state", "country", "description", "status" })
 public class Tracking {
 
-	private Date date;
+	private Parser parser;
 
-	private String city;
-
-	private String status;
-
-	private String description;
-
-	private Tracking() {
+	private Tracking(Parser parser) {
+		this.parser = parser;
 	}
 
 	public static Tracking parse(RegistroRastreamento registro) {
@@ -53,51 +46,10 @@ public class Tracking {
 			throw new IllegalArgumentException("O registro de rastreamento não pode ser nulo.");
 		}
 
-		Tracking response = new Tracking();
-		response.date = registro.getDataHora();
-		response.city = parse(registro.getLocal());
-		response.status = registro.getAcao();
-		response.description = parse(registro.getDetalhe());
+		Parser parser = new CorreiosParser(registro);
+		Tracking tracking = new Tracking(parser);
 
-		return response;
-	}
-
-	private static String parse(String local) {
-		Pattern pattern = Pattern.compile("^(.*?[A-Z]{2,3}) (.*) - (.*)/(\\w{2})$");
-		Matcher matcher = pattern.matcher(local == null ? "" : local);
-		String resultado = local;
-
-		if (matcher.matches()) {
-			String p1 = matcher.group(1);
-			String p2;
-			String p3 = matcher.group(4);
-
-			if (matcher.group(2).equals(matcher.group(3))) {
-				p2 = matcher.group(2);
-			} else {
-				p2 = matcher.group(2) + " – " + matcher.group(3);
-			}
-
-			resultado = p1 + " " + parseToFirstUpper(p2) + "/" + p3;
-		}
-
-		return resultado;
-	}
-
-	private static String parseToFirstUpper(String texto) {
-		StringBuffer buffer = new StringBuffer();
-
-		for (String palavra : texto.split(" ")) {
-			if (palavra.length() > 2) {
-				buffer.append(palavra.substring(0, 1).toUpperCase() + palavra.substring(1).toLowerCase());
-			} else {
-				buffer.append(palavra.toLowerCase());
-			}
-
-			buffer.append(" ");
-		}
-
-		return buffer.toString().trim();
+		return tracking;
 	}
 
 	@Override
@@ -116,20 +68,28 @@ public class Tracking {
 	}
 
 	public String getStatus() {
-		return status;
+		return parser.getStatus();
 	}
 
 	@JsonSerialize(include = NON_NULL)
 	public String getDescription() {
-		return description;
+		return parser.getDescription();
 	}
 
 	public String getCity() {
-		return city;
+		return parser.getCity();
+	}
+
+	public String getState() {
+		return parser.getState();
+	}
+
+	public String getCountry() {
+		return parser.getCountry();
 	}
 
 	@JsonSerialize(using = DateSerializer.class)
 	public Date getDate() {
-		return date;
+		return parser.getDate();
 	}
 }

@@ -15,7 +15,7 @@ public class Main {
 		System.out.println("status: " + response.toString());
 
 		for (TrackingData t : response.getData()) {
-			System.out.println(t.getStatus() + " " + t.getDate());
+			System.out.println(t.getStatus() + " : " + t.getDate());
 		}
 	}
 }

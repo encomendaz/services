@@ -20,12 +20,7 @@
  */
 package net.encomendaz.rest.monitoramento;
 
-import java.util.List;
-
 import javax.ws.rs.FormParam;
-import javax.ws.rs.QueryParam;
-
-import net.encomendaz.rest.util.Serializer;
 
 //@Path("/monitoramento.json")
 //@Produces("application/json;charset=UTF-8")
@@ -41,8 +36,8 @@ public class MonitoramentoService {
 	}
 
 	// @GET
-	public String listar(@QueryParam("email") String email, @QueryParam("jsonp") String jsonp) {
-		List<Monitoramento> monitoramentos = MonitoramentoManager.obter(email);
-		return Serializer.json(monitoramentos, jsonp);
-	}
+	// public String listar(@QueryParam("email") String email, @QueryParam("jsonp") String jsonp) {
+	// List<Monitoramento> monitoramentos = MonitoramentoManager.obter(email);
+	// return Serializer.json(monitoramentos, jsonp);
+	// }
 }

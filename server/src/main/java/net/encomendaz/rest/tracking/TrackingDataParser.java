@@ -20,19 +20,15 @@
  */
 package net.encomendaz.rest.tracking;
 
-import java.util.Date;
+import org.alfredlibrary.utilitarios.correios.RegistroRastreamento;
 
-public interface Parser {
+public class TrackingDataParser {
 
-	Date getDate();
+	public static TrackingData parse(RegistroRastreamento registro) {
+		if (registro == null) {
+			throw new IllegalArgumentException("O registro de rastreamento não pode ser nulo.");
+		}
 
-	String getCity();
-
-	String getState();
-
-	String getCountry();
-
-	Status getStatus();
-
-	String getDescription();
+		return new CorreiosTrackingData(registro);
+	}
 }

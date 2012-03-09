@@ -10,11 +10,15 @@ Este serviço expõe as informações contidas nas páginas HTML dos Correios. O
 
 ### Consulta
 
-O serviço de rastreamento está disponível nesta URL. Eis aqui um exemplo de uso:
+O serviço de rastreamento está disponível nesta URL:
 
 http://rest.encomendaz.net/tracking.json?id=PB882615209BR&start=1&end=6
 
-Os parâmetros "start", "end" e "jsonp" são opcionais, mas o "id" é obrigatório.
+Os parâmetros "start" e "end" são opcionais, mas o "id" é obrigatório.
+
+Para requisições JSONP, use esta URL:
+
+http://rest.encomendaz.net/tracking.jsonp?id=PB882615209BR&start=1&end=6
 
 Contribuição
 --------------

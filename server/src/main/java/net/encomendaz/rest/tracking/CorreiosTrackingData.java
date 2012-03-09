@@ -28,7 +28,7 @@ import net.encomendaz.rest.util.Strings;
 
 import org.alfredlibrary.utilitarios.correios.RegistroRastreamento;
 
-public class CorreiosParser implements Parser {
+public class CorreiosTrackingData extends TrackingData {
 
 	private static final Pattern pattern = Pattern.compile("^(.*?[A-Z]{2,3}) (.*) - (.*)/(\\w{2})$");
 
@@ -38,13 +38,11 @@ public class CorreiosParser implements Parser {
 
 	private String state;
 
-	private String country;
-
 	private String description;
 
 	private Status status;
 
-	public CorreiosParser(RegistroRastreamento registro) {
+	public CorreiosTrackingData(RegistroRastreamento registro) {
 		this.registro = registro;
 
 		initLocation();
@@ -65,7 +63,6 @@ public class CorreiosParser implements Parser {
 			}
 
 			city = Strings.firstToUpper(city);
-			country = "BR";
 		}
 	}
 
@@ -105,11 +102,6 @@ public class CorreiosParser implements Parser {
 	@Override
 	public String getState() {
 		return state;
-	}
-
-	@Override
-	public String getCountry() {
-		return country;
 	}
 
 	@Override

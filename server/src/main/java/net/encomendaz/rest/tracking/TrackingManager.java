@@ -52,7 +52,7 @@ public class TrackingManager {
 		int _end = (end == null || end > infos.size() ? infos.size() : end);
 
 		for (int i = _start; i <= _end; i++) {
-			response.add(TrackingDataImpl.parse(infos.get(i - 1)));
+			response.add(TrackingDataParser.parse(infos.get(i - 1)));
 		}
 
 		return response;

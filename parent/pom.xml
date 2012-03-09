@@ -57,7 +57,7 @@
 			<dependency>
 				<groupId>org.jboss.resteasy</groupId>
 				<artifactId>resteasy-jaxrs</artifactId>
-				<version>2.2.3.GA</version>
+				<version>${resteasy.version}</version>
 				<exclusions>
 					<exclusion>
 						<artifactId>jsr250-api</artifactId>
@@ -73,7 +73,7 @@
 			<dependency>
 				<groupId>junit</groupId>
 				<artifactId>junit</artifactId>
-				<version>4.8.1</version>
+				<version>${junit.version}</version>
 			</dependency>
 		</dependencies>
 	</dependencyManagement>
@@ -97,5 +97,7 @@
 
 	<properties>
 		<java.version>1.6</java.version>
+		<resteasy.version>2.2.3.GA</resteasy.version>
+		<junit.version>4.8.1</junit.version>
 	</properties>
 </project>

@@ -28,54 +28,82 @@ import net.encomendaz.rest.DateSerializer;
 import net.encomendaz.rest.EnumSerializer;
 
 import org.alfredlibrary.utilitarios.correios.RegistroRastreamento;
-import org.codehaus.jackson.annotate.JsonPropertyOrder;
 import org.codehaus.jackson.map.annotate.JsonSerialize;
 
-@JsonPropertyOrder({ "date", "city", "state", "country", "status", "description" })
-public class Tracking {
+public class TrackingDataImpl implements TrackingData {
 
 	private Parser parser;
 
-	private Tracking(Parser parser) {
+	private TrackingDataImpl(Parser parser) {
 		this.parser = parser;
 	}
 
-	public static Tracking parse(RegistroRastreamento registro) {
+	public static TrackingDataImpl parse(RegistroRastreamento registro) {
 		if (registro == null) {
 			throw new IllegalArgumentException("O registro de rastreamento não pode ser nulo.");
 		}
 
 		Parser parser = new CorreiosParser(registro);
-		Tracking tracking = new Tracking(parser);
+		TrackingDataImpl trackingDataImpl = new TrackingDataImpl(parser);
 
-		return tracking;
+		return trackingDataImpl;
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * @see net.encomendaz.rest.tracking.TrackinInfo#getDate()
+	 */
+	@Override
 	@JsonSerialize(using = DateSerializer.class)
 	public Date getDate() {
 		return parser.getDate();
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * @see net.encomendaz.rest.tracking.TrackinInfo#getCity()
+	 */
+	@Override
 	@JsonSerialize(include = NON_NULL)
 	public String getCity() {
 		return parser.getCity();
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * @see net.encomendaz.rest.tracking.TrackinInfo#getState()
+	 */
+	@Override
 	@JsonSerialize(include = NON_NULL)
 	public String getState() {
 		return parser.getState();
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * @see net.encomendaz.rest.tracking.TrackinInfo#getCountry()
+	 */
+	@Override
 	@JsonSerialize(include = NON_NULL)
 	public String getCountry() {
 		return parser.getCountry();
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * @see net.encomendaz.rest.tracking.TrackinInfo#getStatus()
+	 */
+	@Override
 	@JsonSerialize(using = EnumSerializer.class, include = NON_NULL)
 	public Status getStatus() {
 		return parser.getStatus();
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * @see net.encomendaz.rest.tracking.TrackinInfo#getDescription()
+	 */
+	@Override
 	@JsonSerialize(include = NON_NULL)
 	public String getDescription() {
 		return parser.getDescription();

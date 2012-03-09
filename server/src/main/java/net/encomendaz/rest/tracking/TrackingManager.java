@@ -36,15 +36,15 @@ public class TrackingManager {
 		}
 	}
 
-	public List<Tracking> track(String id) {
+	public List<TrackingData> track(String id) {
 		return track(id, null, null);
 	}
 
-	public static List<Tracking> track(String id, Integer start, Integer end) {
+	public static List<TrackingData> track(String id, Integer start, Integer end) {
 
 		validateParameters(id);
 
-		List<Tracking> response = new ArrayList<Tracking>();
+		List<TrackingData> response = new ArrayList<TrackingData>();
 		List<RegistroRastreamento> infos = org.alfredlibrary.utilitarios.correios.Rastreamento.rastrear(id);
 		Collections.reverse(infos);
 
@@ -52,7 +52,7 @@ public class TrackingManager {
 		int _end = (end == null || end > infos.size() ? infos.size() : end);
 
 		for (int i = _start; i <= _end; i++) {
-			response.add(Tracking.parse(infos.get(i - 1)));
+			response.add(TrackingDataImpl.parse(infos.get(i - 1)));
 		}
 
 		return response;
@@ -60,7 +60,7 @@ public class TrackingManager {
 
 	public static String hash(String id) {
 		TrackingManager trackingManager = new TrackingManager();
-		List<Tracking> trackings = trackingManager.track(id);
-		return Serializer.json(trackings);
+		List<TrackingData> trackingInfoImpls = trackingManager.track(id);
+		return Serializer.json(trackingInfoImpls);
 	}
 }

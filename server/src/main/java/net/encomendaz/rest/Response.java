@@ -26,37 +26,19 @@ import org.codehaus.jackson.annotate.JsonPropertyOrder;
 import org.codehaus.jackson.map.annotate.JsonSerialize;
 
 @JsonPropertyOrder({ "status", "message", "data" })
-public class Response<D> {
+public interface Response<D> {
 
-	private String status;
+	public abstract String getStatus();
 
-	private String message;
-
-	private D data;
-
-	public String getStatus() {
-		return status;
-	}
-
-	public void setStatus(String status) {
-		this.status = status;
-	}
+	public abstract void setStatus(String status);
 
 	@JsonSerialize(include = NON_NULL)
-	public String getMessage() {
-		return message;
-	}
+	public abstract String getMessage();
 
-	public void setMessage(String message) {
-		this.message = message;
-	}
+	public abstract void setMessage(String message);
 
 	@JsonSerialize(include = NON_NULL)
-	public D getData() {
-		return data;
-	}
+	public abstract D getData();
 
-	public void setData(D data) {
-		this.data = data;
-	}
+	public abstract void setData(D data);
 }

@@ -20,17 +20,34 @@
  */
 package net.encomendaz.rest.tracking;
 
-import javax.ws.rs.GET;
-import javax.ws.rs.Path;
-import javax.ws.rs.Produces;
-import javax.ws.rs.QueryParam;
+import static org.codehaus.jackson.map.annotate.JsonSerialize.Inclusion.NON_NULL;
 
-@Path("/tracking.json")
-@Produces("application/json;charset=UTF-8")
-public interface TrackingService {
+import java.util.Date;
 
-	@GET
-	public abstract TrackingResponse track(@QueryParam("id") String id, @QueryParam("start") Integer start,
-			@QueryParam("end") Integer end);
+import net.encomendaz.rest.DateSerializer;
+import net.encomendaz.rest.EnumSerializer;
 
+import org.codehaus.jackson.annotate.JsonPropertyOrder;
+import org.codehaus.jackson.map.annotate.JsonSerialize;
+
+@JsonPropertyOrder({ "date", "city", "state", "country", "status", "description" })
+public interface TrackingData {
+
+	@JsonSerialize(using = DateSerializer.class)
+	Date getDate();
+
+	@JsonSerialize(include = NON_NULL)
+	String getCity();
+
+	@JsonSerialize(include = NON_NULL)
+	String getState();
+
+	@JsonSerialize(include = NON_NULL)
+	String getCountry();
+
+	@JsonSerialize(using = EnumSerializer.class, include = NON_NULL)
+	Status getStatus();
+
+	@JsonSerialize(include = NON_NULL)
+	public abstract String getDescription();
 }

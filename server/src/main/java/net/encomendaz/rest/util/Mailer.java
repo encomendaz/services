@@ -34,4 +34,4 @@
 //		AWSCredentials credentials = new BasicAWSCredentials(accessKey, secretKey);
 //		return new AmazonSimpleEmailServiceAsyncClient(credentials);
 //	}
-//}
+// }

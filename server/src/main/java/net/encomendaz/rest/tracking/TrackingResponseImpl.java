@@ -20,17 +20,43 @@
  */
 package net.encomendaz.rest.tracking;
 
-import javax.ws.rs.GET;
-import javax.ws.rs.Path;
-import javax.ws.rs.Produces;
-import javax.ws.rs.QueryParam;
+import java.util.List;
 
-@Path("/tracking.json")
-@Produces("application/json;charset=UTF-8")
-public interface TrackingService {
+public class TrackingResponseImpl implements TrackingResponse {
 
-	@GET
-	public abstract TrackingResponse track(@QueryParam("id") String id, @QueryParam("start") Integer start,
-			@QueryParam("end") Integer end);
+	private String status;
 
+	private String message;
+
+	private List<TrackingData> data;
+
+	@Override
+	public String getStatus() {
+		return status;
+	}
+
+	@Override
+	public void setStatus(String status) {
+		this.status = status;
+	}
+
+	@Override
+	public String getMessage() {
+		return message;
+	}
+
+	@Override
+	public void setMessage(String message) {
+		this.message = message;
+	}
+
+	@Override
+	public List<TrackingData> getData() {
+		return data;
+	}
+
+	@Override
+	public void setData(List<TrackingData> data) {
+		this.data = data;
+	}
 }

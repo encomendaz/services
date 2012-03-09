@@ -31,4 +31,4 @@
 //	public Response toResponse(IllegalArgumentException exception) {
 //		return Response.status(404).build();
 //	}
-//}
+// }

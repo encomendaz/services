@@ -18,12 +18,34 @@
  * or write to the Free Software Foundation, Inc., 51 Franklin Street,
  * Fifth Floor, Boston, MA  02110-1301, USA.
  */
-package net.encomendaz.rest.tracking;
+package net.encomendaz.rest;
 
-import java.util.List;
+import java.io.IOException;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.Locale;
 
-import net.encomendaz.rest.Response;
+import org.codehaus.jackson.JsonParser;
+import org.codehaus.jackson.JsonProcessingException;
+import org.codehaus.jackson.map.DeserializationContext;
+import org.codehaus.jackson.map.JsonDeserializer;
 
-public interface TrackingResponse extends Response<List<TrackingData>> {
+public class DateDeserializer extends JsonDeserializer<Date> {
 
+	private static final SimpleDateFormat dateFormat = new SimpleDateFormat("EEE, MMM d HH:mm:ss -0300 yyyy", Locale.US);
+
+	@Override
+	public Date deserialize(JsonParser jp, DeserializationContext ctxt) throws IOException, JsonProcessingException {
+		Date result;
+
+		try {
+			result = dateFormat.parse(jp.getText());
+
+		} catch (ParseException e) {
+			result = null;
+		}
+
+		return result;
+	}
 }

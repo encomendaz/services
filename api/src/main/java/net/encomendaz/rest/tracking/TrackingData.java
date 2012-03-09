@@ -24,30 +24,72 @@ import static org.codehaus.jackson.map.annotate.JsonSerialize.Inclusion.NON_NULL
 
 import java.util.Date;
 
+import net.encomendaz.rest.DateDeserializer;
 import net.encomendaz.rest.DateSerializer;
-import net.encomendaz.rest.EnumSerializer;
+import net.encomendaz.rest.StatusDeserializer;
+import net.encomendaz.rest.StatusSerializer;
 
 import org.codehaus.jackson.annotate.JsonPropertyOrder;
+import org.codehaus.jackson.map.annotate.JsonDeserialize;
 import org.codehaus.jackson.map.annotate.JsonSerialize;
 
 @JsonPropertyOrder({ "date", "city", "state", "country", "status", "description" })
-public interface TrackingData {
+public class TrackingData {
+
+	private Date date;
+
+	private String city;
+
+	private String state;
+
+	private Status status;
+
+	private String description;
 
 	@JsonSerialize(using = DateSerializer.class)
-	Date getDate();
+	public Date getDate() {
+		return date;
+	}
+
+	@JsonDeserialize(using = DateDeserializer.class)
+	public void setDate(Date date) {
+		this.date = date;
+	}
 
 	@JsonSerialize(include = NON_NULL)
-	String getCity();
+	public String getCity() {
+		return city;
+	}
+
+	public void setCity(String city) {
+		this.city = city;
+	}
 
 	@JsonSerialize(include = NON_NULL)
-	String getState();
+	public String getState() {
+		return state;
+	}
+
+	public void setState(String state) {
+		this.state = state;
+	}
+
+	@JsonSerialize(using = StatusSerializer.class, include = NON_NULL)
+	public Status getStatus() {
+		return status;
+	}
+
+	@JsonDeserialize(using = StatusDeserializer.class)
+	public void setStatus(Status status) {
+		this.status = status;
+	}
 
 	@JsonSerialize(include = NON_NULL)
-	String getCountry();
+	public String getDescription() {
+		return description;
+	}
 
-	@JsonSerialize(using = EnumSerializer.class, include = NON_NULL)
-	Status getStatus();
-
-	@JsonSerialize(include = NON_NULL)
-	String getDescription();
+	public void setDescription(String description) {
+		this.description = description;
+	}
 }

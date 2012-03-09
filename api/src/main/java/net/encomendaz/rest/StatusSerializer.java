@@ -22,16 +22,18 @@ package net.encomendaz.rest;
 
 import java.io.IOException;
 
+import net.encomendaz.rest.tracking.Status;
+
 import org.codehaus.jackson.JsonGenerator;
 import org.codehaus.jackson.JsonProcessingException;
 import org.codehaus.jackson.map.JsonSerializer;
 import org.codehaus.jackson.map.SerializerProvider;
 
-public class EnumSerializer extends JsonSerializer<Enum<?>> {
+public class StatusSerializer extends JsonSerializer<Status> {
 
 	@Override
-	public void serialize(Enum<?> status, JsonGenerator gen, SerializerProvider provider) throws IOException,
+	public void serialize(Status type, JsonGenerator gen, SerializerProvider provider) throws IOException,
 			JsonProcessingException {
-		gen.writeString(status.toString());
+		gen.writeString(type.name().toLowerCase());
 	}
 }

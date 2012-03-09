@@ -18,45 +18,21 @@
  * or write to the Free Software Foundation, Inc., 51 Franklin Street,
  * Fifth Floor, Boston, MA  02110-1301, USA.
  */
-package net.encomendaz.rest.tracking;
+package net.encomendaz.rest;
 
-import java.util.List;
+import java.io.IOException;
 
-public class TrackingResponseImpl implements TrackingResponse {
+import net.encomendaz.rest.tracking.Status;
 
-	private String status;
+import org.codehaus.jackson.JsonParser;
+import org.codehaus.jackson.JsonProcessingException;
+import org.codehaus.jackson.map.DeserializationContext;
+import org.codehaus.jackson.map.JsonDeserializer;
 
-	private String message;
-
-	private List<TrackingData> data;
-
-	@Override
-	public String getStatus() {
-		return status;
-	}
+public class StatusDeserializer extends JsonDeserializer<Status> {
 
 	@Override
-	public void setStatus(String status) {
-		this.status = status;
-	}
-
-	@Override
-	public String getMessage() {
-		return message;
-	}
-
-	@Override
-	public void setMessage(String message) {
-		this.message = message;
-	}
-
-	@Override
-	public List<TrackingData> getData() {
-		return data;
-	}
-
-	@Override
-	public void setData(List<TrackingData> data) {
-		this.data = data;
+	public Status deserialize(JsonParser jp, DeserializationContext ctxt) throws IOException, JsonProcessingException {
+		return Status.valueOf(jp.getText().toUpperCase());
 	}
 }

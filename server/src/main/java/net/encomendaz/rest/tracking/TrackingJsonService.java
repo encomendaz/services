@@ -22,11 +22,13 @@ package net.encomendaz.rest.tracking;
 
 import java.util.List;
 
+import net.encomendaz.rest.Response;
+
 public class TrackingJsonService implements TrackingService {
 
 	@Override
-	public TrackingResponse search(String id, Integer start, Integer end) {
-		TrackingResponse response = new TrackingResponseImpl();
+	public Response<List<TrackingData>> search(String id, Integer start, Integer end) {
+		Response<List<TrackingData>> response = new Response<List<TrackingData>>();
 
 		try {
 			List<TrackingData> result = TrackingManager.track(id, start, end);

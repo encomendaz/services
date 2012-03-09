@@ -20,17 +20,11 @@
  */
 package net.encomendaz.rest.tracking;
 
-import static org.codehaus.jackson.map.annotate.JsonSerialize.Inclusion.NON_NULL;
-
 import java.util.Date;
 
-import net.encomendaz.rest.DateSerializer;
-import net.encomendaz.rest.EnumSerializer;
-
 import org.alfredlibrary.utilitarios.correios.RegistroRastreamento;
-import org.codehaus.jackson.map.annotate.JsonSerialize;
 
-public class TrackingDataImpl implements TrackingData {
+public class TrackingDataImpl extends TrackingData {
 
 	private Parser parser;
 
@@ -49,62 +43,27 @@ public class TrackingDataImpl implements TrackingData {
 		return trackingDataImpl;
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * @see net.encomendaz.rest.tracking.TrackinInfo#getDate()
-	 */
 	@Override
-	@JsonSerialize(using = DateSerializer.class)
 	public Date getDate() {
 		return parser.getDate();
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * @see net.encomendaz.rest.tracking.TrackinInfo#getCity()
-	 */
 	@Override
-	@JsonSerialize(include = NON_NULL)
 	public String getCity() {
 		return parser.getCity();
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * @see net.encomendaz.rest.tracking.TrackinInfo#getState()
-	 */
 	@Override
-	@JsonSerialize(include = NON_NULL)
 	public String getState() {
 		return parser.getState();
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * @see net.encomendaz.rest.tracking.TrackinInfo#getCountry()
-	 */
 	@Override
-	@JsonSerialize(include = NON_NULL)
-	public String getCountry() {
-		return parser.getCountry();
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * @see net.encomendaz.rest.tracking.TrackinInfo#getStatus()
-	 */
-	@Override
-	@JsonSerialize(using = EnumSerializer.class, include = NON_NULL)
 	public Status getStatus() {
 		return parser.getStatus();
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * @see net.encomendaz.rest.tracking.TrackinInfo#getDescription()
-	 */
 	@Override
-	@JsonSerialize(include = NON_NULL)
 	public String getDescription() {
 		return parser.getDescription();
 	}

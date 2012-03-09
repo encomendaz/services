@@ -22,12 +22,10 @@ package net.encomendaz.rest.tracking;
 
 import java.util.List;
 
-import javax.ws.rs.QueryParam;
-
 public class TrackingJsonService implements TrackingService {
 
 	@Override
-	public TrackingResponse track(String id, Integer start, @QueryParam("end") Integer end) {
+	public TrackingResponse track(String id, Integer start, Integer end) {
 		TrackingResponse response = new TrackingResponseImpl();
 
 		try {

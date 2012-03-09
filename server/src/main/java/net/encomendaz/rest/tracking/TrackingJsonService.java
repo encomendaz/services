@@ -25,7 +25,7 @@ import java.util.List;
 public class TrackingJsonService implements TrackingService {
 
 	@Override
-	public TrackingResponse track(String id, Integer start, Integer end) {
+	public TrackingResponse search(String id, Integer start, Integer end) {
 		TrackingResponse response = new TrackingResponseImpl();
 
 		try {

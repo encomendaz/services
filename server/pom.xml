@@ -88,14 +88,6 @@
 			<artifactId>resteasy-jaxrs</artifactId>
 			<exclusions>
 				<exclusion>
-					<artifactId>jsr250-api</artifactId>
-					<groupId>javax.annotation</groupId>
-				</exclusion>
-				<exclusion>
-					<artifactId>activation</artifactId>
-					<groupId>javax.activation</groupId>
-				</exclusion>
-				<exclusion>
 					<artifactId>httpclient</artifactId>
 					<groupId>org.apache.httpcomponents</groupId>
 				</exclusion>
@@ -104,12 +96,6 @@
 					<groupId>commons-httpclient</groupId>
 				</exclusion>
 			</exclusions>
-		</dependency>
-
-		<dependency>
-			<groupId>org.jboss.resteasy</groupId>
-			<artifactId>resteasy-jackson-provider</artifactId>
-			<version>2.2.3.GA</version>
 		</dependency>
 
 		<dependency>

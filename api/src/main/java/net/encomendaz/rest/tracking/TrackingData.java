@@ -49,5 +49,5 @@ public interface TrackingData {
 	Status getStatus();
 
 	@JsonSerialize(include = NON_NULL)
-	public abstract String getDescription();
+	String getDescription();
 }

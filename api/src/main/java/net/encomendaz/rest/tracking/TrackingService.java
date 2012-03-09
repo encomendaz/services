@@ -30,7 +30,7 @@ import javax.ws.rs.QueryParam;
 public interface TrackingService {
 
 	@GET
-	public abstract TrackingResponse track(@QueryParam("id") String id, @QueryParam("start") Integer start,
+	TrackingResponse search(@QueryParam("id") String id, @QueryParam("start") Integer start,
 			@QueryParam("end") Integer end);
 
 }

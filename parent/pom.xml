@@ -62,6 +62,14 @@
 
 			<dependency>
 				<groupId>org.jboss.resteasy</groupId>
+				<artifactId>resteasy-bom</artifactId>
+				<version>${resteasy.version}</version>
+				<type>pom</type>
+				<scope>import</scope>
+			</dependency>
+
+			<dependency>
+				<groupId>org.jboss.resteasy</groupId>
 				<artifactId>resteasy-jaxrs</artifactId>
 				<version>${resteasy.version}</version>
 				<exclusions>
@@ -75,6 +83,12 @@
 					</exclusion>
 				</exclusions>
 			</dependency>
+
+<!-- 			<dependency> -->
+<!-- 				<groupId>org.jboss.resteasy</groupId> -->
+<!-- 				<artifactId>resteasy-jackson-provider</artifactId> -->
+<!-- 				<version>${resteasy.version}</version> -->
+<!-- 			</dependency> -->
 
 			<dependency>
 				<groupId>junit</groupId>
@@ -103,7 +117,7 @@
 
 	<properties>
 		<java.version>1.6</java.version>
-		<resteasy.version>2.2.3.GA</resteasy.version>
+		<resteasy.version>2.3.1.GA</resteasy.version>
 		<junit.version>4.8.1</junit.version>
 	</properties>
 </project>

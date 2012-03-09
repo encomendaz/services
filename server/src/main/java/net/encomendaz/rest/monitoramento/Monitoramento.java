@@ -25,7 +25,7 @@ import static org.codehaus.jackson.map.annotate.JsonSerialize.Inclusion.NON_NULL
 import java.io.IOException;
 import java.util.Date;
 
-import net.encomendaz.rest.DateSerializer;
+import net.encomendaz.rest.util.DateSerializer;
 
 import org.codehaus.jackson.annotate.JsonIgnore;
 import org.codehaus.jackson.map.ObjectMapper;

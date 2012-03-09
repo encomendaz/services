@@ -18,34 +18,25 @@
  * or write to the Free Software Foundation, Inc., 51 Franklin Street,
  * Fifth Floor, Boston, MA  02110-1301, USA.
  */
-package net.encomendaz.rest;
+package net.encomendaz.rest.util;
 
 import java.io.IOException;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.Locale;
 
-import org.codehaus.jackson.JsonParser;
-import org.codehaus.jackson.JsonProcessingException;
-import org.codehaus.jackson.map.DeserializationContext;
-import org.codehaus.jackson.map.JsonDeserializer;
+import org.codehaus.jackson.map.ObjectMapper;
 
-public class DateDeserializer extends JsonDeserializer<Date> {
+public class Serializer {
 
-	private static final SimpleDateFormat dateFormat = new SimpleDateFormat("EEE, MMM d HH:mm:ss -0300 yyyy", Locale.US);
-
-	@Override
-	public Date deserialize(JsonParser jp, DeserializationContext ctxt) throws IOException, JsonProcessingException {
-		Date result;
+	public static String json(Object object) {
+		String serialized = null;
 
 		try {
-			result = dateFormat.parse(jp.getText());
+			ObjectMapper mapper = new ObjectMapper();
+			serialized = mapper.writeValueAsString(object);
 
-		} catch (ParseException e) {
-			result = null;
+		} catch (IOException cause) {
+			new RuntimeException(cause);
 		}
 
-		return result;
+		return serialized;
 	}
 }

@@ -21,32 +21,22 @@
 package net.encomendaz.rest.util;
 
 import java.io.IOException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.Locale;
 
-import org.codehaus.jackson.map.ObjectMapper;
+import org.codehaus.jackson.JsonGenerator;
+import org.codehaus.jackson.JsonProcessingException;
+import org.codehaus.jackson.map.JsonSerializer;
+import org.codehaus.jackson.map.SerializerProvider;
 
-public class Serializer {
+public class DateSerializer extends JsonSerializer<Date> {
 
-	public static String json(Object object, String jsonp) {
-		String serialized = json(object);
+	private static final SimpleDateFormat dateFormat = new SimpleDateFormat("EEE, MMM d HH:mm:ss -0300 yyyy", Locale.US);
 
-		if (jsonp != null && jsonp.trim().length() > 0) {
-			serialized = jsonp + "(" + serialized + ")";
-		}
-
-		return serialized;
-	}
-
-	public static String json(Object object) {
-		String serialized = null;
-
-		try {
-			ObjectMapper mapper = new ObjectMapper();
-			serialized = mapper.writeValueAsString(object);
-
-		} catch (IOException cause) {
-			new RuntimeException(cause);
-		}
-
-		return serialized;
+	@Override
+	public void serialize(Date date, JsonGenerator gen, SerializerProvider provider) throws IOException,
+			JsonProcessingException {
+		gen.writeString(dateFormat.format(date));
 	}
 }

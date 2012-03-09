@@ -18,29 +18,22 @@
  * or write to the Free Software Foundation, Inc., 51 Franklin Street,
  * Fifth Floor, Boston, MA  02110-1301, USA.
  */
-package net.encomendaz.rest.tracking;
+package net.encomendaz.rest;
 
-import static net.encomendaz.rest.tracking.TrackingService.MEDIA_TYPE;
+import static net.encomendaz.rest.Response.Status.ERROR;
 
-import java.util.List;
+import javax.ws.rs.core.Response;
+import javax.ws.rs.ext.Provider;
 
-import javax.ws.rs.Consumes;
-import javax.ws.rs.GET;
-import javax.ws.rs.Path;
-import javax.ws.rs.Produces;
-import javax.ws.rs.QueryParam;
+@Provider
+public class ExceptionMapper implements javax.ws.rs.ext.ExceptionMapper<Exception> {
 
-import net.encomendaz.rest.Response;
+	@Override
+	public Response toResponse(Exception exception) {
+		net.encomendaz.rest.Response<Object> response = new net.encomendaz.rest.Response<Object>();
+		response.setStatus(ERROR);
+		response.setMessage(exception.getMessage());
 
-@Path("/tracking.json")
-@Produces(MEDIA_TYPE)
-@Consumes(MEDIA_TYPE)
-public interface TrackingService {
-
-	String MEDIA_TYPE = "application/json;charset=UTF-8";
-
-	@GET
-	Response<List<Tracking>> search(@QueryParam("id") String id, @QueryParam("start") Integer start,
-			@QueryParam("end") Integer end);
-
+		return Response.ok(response).build();
+	}
 }

@@ -21,25 +21,35 @@
 package net.encomendaz.rest;
 
 import static org.codehaus.jackson.map.annotate.JsonSerialize.Inclusion.NON_NULL;
+import net.encomendaz.rest.util.ResponseStatusDeserializer;
+import net.encomendaz.rest.util.ResponseStatusSerializer;
 import net.encomendaz.rest.util.Serializer;
 
 import org.codehaus.jackson.annotate.JsonPropertyOrder;
+import org.codehaus.jackson.map.annotate.JsonDeserialize;
 import org.codehaus.jackson.map.annotate.JsonSerialize;
 
 @JsonPropertyOrder({ "status", "message", "data" })
 public class Response<D> {
 
-	private String status;
+	private Status status;
 
 	private String message;
 
 	private D data;
 
-	public String getStatus() {
+	public enum Status {
+
+		OK, ERROR;
+	}
+
+	@JsonSerialize(using = ResponseStatusSerializer.class)
+	public Status getStatus() {
 		return status;
 	}
 
-	public void setStatus(String status) {
+	@JsonDeserialize(using = ResponseStatusDeserializer.class)
+	public void setStatus(Status status) {
 		this.status = status;
 	}
 

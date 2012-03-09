@@ -20,27 +20,15 @@
  */
 package net.encomendaz.rest.tracking;
 
-import static net.encomendaz.rest.tracking.TrackingService.MEDIA_TYPE;
+import org.alfredlibrary.utilitarios.correios.RegistroRastreamento;
 
-import java.util.List;
+public class TrackingParser {
 
-import javax.ws.rs.Consumes;
-import javax.ws.rs.GET;
-import javax.ws.rs.Path;
-import javax.ws.rs.Produces;
-import javax.ws.rs.QueryParam;
+	public static Tracking parse(RegistroRastreamento registro) {
+		if (registro == null) {
+			throw new IllegalArgumentException("O registro de rastreamento não pode ser nulo.");
+		}
 
-import net.encomendaz.rest.Response;
-
-@Path("/tracking.json")
-@Produces(MEDIA_TYPE)
-@Consumes(MEDIA_TYPE)
-public interface TrackingService {
-
-	String MEDIA_TYPE = "application/json;charset=UTF-8";
-
-	@GET
-	Response<List<Tracking>> search(@QueryParam("id") String id, @QueryParam("start") Integer start,
-			@QueryParam("end") Integer end);
-
+		return new CorreiosTracking(registro);
+	}
 }

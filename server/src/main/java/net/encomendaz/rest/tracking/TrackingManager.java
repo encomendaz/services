@@ -26,6 +26,7 @@ import java.util.List;
 
 import net.encomendaz.rest.util.Serializer;
 
+import org.alfredlibrary.utilitarios.correios.Rastreamento;
 import org.alfredlibrary.utilitarios.correios.RegistroRastreamento;
 
 public class TrackingManager {
@@ -36,23 +37,22 @@ public class TrackingManager {
 		}
 	}
 
-	public List<TrackingData> track(String id) {
-		return track(id, null, null);
+	public List<Tracking> search(String id) {
+		return search(id, null, null);
 	}
 
-	public static List<TrackingData> track(String id, Integer start, Integer end) {
-
+	public static List<Tracking> search(String id, Integer start, Integer end) {
 		validateParameters(id);
 
-		List<TrackingData> response = new ArrayList<TrackingData>();
-		List<RegistroRastreamento> infos = org.alfredlibrary.utilitarios.correios.Rastreamento.rastrear(id);
-		Collections.reverse(infos);
+		List<Tracking> response = new ArrayList<Tracking>();
+		List<RegistroRastreamento> list = Rastreamento.rastrear(id);
+		Collections.reverse(list);
 
 		int _start = (start == null || start < 1 ? 1 : start);
-		int _end = (end == null || end > infos.size() ? infos.size() : end);
+		int _end = (end == null || end > list.size() ? list.size() : end);
 
 		for (int i = _start; i <= _end; i++) {
-			response.add(TrackingDataParser.parse(infos.get(i - 1)));
+			response.add(TrackingParser.parse(list.get(i - 1)));
 		}
 
 		return response;
@@ -60,7 +60,8 @@ public class TrackingManager {
 
 	public static String hash(String id) {
 		TrackingManager trackingManager = new TrackingManager();
-		List<TrackingData> trackingInfoImpls = trackingManager.track(id);
+		List<Tracking> trackingInfoImpls = trackingManager.search(id);
+
 		return Serializer.json(trackingInfoImpls);
 	}
 }

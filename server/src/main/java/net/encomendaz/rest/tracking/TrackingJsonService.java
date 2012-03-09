@@ -20,6 +20,8 @@
  */
 package net.encomendaz.rest.tracking;
 
+import static net.encomendaz.rest.Response.Status.OK;
+
 import java.util.List;
 
 import net.encomendaz.rest.Response;
@@ -27,18 +29,18 @@ import net.encomendaz.rest.Response;
 public class TrackingJsonService implements TrackingService {
 
 	@Override
-	public Response<List<TrackingData>> search(String id, Integer start, Integer end) {
-		Response<List<TrackingData>> response = new Response<List<TrackingData>>();
+	public Response<List<Tracking>> search(String id, Integer start, Integer end) {
+		Response<List<Tracking>> response = new Response<List<Tracking>>();
 
-		try {
-			List<TrackingData> result = TrackingManager.track(id, start, end);
-			response.setStatus("ok");
-			response.setData(result);
+		// try {
+		List<Tracking> result = TrackingManager.search(id, start, end);
+		response.setStatus(OK);
+		response.setData(result);
 
-		} catch (Exception cause) {
-			response.setStatus("error");
-			response.setMessage(cause.getMessage());
-		}
+		// } catch (Exception cause) {
+		// response.setStatus(ERROR);
+		// response.setMessage(cause.getMessage());
+		// }
 
 		return response;
 	}

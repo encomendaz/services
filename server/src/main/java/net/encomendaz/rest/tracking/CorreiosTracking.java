@@ -28,7 +28,7 @@ import net.encomendaz.rest.util.Strings;
 
 import org.alfredlibrary.utilitarios.correios.RegistroRastreamento;
 
-public class CorreiosTrackingData extends TrackingData {
+public class CorreiosTracking extends Tracking {
 
 	private static final Pattern pattern = Pattern.compile("^(.*?[A-Z]{2,3}) (.*) - (.*)/(\\w{2})$");
 
@@ -42,7 +42,7 @@ public class CorreiosTrackingData extends TrackingData {
 
 	private Status status;
 
-	public CorreiosTrackingData(RegistroRastreamento registro) {
+	public CorreiosTracking(RegistroRastreamento registro) {
 		this.registro = registro;
 
 		initLocation();

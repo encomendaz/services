@@ -27,15 +27,15 @@ import java.util.Date;
 import net.encomendaz.rest.util.DateDeserializer;
 import net.encomendaz.rest.util.DateSerializer;
 import net.encomendaz.rest.util.Serializer;
-import net.encomendaz.rest.util.StatusDeserializer;
-import net.encomendaz.rest.util.StatusSerializer;
+import net.encomendaz.rest.util.TrackingStatusDeserializer;
+import net.encomendaz.rest.util.TrackingStatusSerializer;
 
 import org.codehaus.jackson.annotate.JsonPropertyOrder;
 import org.codehaus.jackson.map.annotate.JsonDeserialize;
 import org.codehaus.jackson.map.annotate.JsonSerialize;
 
 @JsonPropertyOrder({ "date", "city", "state", "country", "status", "description" })
-public class TrackingData {
+public class Tracking {
 
 	private Date date;
 
@@ -46,6 +46,11 @@ public class TrackingData {
 	private Status status;
 
 	private String description;
+
+	public enum Status {
+
+		DELIVERED, ENROUTE, ACCEPTANCE;
+	}
 
 	@JsonSerialize(using = DateSerializer.class)
 	public Date getDate() {
@@ -75,12 +80,12 @@ public class TrackingData {
 		this.state = state;
 	}
 
-	@JsonSerialize(using = StatusSerializer.class, include = NON_NULL)
+	@JsonSerialize(using = TrackingStatusSerializer.class, include = NON_NULL)
 	public Status getStatus() {
 		return status;
 	}
 
-	@JsonDeserialize(using = StatusDeserializer.class)
+	@JsonDeserialize(using = TrackingStatusDeserializer.class)
 	public void setStatus(Status status) {
 		this.status = status;
 	}

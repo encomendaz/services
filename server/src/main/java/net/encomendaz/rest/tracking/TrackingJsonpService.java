@@ -38,8 +38,8 @@ public class TrackingJsonpService {
 	@GET
 	public String search(@QueryParam("id") String id, @QueryParam("start") Integer start, @QueryParam("end") Integer end) {
 		TrackingJsonService service = new TrackingJsonService();
-		Response<List<TrackingData>> response = service.search(id, start, end);
 
+		Response<List<Tracking>> response = service.search(id, start, end);
 		return "tracking(" + response + ")";
 	}
 }

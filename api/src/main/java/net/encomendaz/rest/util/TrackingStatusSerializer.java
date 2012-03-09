@@ -22,17 +22,18 @@ package net.encomendaz.rest.util;
 
 import java.io.IOException;
 
-import net.encomendaz.rest.tracking.Status;
+import net.encomendaz.rest.tracking.Tracking;
 
-import org.codehaus.jackson.JsonParser;
+import org.codehaus.jackson.JsonGenerator;
 import org.codehaus.jackson.JsonProcessingException;
-import org.codehaus.jackson.map.DeserializationContext;
-import org.codehaus.jackson.map.JsonDeserializer;
+import org.codehaus.jackson.map.JsonSerializer;
+import org.codehaus.jackson.map.SerializerProvider;
 
-public class StatusDeserializer extends JsonDeserializer<Status> {
+public class TrackingStatusSerializer extends JsonSerializer<Tracking.Status> {
 
 	@Override
-	public Status deserialize(JsonParser jp, DeserializationContext ctxt) throws IOException, JsonProcessingException {
-		return Status.valueOf(jp.getText().toUpperCase());
+	public void serialize(Tracking.Status type, JsonGenerator gen, SerializerProvider provider) throws IOException,
+			JsonProcessingException {
+		gen.writeString(type.name().toLowerCase());
 	}
 }

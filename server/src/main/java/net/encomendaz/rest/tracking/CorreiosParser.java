@@ -24,6 +24,8 @@ import java.util.Date;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import net.encomendaz.rest.util.Strings;
+
 import org.alfredlibrary.utilitarios.correios.RegistroRastreamento;
 
 public class CorreiosParser implements Parser {

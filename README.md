@@ -1,28 +1,32 @@
 EncomendaZ RESTful Web Services
 =============================
 
-Uma alternativa para acessar os serviços do EncomendaZ via RESTful Web Services.
+Uma alternativa para acessar os servi√ßos do EncomendaZ via RESTful Web Services.
 
 Rastreamento
 ------------
 
-Este serviço expõe as informações contidas nas páginas HTML dos Correios. O parse é feito com auxílio do projeto Alfred Library (http://alfredlibrary.org).  
+Este servi√ßo exp√µe as informa√ß√µes contidas nas p√°ginas HTML dos Correios. O parse √© feito com aux√≠lio do projeto Alfred Library (http://alfredlibrary.org).  
 
 ### Consulta
 
-O serviço de rastreamento está disponível nesta URL:
+O servi√ßo de rastreamento est√° dispon√≠vel nesta URL:
 
 http://rest.encomendaz.net/tracking.json?id=PB882615209BR&start=1&end=6
 
-Os parâmetros "start" e "end" são opcionais, mas o "id" é obrigatório.
+Os par√¢metros "start" e "end" s√£o opcionais, mas o "id" √© obrigat√≥rio.
 
-Para requisições JSONP, use esta URL:
+Para resquisi√ß√µes JSONP, use esta URL:
 
 http://rest.encomendaz.net/tracking.json?id=PB882615209BR&start=1&end=6&callback=myJSONPCallback
 
-Contribuição
+Contribui√ß√£o
 --------------
 
-O projeto está de portas abertas para contribuição. Se quiser ajudar faça um fork, incremente seu código e faça um pull request.
+O projeto est√° de portas abertas para contribui√ß√£o. Se quiser ajudar, experimente diversos c√≥digos de rastreio e registre os bugs aqui:
 
-Este serviço é de graça!
+https://github.com/encomendaz/rest/issues
+
+Se preferir submeter c√≥digo-fonte, fa√ßa um fork e envie seu pull request.
+
+Este servi√ßo √© de gra√ßa!

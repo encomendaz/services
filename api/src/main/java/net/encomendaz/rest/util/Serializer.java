@@ -39,4 +39,15 @@ public class Serializer {
 
 		return serialized;
 	}
+	
+	public static String json(Object object, String callback) {
+		String serialized = json(object);
+
+		if(!Strings.isEmpty(callback)) {
+			serialized = callback + "(" + serialized + ")";
+		}
+		
+		
+		return serialized;
+	}
 }

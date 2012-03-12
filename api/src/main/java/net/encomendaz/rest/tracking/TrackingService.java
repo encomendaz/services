@@ -21,26 +21,32 @@
 package net.encomendaz.rest.tracking;
 
 import static net.encomendaz.rest.tracking.TrackingService.MEDIA_TYPE;
+import static net.encomendaz.rest.tracking.TrackingService.SERVICE_PATH;
 
 import java.util.List;
 
 import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
-import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
 
 import net.encomendaz.rest.Response;
 
-@Path("/tracking.json")
-@Produces(MEDIA_TYPE)
+@Path(SERVICE_PATH)
 @Consumes(MEDIA_TYPE)
 public interface TrackingService {
+
+	String SERVICE_PATH = "/tracking.json";
 
 	String MEDIA_TYPE = "application/json;charset=UTF-8";
 
 	@GET
+	Response<List<Tracking>> search(@QueryParam("id") String id);
+
+	@GET
+	Response<List<Tracking>> search(@QueryParam("id") String id, @QueryParam("start") Integer start);
+
+	@GET
 	Response<List<Tracking>> search(@QueryParam("id") String id, @QueryParam("start") Integer start,
 			@QueryParam("end") Integer end);
-
 }

@@ -33,7 +33,7 @@ public class TrackingManager {
 
 	private static void validateParameters(String id) {
 		if (id == null || id.isEmpty()) {
-			throw new IllegalArgumentException("É necessário informar a identificação do objeto via parâmetro \"id\"");
+			throw new IllegalArgumentException("É necessário informar a identificação do objeto via parâmetro: ?id=");
 		}
 	}
 

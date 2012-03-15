@@ -23,7 +23,6 @@ package net.encomendaz.rest.internal;
 import java.io.IOException;
 
 import net.encomendaz.rest.Response;
-import net.encomendaz.rest.Response.Status;
 
 import org.codehaus.jackson.JsonGenerator;
 import org.codehaus.jackson.JsonProcessingException;

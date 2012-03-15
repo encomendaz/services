@@ -18,19 +18,22 @@
  * or write to the Free Software Foundation, Inc., 51 Franklin Street,
  * Fifth Floor, Boston, MA  02110-1301, USA.
  */
-package net.encomendaz.rest.tracking;
+package net.encomendaz.rest.server;
 
-import net.encomendaz.rest.Tracking;
+import static net.encomendaz.rest.Response.Status.ERROR;
 
-import org.alfredlibrary.utilitarios.correios.RegistroRastreamento;
+import javax.ws.rs.core.Response;
+import javax.ws.rs.ext.Provider;
 
-public class TrackingParser {
+@Provider
+public class ExceptionMapper implements javax.ws.rs.ext.ExceptionMapper<Exception> {
 
-	public static Tracking parse(RegistroRastreamento registro) {
-		if (registro == null) {
-			throw new IllegalArgumentException("O registro de rastreamento não pode ser nulo.");
-		}
+	@Override
+	public Response toResponse(Exception exception) {
+		net.encomendaz.rest.Response<Object> response = new net.encomendaz.rest.Response<Object>();
+		response.setStatus(ERROR);
+		response.setMessage(exception.getMessage());
 
-		return new CorreiosTracking(registro);
+		return Response.ok(response).build();
 	}
 }

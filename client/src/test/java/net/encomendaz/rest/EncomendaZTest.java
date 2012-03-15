@@ -1,9 +1,11 @@
+package net.encomendaz.rest;
+
 import java.util.List;
 
 import net.encomendaz.rest.EncomendaZ;
 import net.encomendaz.rest.Response;
-import net.encomendaz.rest.Tracking;
-import net.encomendaz.rest.TrackingService;
+import net.encomendaz.rest.tracking.Tracking;
+import net.encomendaz.rest.tracking.TrackingService;
 
 import org.junit.Test;
 

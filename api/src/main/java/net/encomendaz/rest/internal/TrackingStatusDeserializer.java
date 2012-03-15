@@ -22,7 +22,7 @@ package net.encomendaz.rest.internal;
 
 import java.io.IOException;
 
-import net.encomendaz.rest.Tracking;
+import net.encomendaz.rest.tracking.Tracking;
 
 import org.codehaus.jackson.JsonParser;
 import org.codehaus.jackson.JsonProcessingException;

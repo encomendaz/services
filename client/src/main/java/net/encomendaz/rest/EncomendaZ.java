@@ -20,6 +20,8 @@
  */
 package net.encomendaz.rest;
 
+import net.encomendaz.rest.tracking.TrackingService;
+
 import org.jboss.resteasy.client.ProxyFactory;
 
 public class EncomendaZ {

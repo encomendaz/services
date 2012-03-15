@@ -18,11 +18,11 @@
  * or write to the Free Software Foundation, Inc., 51 Franklin Street,
  * Fifth Floor, Boston, MA  02110-1301, USA.
  */
-package net.encomendaz.rest.tracking;
+package net.encomendaz.rest.server.tracking;
 
 import static net.encomendaz.rest.Response.Status.OK;
-import static net.encomendaz.rest.TrackingService.MEDIA_TYPE;
-import static net.encomendaz.rest.TrackingService.SERVICE_PATH;
+import static net.encomendaz.rest.tracking.TrackingService.MEDIA_TYPE;
+import static net.encomendaz.rest.tracking.TrackingService.SERVICE_PATH;
 
 import java.util.List;
 
@@ -32,12 +32,12 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
 
 import net.encomendaz.rest.Response;
-import net.encomendaz.rest.Tracking;
-import net.encomendaz.rest.util.Serializer;
+import net.encomendaz.rest.server.util.Serializer;
+import net.encomendaz.rest.tracking.Tracking;
 
 @Path(SERVICE_PATH)
 @Produces(MEDIA_TYPE)
-public class TrackingJsonService {
+public class TrackingService {
 
 	@GET
 	public String search(@QueryParam("id") String id, @QueryParam("start") Integer start, @QueryParam("end") Integer end, @QueryParam("callback") String callback) {

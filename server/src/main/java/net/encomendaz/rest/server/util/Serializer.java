@@ -18,22 +18,36 @@
  * or write to the Free Software Foundation, Inc., 51 Franklin Street,
  * Fifth Floor, Boston, MA  02110-1301, USA.
  */
-package net.encomendaz.rest;
+package net.encomendaz.rest.server.util;
 
-import static net.encomendaz.rest.Response.Status.ERROR;
+import java.io.IOException;
 
-import javax.ws.rs.core.Response;
-import javax.ws.rs.ext.Provider;
+import org.codehaus.jackson.map.ObjectMapper;
 
-@Provider
-public class ExceptionMapper implements javax.ws.rs.ext.ExceptionMapper<Exception> {
+public class Serializer {
 
-	@Override
-	public Response toResponse(Exception exception) {
-		net.encomendaz.rest.Response<Object> response = new net.encomendaz.rest.Response<Object>();
-		response.setStatus(ERROR);
-		response.setMessage(exception.getMessage());
+	public static String json(Object object) {
+		String serialized = null;
 
-		return Response.ok(response).build();
+		try {
+			ObjectMapper mapper = new ObjectMapper();
+			serialized = mapper.writeValueAsString(object);
+
+		} catch (IOException cause) {
+			new RuntimeException(cause);
+		}
+
+		return serialized;
+	}
+	
+	public static String json(Object object, String callback) {
+		String serialized = json(object);
+
+		if(!Strings.isEmpty(callback)) {
+			serialized = callback + "(" + serialized + ")";
+		}
+		
+		
+		return serialized;
 	}
 }

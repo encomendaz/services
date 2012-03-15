@@ -21,7 +21,6 @@
 package net.encomendaz.rest;
 
 import static org.codehaus.jackson.map.annotate.JsonSerialize.Inclusion.NON_NULL;
-
 import net.encomendaz.rest.internal.ResponseStatusDeserializer;
 import net.encomendaz.rest.internal.ResponseStatusSerializer;
 

@@ -18,22 +18,25 @@
  * or write to the Free Software Foundation, Inc., 51 Franklin Street,
  * Fifth Floor, Boston, MA  02110-1301, USA.
  */
-package net.encomendaz.rest.util;
+package net.encomendaz.rest;
 
 import java.io.IOException;
-
-import net.encomendaz.rest.Response;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.Locale;
 
 import org.codehaus.jackson.JsonGenerator;
 import org.codehaus.jackson.JsonProcessingException;
 import org.codehaus.jackson.map.JsonSerializer;
 import org.codehaus.jackson.map.SerializerProvider;
 
-public class ResponseStatusSerializer extends JsonSerializer<Response.Status> {
+public class DateSerializer extends JsonSerializer<Date> {
+
+	private static final SimpleDateFormat dateFormat = new SimpleDateFormat("EEE, MMM d HH:mm:ss -0300 yyyy", Locale.US);
 
 	@Override
-	public void serialize(Response.Status type, JsonGenerator gen, SerializerProvider provider) throws IOException,
+	public void serialize(Date date, JsonGenerator gen, SerializerProvider provider) throws IOException,
 			JsonProcessingException {
-		gen.writeString(type.name().toLowerCase());
+		gen.writeString(dateFormat.format(date));
 	}
 }

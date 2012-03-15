@@ -18,22 +18,21 @@
  * or write to the Free Software Foundation, Inc., 51 Franklin Street,
  * Fifth Floor, Boston, MA  02110-1301, USA.
  */
-package net.encomendaz.rest.util;
+package net.encomendaz.rest.tracking;
 
 import java.io.IOException;
 
-import net.encomendaz.rest.tracking.Tracking;
 
-import org.codehaus.jackson.JsonGenerator;
+import org.codehaus.jackson.JsonParser;
 import org.codehaus.jackson.JsonProcessingException;
-import org.codehaus.jackson.map.JsonSerializer;
-import org.codehaus.jackson.map.SerializerProvider;
+import org.codehaus.jackson.map.DeserializationContext;
+import org.codehaus.jackson.map.JsonDeserializer;
 
-public class TrackingStatusSerializer extends JsonSerializer<Tracking.Status> {
+public class TrackingStatusDeserializer extends JsonDeserializer<Tracking.Status> {
 
 	@Override
-	public void serialize(Tracking.Status type, JsonGenerator gen, SerializerProvider provider) throws IOException,
+	public Tracking.Status deserialize(JsonParser jp, DeserializationContext ctxt) throws IOException,
 			JsonProcessingException {
-		gen.writeString(type.name().toLowerCase());
+		return Tracking.Status.valueOf(jp.getText().toUpperCase());
 	}
 }

@@ -27,6 +27,4 @@ O projeto está de portas abertas para contribuição. Se quiser ajudar, experim
 
 https://github.com/encomendaz/rest/issues
 
-Se preferir submeter código-fonte, faça um fork e envie seu pull request.
-
-Este serviço é de graça!
+Se preferir submeter código-fonte, faça um fork e envie seu pull request. Este serviço é de graça!

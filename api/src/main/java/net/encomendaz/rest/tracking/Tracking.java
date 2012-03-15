@@ -24,11 +24,8 @@ import static org.codehaus.jackson.map.annotate.JsonSerialize.Inclusion.NON_NULL
 
 import java.util.Date;
 
-import net.encomendaz.rest.util.DateDeserializer;
-import net.encomendaz.rest.util.DateSerializer;
-import net.encomendaz.rest.util.Serializer;
-import net.encomendaz.rest.util.TrackingStatusDeserializer;
-import net.encomendaz.rest.util.TrackingStatusSerializer;
+import net.encomendaz.rest.DateDeserializer;
+import net.encomendaz.rest.DateSerializer;
 
 import org.codehaus.jackson.annotate.JsonPropertyOrder;
 import org.codehaus.jackson.map.annotate.JsonDeserialize;
@@ -97,9 +94,5 @@ public class Tracking {
 
 	public void setDescription(String description) {
 		this.description = description;
-	}
-
-	public String toString() {
-		return Serializer.json(this);
 	}
 }

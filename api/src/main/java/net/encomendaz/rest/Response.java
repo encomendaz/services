@@ -21,9 +21,6 @@
 package net.encomendaz.rest;
 
 import static org.codehaus.jackson.map.annotate.JsonSerialize.Inclusion.NON_NULL;
-import net.encomendaz.rest.util.ResponseStatusDeserializer;
-import net.encomendaz.rest.util.ResponseStatusSerializer;
-import net.encomendaz.rest.util.Serializer;
 
 import org.codehaus.jackson.annotate.JsonPropertyOrder;
 import org.codehaus.jackson.map.annotate.JsonDeserialize;
@@ -69,9 +66,5 @@ public class Response<D> {
 
 	public void setData(D data) {
 		this.data = data;
-	}
-
-	public String toString() {
-		return Serializer.json(this);
 	}
 }

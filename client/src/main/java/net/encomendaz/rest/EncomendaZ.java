@@ -20,19 +20,13 @@
  */
 package net.encomendaz.rest;
 
-import java.io.IOException;
+import org.jboss.resteasy.client.ProxyFactory;
 
+public class EncomendaZ {
 
-import org.codehaus.jackson.JsonGenerator;
-import org.codehaus.jackson.JsonProcessingException;
-import org.codehaus.jackson.map.JsonSerializer;
-import org.codehaus.jackson.map.SerializerProvider;
+	private static final String BASE = "http://rest.encomendaz.net";
 
-public class ResponseStatusSerializer extends JsonSerializer<Response.Status> {
-
-	@Override
-	public void serialize(Response.Status type, JsonGenerator gen, SerializerProvider provider) throws IOException,
-			JsonProcessingException {
-		gen.writeString(type.name().toLowerCase());
+	public static TrackingService getTrackingService() {
+		return ProxyFactory.create(TrackingService.class, BASE);
 	}
 }

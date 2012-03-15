@@ -1,15 +1,20 @@
-package net.encomendaz.rest.tracking;
-
 import java.util.List;
 
+import net.encomendaz.rest.EncomendaZ;
 import net.encomendaz.rest.Response;
+import net.encomendaz.rest.Tracking;
+import net.encomendaz.rest.TrackingService;
 
-import org.jboss.resteasy.client.ProxyFactory;
+import org.junit.Test;
 
-public class Main {
+public class EncomendaZTest {
 
-	public static void main(String[] args) {
-		TrackingService service = ProxyFactory.create(TrackingService.class, "http://localhost:8080/encomendaz-rest");
+	/**
+	 * Por enquanto, este teste ainda não é um teste, mas em breve será!
+	 */
+	@Test
+	public void getService() {
+		TrackingService service = EncomendaZ.getTrackingService();
 
 		Response<List<Tracking>> response;
 		response = service.search("PB882615209BR", null, null);
@@ -28,4 +33,5 @@ public class Main {
 			System.out.println(t.getStatus() + " : " + t.getDate());
 		}
 	}
+
 }

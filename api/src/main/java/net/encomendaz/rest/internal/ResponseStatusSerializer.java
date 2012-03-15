@@ -18,21 +18,23 @@
  * or write to the Free Software Foundation, Inc., 51 Franklin Street,
  * Fifth Floor, Boston, MA  02110-1301, USA.
  */
-package net.encomendaz.rest;
+package net.encomendaz.rest.internal;
 
 import java.io.IOException;
 
+import net.encomendaz.rest.Response;
+import net.encomendaz.rest.Response.Status;
 
-import org.codehaus.jackson.JsonParser;
+import org.codehaus.jackson.JsonGenerator;
 import org.codehaus.jackson.JsonProcessingException;
-import org.codehaus.jackson.map.DeserializationContext;
-import org.codehaus.jackson.map.JsonDeserializer;
+import org.codehaus.jackson.map.JsonSerializer;
+import org.codehaus.jackson.map.SerializerProvider;
 
-public class ResponseStatusDeserializer extends JsonDeserializer<Response.Status> {
+public class ResponseStatusSerializer extends JsonSerializer<Response.Status> {
 
 	@Override
-	public Response.Status deserialize(JsonParser jp, DeserializationContext ctxt) throws IOException,
+	public void serialize(Response.Status type, JsonGenerator gen, SerializerProvider provider) throws IOException,
 			JsonProcessingException {
-		return Response.Status.valueOf(jp.getText().toUpperCase());
+		gen.writeString(type.name().toLowerCase());
 	}
 }

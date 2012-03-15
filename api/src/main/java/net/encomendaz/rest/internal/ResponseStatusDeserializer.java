@@ -18,19 +18,23 @@
  * or write to the Free Software Foundation, Inc., 51 Franklin Street,
  * Fifth Floor, Boston, MA  02110-1301, USA.
  */
-package net.encomendaz.rest.tracking;
+package net.encomendaz.rest.internal;
 
-import net.encomendaz.rest.Tracking;
+import java.io.IOException;
 
-import org.alfredlibrary.utilitarios.correios.RegistroRastreamento;
+import net.encomendaz.rest.Response;
+import net.encomendaz.rest.Response.Status;
 
-public class TrackingParser {
+import org.codehaus.jackson.JsonParser;
+import org.codehaus.jackson.JsonProcessingException;
+import org.codehaus.jackson.map.DeserializationContext;
+import org.codehaus.jackson.map.JsonDeserializer;
 
-	public static Tracking parse(RegistroRastreamento registro) {
-		if (registro == null) {
-			throw new IllegalArgumentException("O registro de rastreamento não pode ser nulo.");
-		}
+public class ResponseStatusDeserializer extends JsonDeserializer<Response.Status> {
 
-		return new CorreiosTracking(registro);
+	@Override
+	public Response.Status deserialize(JsonParser jp, DeserializationContext ctxt) throws IOException,
+			JsonProcessingException {
+		return Response.Status.valueOf(jp.getText().toUpperCase());
 	}
 }

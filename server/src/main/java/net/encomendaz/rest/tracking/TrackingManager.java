@@ -24,6 +24,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+import net.encomendaz.rest.Tracking;
 import net.encomendaz.rest.util.Serializer;
 
 import org.alfredlibrary.utilitarios.correios.Rastreamento;

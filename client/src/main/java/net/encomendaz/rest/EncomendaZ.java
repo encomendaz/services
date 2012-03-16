@@ -20,14 +20,27 @@
  */
 package net.encomendaz.rest;
 
+import java.util.ResourceBundle;
+
 import org.jboss.resteasy.client.ProxyFactory;
 
 public class EncomendaZ {
 
-	// private static final String BASE = "http://rest.encomendaz.net";
-	private static final String BASE = "http://localhost:8080/encomendaz-rest";
+	private static ResourceBundle bundle;
+
+	private static ResourceBundle getBundle() {
+		if (bundle == null) {
+			bundle = ResourceBundle.getBundle("encomendaz");
+		}
+
+		return bundle;
+	}
+
+	private static String getBaseURL() {
+		return getBundle().getString("base-url");
+	}
 
 	public static TrackingService getTrackingService() {
-		return ProxyFactory.create(TrackingService.class, BASE);
+		return ProxyFactory.create(TrackingService.class, getBaseURL());
 	}
 }

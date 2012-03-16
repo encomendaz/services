@@ -1,4 +1,4 @@
-package net.encomendaz.rest.server.util;
+package net.encomendaz.rest.util;
 
 public class Strings {
 

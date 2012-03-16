@@ -2,11 +2,6 @@ package net.encomendaz.rest;
 
 import java.util.List;
 
-import net.encomendaz.rest.EncomendaZ;
-import net.encomendaz.rest.Response;
-import net.encomendaz.rest.tracking.Tracking;
-import net.encomendaz.rest.tracking.TrackingService;
-
 import org.junit.Test;
 
 public class EncomendaZTest {
@@ -15,7 +10,7 @@ public class EncomendaZTest {
 	 * Por enquanto, este teste ainda não é um teste, mas em breve será!
 	 */
 	@Test
-	public void getService() {
+	public void getTrackingService() {
 		TrackingService service = EncomendaZ.getTrackingService();
 
 		Response<List<Tracking>> response;
@@ -35,5 +30,4 @@ public class EncomendaZTest {
 			System.out.println(t.getStatus() + " : " + t.getDate());
 		}
 	}
-
 }

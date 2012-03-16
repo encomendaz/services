@@ -18,14 +18,13 @@
  * or write to the Free Software Foundation, Inc., 51 Franklin Street,
  * Fifth Floor, Boston, MA  02110-1301, USA.
  */
-package net.encomendaz.rest.server.tracking;
+package net.encomendaz.rest.tracking;
 
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-import net.encomendaz.rest.server.util.Serializer;
-import net.encomendaz.rest.tracking.Tracking;
+import net.encomendaz.rest.Tracking;
 
 import org.alfredlibrary.utilitarios.correios.Rastreamento;
 import org.alfredlibrary.utilitarios.correios.RegistroRastreamento;
@@ -53,16 +52,17 @@ public class TrackingManager {
 		int _end = (end == null || end > list.size() ? list.size() : end);
 
 		for (int i = _start; i <= _end; i++) {
-			response.add(TrackingParser.parse(list.get(i - 1)));
+			response.add(parse(list.get(i - 1)));
 		}
 
 		return response;
 	}
 
-	public static String hash(String id) {
-		TrackingManager trackingManager = new TrackingManager();
-		List<Tracking> trackingInfoImpls = trackingManager.search(id);
+	private static Tracking parse(RegistroRastreamento registro) {
+		if (registro == null) {
+			throw new IllegalArgumentException("O registro de rastreamento não pode ser nulo.");
+		}
 
-		return Serializer.json(trackingInfoImpls);
+		return new CorreiosTracking(registro);
 	}
 }

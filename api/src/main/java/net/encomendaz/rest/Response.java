@@ -21,8 +21,8 @@
 package net.encomendaz.rest;
 
 import static org.codehaus.jackson.map.annotate.JsonSerialize.Inclusion.NON_NULL;
-import net.encomendaz.rest.internal.ResponseStatusDeserializer;
-import net.encomendaz.rest.internal.ResponseStatusSerializer;
+import net.encomendaz.rest.serializer.ResponseStatusDeserializer;
+import net.encomendaz.rest.serializer.ResponseStatusSerializer;
 
 import org.codehaus.jackson.annotate.JsonPropertyOrder;
 import org.codehaus.jackson.map.annotate.JsonDeserialize;
@@ -30,6 +30,8 @@ import org.codehaus.jackson.map.annotate.JsonSerialize;
 
 @JsonPropertyOrder({ "status", "message", "data" })
 public class Response<D> {
+
+	public static final String MEDIA_TYPE = "application/json;charset=UTF-8";
 
 	private Status status;
 

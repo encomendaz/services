@@ -20,34 +20,34 @@
  */
 package net.encomendaz.rest.tracking;
 
-import static net.encomendaz.rest.tracking.TrackingService.MEDIA_TYPE;
-import static net.encomendaz.rest.tracking.TrackingService.SERVICE_PATH;
+import static net.encomendaz.rest.Response.MEDIA_TYPE;
+import static net.encomendaz.rest.Response.Status.OK;
+import static net.encomendaz.rest.Tracking.SERVICE_PATH;
 
 import java.util.List;
 
-import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
+import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
 
 import net.encomendaz.rest.Response;
-
+import net.encomendaz.rest.Tracking;
+import net.encomendaz.rest.util.Serializer;
 
 @Path(SERVICE_PATH)
-@Consumes(MEDIA_TYPE)
-public interface TrackingService {
-
-	String SERVICE_PATH = "/tracking.json";
-
-	String MEDIA_TYPE = "application/json;charset=UTF-8";
+@Produces(MEDIA_TYPE)
+public class TrackingService {
 
 	@GET
-	Response<List<Tracking>> search(@QueryParam("id") String id);
+	public String search(@QueryParam("id") String id, @QueryParam("start") Integer start,
+			@QueryParam("end") Integer end, @QueryParam("callback") String callback) {
+		Response<List<Tracking>> response = new Response<List<Tracking>>();
 
-	@GET
-	Response<List<Tracking>> search(@QueryParam("id") String id, @QueryParam("start") Integer start);
+		List<Tracking> list = TrackingManager.search(id, start, end);
+		response.setStatus(OK);
+		response.setData(list);
 
-	@GET
-	Response<List<Tracking>> search(@QueryParam("id") String id, @QueryParam("start") Integer start,
-			@QueryParam("end") Integer end);
+		return Serializer.json(response, callback);
+	}
 }

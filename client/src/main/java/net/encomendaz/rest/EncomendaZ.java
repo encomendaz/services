@@ -20,13 +20,12 @@
  */
 package net.encomendaz.rest;
 
-import net.encomendaz.rest.tracking.TrackingService;
-
 import org.jboss.resteasy.client.ProxyFactory;
 
 public class EncomendaZ {
 
-	private static final String BASE = "http://rest.encomendaz.net";
+	// private static final String BASE = "http://rest.encomendaz.net";
+	private static final String BASE = "http://localhost:8080/encomendaz-rest";
 
 	public static TrackingService getTrackingService() {
 		return ProxyFactory.create(TrackingService.class, BASE);

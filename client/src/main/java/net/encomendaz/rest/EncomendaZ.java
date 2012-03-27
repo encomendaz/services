@@ -22,12 +22,21 @@ package net.encomendaz.rest;
 
 import java.util.ResourceBundle;
 
+import org.codehaus.jackson.jaxrs.JacksonJsonProvider;
 import org.jboss.resteasy.client.ProxyFactory;
 import org.jboss.resteasy.spi.ResteasyProviderFactory;
 
 public class EncomendaZ {
 
 	private static ResourceBundle bundle;
+
+	static {
+		ResteasyProviderFactory.setRegisterBuiltinByDefault(false);
+		ResteasyProviderFactory.getInstance().registerProvider(JacksonJsonProvider.class);
+	}
+
+	private EncomendaZ() {
+	}
 
 	private static ResourceBundle getBundle() {
 		if (bundle == null) {
@@ -42,7 +51,6 @@ public class EncomendaZ {
 	}
 
 	public static TrackingService getTrackingService() {
-		//ResteasyProviderFactory.setRegisterBuiltinByDefault(false);
 		return ProxyFactory.create(TrackingService.class, getBaseURL());
 	}
 }

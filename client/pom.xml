@@ -47,7 +47,7 @@
 	<dependencies>
 		<dependency>
 			<groupId>net.encomendaz.rest</groupId>
-			<artifactId>encomendaz-rest-api</artifactId>
+			<artifactId>encomendaz-rest-core</artifactId>
 		</dependency>
 
 		<dependency>

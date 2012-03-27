@@ -31,7 +31,7 @@
 	<name>Build</name>
 
 	<modules>
-		<module>api</module>
+		<module>core</module>
 		<module>parent</module>
 		<module>client</module>
 		<module>server</module>

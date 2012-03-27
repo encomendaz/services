@@ -23,7 +23,6 @@ package net.encomendaz.rest;
 import java.util.ResourceBundle;
 
 import org.jboss.resteasy.client.ProxyFactory;
-import org.jboss.resteasy.plugins.providers.RegisterBuiltin;
 import org.jboss.resteasy.spi.ResteasyProviderFactory;
 
 public class EncomendaZ {
@@ -43,6 +42,7 @@ public class EncomendaZ {
 	}
 
 	public static TrackingService getTrackingService() {
+		//ResteasyProviderFactory.setRegisterBuiltinByDefault(false);
 		return ProxyFactory.create(TrackingService.class, getBaseURL());
 	}
 }

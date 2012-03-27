@@ -81,12 +81,8 @@
 			<artifactId>resteasy-jaxrs</artifactId>
 			<exclusions>
 				<exclusion>
-					<artifactId>httpclient</artifactId>
 					<groupId>org.apache.httpcomponents</groupId>
-				</exclusion>
-				<exclusion>
-					<artifactId>commons-httpclient</artifactId>
-					<groupId>commons-httpclient</groupId>
+					<artifactId>httpclient</artifactId>
 				</exclusion>
 			</exclusions>
 		</dependency>

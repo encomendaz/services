@@ -80,12 +80,16 @@
 				<version>${resteasy.version}</version>
 				<exclusions>
 					<exclusion>
-						<artifactId>jsr250-api</artifactId>
 						<groupId>javax.annotation</groupId>
+						<artifactId>jsr250-api</artifactId>
 					</exclusion>
 					<exclusion>
-						<artifactId>activation</artifactId>
 						<groupId>javax.activation</groupId>
+						<artifactId>activation</artifactId>
+					</exclusion>
+					<exclusion>
+						<groupId>commons-httpclient</groupId>
+						<artifactId>commons-httpclient</artifactId>
 					</exclusion>
 				</exclusions>
 			</dependency>

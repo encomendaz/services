@@ -33,7 +33,7 @@
 		<relativePath>../parent</relativePath>
 	</parent>
 
-	<name>API</name>
+	<name>Core</name>
 
 	<build>
 		<plugins>

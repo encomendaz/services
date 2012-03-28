@@ -30,6 +30,8 @@ public class EncomendaZ {
 
 	private static ResourceBundle bundle;
 
+	private static TrackingService trackingService;
+
 	static {
 		ResteasyProviderFactory.setRegisterBuiltinByDefault(false);
 		ResteasyProviderFactory.getInstance().registerProvider(JacksonJsonProvider.class);
@@ -51,6 +53,10 @@ public class EncomendaZ {
 	}
 
 	public static TrackingService getTrackingService() {
-		return ProxyFactory.create(TrackingService.class, getBaseURL());
+		if (trackingService == null) {
+			trackingService = ProxyFactory.create(TrackingService.class, getBaseURL());
+		}
+
+		return trackingService;
 	}
 }

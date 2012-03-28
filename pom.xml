@@ -35,7 +35,7 @@
 		<module>parent</module>
 		<module>client</module>
 		<module>server</module>
-		<module>examples</module>
+		<module>example</module>
 	</modules>
 
 	<build>

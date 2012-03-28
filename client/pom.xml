@@ -50,8 +50,6 @@
 			<artifactId>encomendaz-rest-core</artifactId>
 		</dependency>
 
-<!-- 
- -->
 		<dependency>
 			<groupId>org.jboss.resteasy</groupId>
 			<artifactId>resteasy-jaxrs</artifactId>

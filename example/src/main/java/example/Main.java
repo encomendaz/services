@@ -22,28 +22,26 @@ package example;
 
 import java.util.List;
 
-import net.encomendaz.rest.EncomendaZ;
 import net.encomendaz.rest.Response;
-import net.encomendaz.rest.Tracking;
-import net.encomendaz.rest.TrackingService;
 import net.encomendaz.rest.Response.Status;
+import net.encomendaz.rest.ServiceClient;
+import net.encomendaz.rest.Tracking;
 
 public class Main {
 
 	public static void main(String[] args) {
-		TrackingService trackingService = EncomendaZ.getTrackingService();
-		Response<List<Tracking>> result = trackingService.search("PB916125555BR");
+		Response<List<Tracking>> result = ServiceClient.tracking().search("PB916125555BR");
 
 		if (result.getStatus() == Status.OK) {
 			int count = 1;
-			
+
 			for (Tracking tracking : result.getData()) {
 
 				System.out.println("\n#" + count++);
-				System.out.println("Status: " + tracking.getStatus());
-				System.out.println("Date : " + tracking.getDate());
-				System.out.println("City: " + tracking.getCity());
-				System.out.println("State: " + tracking.getState());
+				System.out.println("Status:      " + tracking.getStatus());
+				System.out.println("Date :       " + tracking.getDate());
+				System.out.println("City:        " + tracking.getCity());
+				System.out.println("State:       " + tracking.getState());
 				System.out.println("Description: " + tracking.getDescription());
 			}
 

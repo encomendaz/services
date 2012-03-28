@@ -26,7 +26,7 @@ import org.codehaus.jackson.jaxrs.JacksonJsonProvider;
 import org.jboss.resteasy.client.ProxyFactory;
 import org.jboss.resteasy.spi.ResteasyProviderFactory;
 
-public class EncomendaZ {
+public class ServiceClient {
 
 	private static ResourceBundle bundle;
 
@@ -37,7 +37,7 @@ public class EncomendaZ {
 		ResteasyProviderFactory.getInstance().registerProvider(JacksonJsonProvider.class);
 	}
 
-	private EncomendaZ() {
+	private ServiceClient() {
 	}
 
 	private static ResourceBundle getBundle() {
@@ -52,7 +52,7 @@ public class EncomendaZ {
 		return getBundle().getString("base-url");
 	}
 
-	public static TrackingService getTrackingService() {
+	public static TrackingService tracking() {
 		if (trackingService == null) {
 			trackingService = ProxyFactory.create(TrackingService.class, getBaseURL());
 		}

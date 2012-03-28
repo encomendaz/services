@@ -113,6 +113,9 @@ public class CorreiosTracking extends Tracking {
 			if ("entregue".equals(acao)) {
 				status = Status.DELIVERED;
 
+			} else if ("entrega efetuada".equals(acao)) {
+				status = Status.DELIVERED;
+				
 			} else if ("postado".equals(acao)) {
 				status = Status.ACCEPTANCE;
 

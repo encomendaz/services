@@ -11,7 +11,7 @@ public class EncomendaZTest {
 	 */
 	@Test
 	public void getTrackingService() {
-		TrackingService service = EncomendaZ.getTrackingService();
+		TrackingService service = ServiceClient.tracking();
 
 		Response<List<Tracking>> response;
 		response = service.search("PB882615209BR", null, null);

@@ -24,7 +24,7 @@
 
 	<groupId>net.encomendaz</groupId>
 	<artifactId>encomendaz-services-example</artifactId>
-	<version>1.0.0</version>
+	<version>1.0.1-SNAPSHOT</version>
 	<packaging>jar</packaging>
 
 	<name>Example</name>
@@ -53,7 +53,7 @@
 		<dependency>
 			<groupId>net.encomendaz</groupId>
 			<artifactId>encomendaz-services-client</artifactId>
-			<version>1.0.0</version>
+			<version>1.0.1-SNAPSHOT</version>
 		</dependency>
 	</dependencies>
 

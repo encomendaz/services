@@ -23,14 +23,14 @@ package example;
 import java.util.List;
 
 import net.encomendaz.services.Response;
-import net.encomendaz.services.ServiceClient;
+import net.encomendaz.services.ServicesClient;
 import net.encomendaz.services.Tracking;
 import net.encomendaz.services.Response.Status;
 
 public class Main {
 
 	public static void main(String[] args) {
-		Response<List<Tracking>> result = ServiceClient.tracking().search("PB916125555BR");
+		Response<List<Tracking>> result = ServicesClient.tracking().search("PB916125555BR");
 
 		if (result.getStatus() == Status.OK) {
 			int count = 1;

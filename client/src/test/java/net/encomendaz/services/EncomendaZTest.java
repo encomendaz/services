@@ -3,7 +3,7 @@ package net.encomendaz.services;
 import java.util.List;
 
 import net.encomendaz.services.Response;
-import net.encomendaz.services.ServiceClient;
+import net.encomendaz.services.ServicesClient;
 import net.encomendaz.services.Tracking;
 import net.encomendaz.services.TrackingService;
 
@@ -16,7 +16,7 @@ public class EncomendaZTest {
 	 */
 	@Test
 	public void getTrackingService() {
-		TrackingService service = ServiceClient.tracking();
+		TrackingService service = ServicesClient.tracking();
 
 		Response<List<Tracking>> response;
 		response = service.search("PB882615209BR", null, null);

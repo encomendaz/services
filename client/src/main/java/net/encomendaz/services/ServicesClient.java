@@ -26,7 +26,7 @@ import org.codehaus.jackson.jaxrs.JacksonJsonProvider;
 import org.jboss.resteasy.client.ProxyFactory;
 import org.jboss.resteasy.spi.ResteasyProviderFactory;
 
-public class ServiceClient {
+public class ServicesClient {
 
 	private static ResourceBundle bundle;
 
@@ -37,7 +37,7 @@ public class ServiceClient {
 		ResteasyProviderFactory.getInstance().registerProvider(JacksonJsonProvider.class);
 	}
 
-	private ServiceClient() {
+	private ServicesClient() {
 	}
 
 	private static ResourceBundle getBundle() {

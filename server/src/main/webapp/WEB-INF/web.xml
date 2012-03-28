@@ -26,7 +26,7 @@
 
 	<!--
 	<listener>
-		<listener-class>net.encomendaz.rest.monitoramento.MonitoramentoContextListener</listener-class>
+		<listener-class>net.encomendaz.services.monitoramento.MonitoramentoContextListener</listener-class>
 	</listener>
 	-->
 

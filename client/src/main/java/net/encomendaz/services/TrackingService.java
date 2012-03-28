@@ -18,22 +18,32 @@
  * or write to the Free Software Foundation, Inc., 51 Franklin Street,
  * Fifth Floor, Boston, MA  02110-1301, USA.
  */
-package net.encomendaz.rest.serializer;
+package net.encomendaz.services;
 
-import java.io.IOException;
+import static net.encomendaz.services.Response.MEDIA_TYPE;
+import static net.encomendaz.services.Tracking.SERVICE_PATH;
 
-import net.encomendaz.rest.Response;
+import java.util.List;
 
-import org.codehaus.jackson.JsonParser;
-import org.codehaus.jackson.JsonProcessingException;
-import org.codehaus.jackson.map.DeserializationContext;
-import org.codehaus.jackson.map.JsonDeserializer;
+import javax.ws.rs.Consumes;
+import javax.ws.rs.GET;
+import javax.ws.rs.Path;
+import javax.ws.rs.QueryParam;
 
-public class ResponseStatusDeserializer extends JsonDeserializer<Response.Status> {
+import net.encomendaz.services.Response;
+import net.encomendaz.services.Tracking;
 
-	@Override
-	public Response.Status deserialize(JsonParser jp, DeserializationContext ctxt) throws IOException,
-			JsonProcessingException {
-		return Response.Status.valueOf(jp.getText().toUpperCase());
-	}
+@Path(SERVICE_PATH)
+@Consumes(MEDIA_TYPE)
+public interface TrackingService {
+
+	@GET
+	Response<List<Tracking>> search(@QueryParam("id") String id);
+
+	@GET
+	Response<List<Tracking>> search(@QueryParam("id") String id, @QueryParam("start") Integer start);
+
+	@GET
+	Response<List<Tracking>> search(@QueryParam("id") String id, @QueryParam("start") Integer start,
+			@QueryParam("end") Integer end);
 }

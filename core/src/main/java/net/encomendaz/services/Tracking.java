@@ -18,16 +18,16 @@
  * or write to the Free Software Foundation, Inc., 51 Franklin Street,
  * Fifth Floor, Boston, MA  02110-1301, USA.
  */
-package net.encomendaz.rest;
+package net.encomendaz.services;
 
 import static org.codehaus.jackson.map.annotate.JsonSerialize.Inclusion.NON_NULL;
 
 import java.util.Date;
 
-import net.encomendaz.rest.serializer.DateDeserializer;
-import net.encomendaz.rest.serializer.DateSerializer;
-import net.encomendaz.rest.serializer.TrackingStatusDeserializer;
-import net.encomendaz.rest.serializer.TrackingStatusSerializer;
+import net.encomendaz.services.serializer.DateDeserializer;
+import net.encomendaz.services.serializer.DateSerializer;
+import net.encomendaz.services.serializer.TrackingStatusDeserializer;
+import net.encomendaz.services.serializer.TrackingStatusSerializer;
 
 import org.codehaus.jackson.annotate.JsonPropertyOrder;
 import org.codehaus.jackson.map.annotate.JsonDeserialize;

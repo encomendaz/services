@@ -18,7 +18,7 @@
  * or write to the Free Software Foundation, Inc., 51 Franklin Street,
  * Fifth Floor, Boston, MA  02110-1301, USA.
  */
-package net.encomendaz.rest.monitoramento;
+package net.encomendaz.services.monitoramento;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -27,7 +27,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import net.encomendaz.rest.tracking.TrackingManager;
+import net.encomendaz.services.tracking.TrackingManager;
 
 public class MonitoramentoManager {
 

@@ -18,7 +18,7 @@
  * or write to the Free Software Foundation, Inc., 51 Franklin Street,
  * Fifth Floor, Boston, MA  02110-1301, USA.
  */
-package net.encomendaz.rest.serializer;
+package net.encomendaz.services.serializer;
 
 import java.io.IOException;
 import java.text.SimpleDateFormat;

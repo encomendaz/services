@@ -18,22 +18,22 @@
  * or write to the Free Software Foundation, Inc., 51 Franklin Street,
  * Fifth Floor, Boston, MA  02110-1301, USA.
  */
-package net.encomendaz.rest;
+package net.encomendaz.services.serializer;
 
-import static net.encomendaz.rest.Response.Status.ERROR;
+import java.io.IOException;
 
-import javax.ws.rs.core.Response;
-import javax.ws.rs.ext.Provider;
+import net.encomendaz.services.Response;
 
-@Provider
-public class ExceptionMapper implements javax.ws.rs.ext.ExceptionMapper<Exception> {
+import org.codehaus.jackson.JsonGenerator;
+import org.codehaus.jackson.JsonProcessingException;
+import org.codehaus.jackson.map.JsonSerializer;
+import org.codehaus.jackson.map.SerializerProvider;
+
+public class ResponseStatusSerializer extends JsonSerializer<Response.Status> {
 
 	@Override
-	public Response toResponse(Exception exception) {
-		net.encomendaz.rest.Response<Object> response = new net.encomendaz.rest.Response<Object>();
-		response.setStatus(ERROR);
-		response.setMessage(exception.getMessage());
-
-		return Response.ok(response).build();
+	public void serialize(Response.Status type, JsonGenerator gen, SerializerProvider provider) throws IOException,
+			JsonProcessingException {
+		gen.writeString(type.name().toLowerCase());
 	}
 }

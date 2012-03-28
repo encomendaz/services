@@ -18,13 +18,13 @@
  * or write to the Free Software Foundation, Inc., 51 Franklin Street,
  * Fifth Floor, Boston, MA  02110-1301, USA.
  */
-package net.encomendaz.rest.tracking;
+package net.encomendaz.services.tracking;
 
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-import net.encomendaz.rest.Tracking;
+import net.encomendaz.services.Tracking;
 
 import org.alfredlibrary.utilitarios.correios.Rastreamento;
 import org.alfredlibrary.utilitarios.correios.RegistroRastreamento;

@@ -18,29 +18,22 @@
  * or write to the Free Software Foundation, Inc., 51 Franklin Street,
  * Fifth Floor, Boston, MA  02110-1301, USA.
  */
-package net.encomendaz.rest;
+package net.encomendaz.services.serializer;
 
-import static net.encomendaz.rest.Response.MEDIA_TYPE;
-import static net.encomendaz.rest.Tracking.SERVICE_PATH;
+import java.io.IOException;
 
-import java.util.List;
+import net.encomendaz.services.Tracking;
 
-import javax.ws.rs.Consumes;
-import javax.ws.rs.GET;
-import javax.ws.rs.Path;
-import javax.ws.rs.QueryParam;
+import org.codehaus.jackson.JsonParser;
+import org.codehaus.jackson.JsonProcessingException;
+import org.codehaus.jackson.map.DeserializationContext;
+import org.codehaus.jackson.map.JsonDeserializer;
 
-@Path(SERVICE_PATH)
-@Consumes(MEDIA_TYPE)
-public interface TrackingService {
+public class TrackingStatusDeserializer extends JsonDeserializer<Tracking.Status> {
 
-	@GET
-	Response<List<Tracking>> search(@QueryParam("id") String id);
-
-	@GET
-	Response<List<Tracking>> search(@QueryParam("id") String id, @QueryParam("start") Integer start);
-
-	@GET
-	Response<List<Tracking>> search(@QueryParam("id") String id, @QueryParam("start") Integer start,
-			@QueryParam("end") Integer end);
+	@Override
+	public Tracking.Status deserialize(JsonParser jp, DeserializationContext ctxt) throws IOException,
+			JsonProcessingException {
+		return Tracking.Status.valueOf(jp.getText().toUpperCase());
+	}
 }

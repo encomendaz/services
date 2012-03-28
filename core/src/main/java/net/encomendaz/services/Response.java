@@ -18,11 +18,11 @@
  * or write to the Free Software Foundation, Inc., 51 Franklin Street,
  * Fifth Floor, Boston, MA  02110-1301, USA.
  */
-package net.encomendaz.rest;
+package net.encomendaz.services;
 
 import static org.codehaus.jackson.map.annotate.JsonSerialize.Inclusion.NON_NULL;
-import net.encomendaz.rest.serializer.ResponseStatusDeserializer;
-import net.encomendaz.rest.serializer.ResponseStatusSerializer;
+import net.encomendaz.services.serializer.ResponseStatusDeserializer;
+import net.encomendaz.services.serializer.ResponseStatusSerializer;
 
 import org.codehaus.jackson.annotate.JsonPropertyOrder;
 import org.codehaus.jackson.map.annotate.JsonDeserialize;

@@ -23,12 +23,12 @@
 
 	<modelVersion>4.0.0</modelVersion>
 
-	<artifactId>encomendaz-rest-server</artifactId>
+	<artifactId>encomendaz-services-server</artifactId>
 	<packaging>war</packaging>
 
 	<parent>
 		<groupId>net.encomendaz</groupId>
-		<artifactId>encomendaz-rest-parent</artifactId>
+		<artifactId>encomendaz-services-parent</artifactId>
 		<version>1.0.0-SNAPSHOT</version>
 		<relativePath>../parent</relativePath>
 	</parent>
@@ -36,7 +36,7 @@
 	<name>Server</name>
 
 	<build>
-		<finalName>encomendaz-rest</finalName>
+		<finalName>encomendaz-services</finalName>
 		<plugins>
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
@@ -73,7 +73,7 @@
 	<dependencies>
 		<dependency>
 			<groupId>net.encomendaz</groupId>
-			<artifactId>encomendaz-rest-core</artifactId>
+			<artifactId>encomendaz-services-core</artifactId>
 		</dependency>
 
 		<dependency>

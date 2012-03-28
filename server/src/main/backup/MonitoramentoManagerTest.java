@@ -18,11 +18,11 @@
  * or write to the Free Software Foundation, Inc., 51 Franklin Street,
  * Fifth Floor, Boston, MA  02110-1301, USA.
  */
-package net.encomendaz.rest.monitoramento;
+package net.encomendaz.services.monitoramento;
 
-import static net.encomendaz.rest.monitoramento.MonitoramentoManager.cadastrar;
-import static net.encomendaz.rest.monitoramento.MonitoramentoManager.existe;
-import static net.encomendaz.rest.monitoramento.MonitoramentoManager.remover;
+import static net.encomendaz.services.monitoramento.MonitoramentoManager.cadastrar;
+import static net.encomendaz.services.monitoramento.MonitoramentoManager.existe;
+import static net.encomendaz.services.monitoramento.MonitoramentoManager.remover;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;

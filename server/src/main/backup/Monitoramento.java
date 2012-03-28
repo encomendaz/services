@@ -18,14 +18,14 @@
  * or write to the Free Software Foundation, Inc., 51 Franklin Street,
  * Fifth Floor, Boston, MA  02110-1301, USA.
  */
-package net.encomendaz.rest.monitoramento;
+package net.encomendaz.services.monitoramento;
 
 import static org.codehaus.jackson.map.annotate.JsonSerialize.Inclusion.NON_NULL;
 
 import java.io.IOException;
 import java.util.Date;
 
-import net.encomendaz.rest.internal.DateSerializer;
+import net.encomendaz.services.internal.DateSerializer;
 
 import org.codehaus.jackson.annotate.JsonIgnore;
 import org.codehaus.jackson.map.ObjectMapper;

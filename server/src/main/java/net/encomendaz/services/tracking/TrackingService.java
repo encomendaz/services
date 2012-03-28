@@ -18,11 +18,11 @@
  * or write to the Free Software Foundation, Inc., 51 Franklin Street,
  * Fifth Floor, Boston, MA  02110-1301, USA.
  */
-package net.encomendaz.rest.tracking;
+package net.encomendaz.services.tracking;
 
-import static net.encomendaz.rest.Response.MEDIA_TYPE;
-import static net.encomendaz.rest.Response.Status.OK;
-import static net.encomendaz.rest.Tracking.SERVICE_PATH;
+import static net.encomendaz.services.Response.MEDIA_TYPE;
+import static net.encomendaz.services.Response.Status.OK;
+import static net.encomendaz.services.Tracking.SERVICE_PATH;
 
 import java.util.List;
 
@@ -31,9 +31,9 @@ import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
 
-import net.encomendaz.rest.Response;
-import net.encomendaz.rest.Tracking;
-import net.encomendaz.rest.util.Serializer;
+import net.encomendaz.services.Response;
+import net.encomendaz.services.Tracking;
+import net.encomendaz.services.util.Serializer;
 
 @Path(SERVICE_PATH)
 @Produces(MEDIA_TYPE)

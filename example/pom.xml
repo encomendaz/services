@@ -24,7 +24,7 @@
 	<modelVersion>4.0.0</modelVersion>
 
 	<groupId>net.encomendaz</groupId>
-	<artifactId>encomendaz-rest-example</artifactId>
+	<artifactId>encomendaz-services-example</artifactId>
 	<version>1.0.0-SNAPSHOT</version>
 	<packaging>jar</packaging>
 
@@ -58,7 +58,7 @@
 	<dependencies>
 		<dependency>
 			<groupId>net.encomendaz</groupId>
-			<artifactId>encomendaz-rest-client</artifactId>
+			<artifactId>encomendaz-services-client</artifactId>
 			<version>1.0.0-SNAPSHOT</version>
 		</dependency>
 	</dependencies>

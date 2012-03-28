@@ -1,4 +1,4 @@
-package net.encomendaz.rest.monitoramento;
+package net.encomendaz.services.monitoramento;
 
 import java.util.Timer;
 import java.util.TimerTask;
@@ -6,7 +6,7 @@ import java.util.TimerTask;
 import javax.servlet.ServletContextEvent;
 import javax.servlet.ServletContextListener;
 
-import net.encomendaz.rest.util.Configuration;
+import net.encomendaz.services.util.Configuration;
 
 public final class MonitoramentoContextListener implements ServletContextListener {
 

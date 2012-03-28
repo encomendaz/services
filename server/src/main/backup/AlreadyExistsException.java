@@ -1,4 +1,4 @@
-package net.encomendaz.rest.monitoramento;
+package net.encomendaz.services.monitoramento;
 
 public class AlreadyExistsException extends Exception {
 

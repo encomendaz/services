@@ -22,10 +22,10 @@ package example;
 
 import java.util.List;
 
-import net.encomendaz.rest.Response;
-import net.encomendaz.rest.Response.Status;
-import net.encomendaz.rest.ServiceClient;
-import net.encomendaz.rest.Tracking;
+import net.encomendaz.services.Response;
+import net.encomendaz.services.ServiceClient;
+import net.encomendaz.services.Tracking;
+import net.encomendaz.services.Response.Status;
 
 public class Main {
 

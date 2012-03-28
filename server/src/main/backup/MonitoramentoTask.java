@@ -1,11 +1,11 @@
-package net.encomendaz.rest.monitoramento;
+package net.encomendaz.services.monitoramento;
 
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.TimerTask;
 
-import net.encomendaz.rest.tracking.TrackingManager;
+import net.encomendaz.services.tracking.TrackingManager;
 
 public class MonitoramentoTask extends TimerTask {
 

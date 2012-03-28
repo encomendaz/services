@@ -1,12 +1,12 @@
-package net.encomendaz.rest;
+package net.encomendaz.services;
 
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 
 import java.io.IOException;
 
-import net.encomendaz.rest.monitoramento.Monitoramento;
-import net.encomendaz.rest.util.Configuration;
+import net.encomendaz.services.monitoramento.Monitoramento;
+import net.encomendaz.services.util.Configuration;
 
 import org.codehaus.jackson.JsonGenerationException;
 import org.codehaus.jackson.map.JsonMappingException;

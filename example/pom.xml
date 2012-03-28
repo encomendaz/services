@@ -23,15 +23,10 @@
 
 	<modelVersion>4.0.0</modelVersion>
 
+	<groupId>net.encomendaz</groupId>
 	<artifactId>encomendaz-rest-example</artifactId>
+	<version>1.0.0-SNAPSHOT</version>
 	<packaging>jar</packaging>
-
-	<parent>
-		<groupId>net.encomendaz</groupId>
-		<artifactId>encomendaz-rest-parent</artifactId>
-		<version>1.0.0-SNAPSHOT</version>
-		<relativePath>../parent</relativePath>
-	</parent>
 
 	<name>Example</name>
 
@@ -40,13 +35,9 @@
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-compiler-plugin</artifactId>
-			</plugin>
-
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-deploy-plugin</artifactId>
 				<configuration>
-					<skip>true</skip>
+					<source>1.6</source>
+					<target>1.6</target>
 				</configuration>
 			</plugin>
 		</plugins>
@@ -56,21 +47,21 @@
 		<dependency>
 			<groupId>net.encomendaz</groupId>
 			<artifactId>encomendaz-rest-client</artifactId>
+			<version>1.0.0-SNAPSHOT</version>
 		</dependency>
 	</dependencies>
 
+	<!-- Don't use this on your application -->
 	<distributionManagement>
-		<repository>
-			<id />
-			<url />
-		</repository>
 		<snapshotRepository>
-			<id />
-			<url />
+			<id>sonatype-nexus-snapshots</id>
+			<name>Sonatype Nexus Snapshots</name>
+			<url>https://oss.sonatype.org/content/repositories/snapshots</url>
 		</snapshotRepository>
-		<site>
-			<id />
-			<url>file://${project.build.directory}/tmp</url>
-		</site>
+		<repository>
+			<id>sonatype-nexus-staging</id>
+			<name>Nexus Release Repository</name>
+			<url>https://oss.sonatype.org/service/local/staging/deploy/maven2/</url>
+		</repository>
 	</distributionManagement>
 </project>

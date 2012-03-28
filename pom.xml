@@ -65,9 +65,5 @@
 			<id />
 			<url />
 		</snapshotRepository>
-		<site>
-			<id />
-			<url>file://${project.build.directory}/tmp</url>
-		</site>
 	</distributionManagement>
 </project>

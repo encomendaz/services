@@ -99,19 +99,4 @@
 			<scope>test</scope>
 		</dependency>
 	</dependencies>
-
-	<distributionManagement>
-		<repository>
-			<id />
-			<url />
-		</repository>
-		<snapshotRepository>
-			<id />
-			<url />
-		</snapshotRepository>
-		<site>
-			<id />
-			<url>file://${project.build.directory}/tmp</url>
-		</site>
-	</distributionManagement>
 </project>

@@ -28,3 +28,8 @@ O projeto está de portas abertas para contribuição. Se quiser ajudar, experim
 https://github.com/encomendaz/services/issues
 
 Se preferir submeter código-fonte, faça um fork e envie seu pull request. Este serviço é de graça!
+
+Leia mais
+--------------
+
+http://cleversonsacramento.com/2012/03/12/restful-web-services-dos-correios/

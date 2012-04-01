@@ -24,7 +24,7 @@
 
 	<groupId>net.encomendaz</groupId>
 	<artifactId>encomendaz-services-parent</artifactId>
-	<version>1.0.1</version>
+	<version>1.0.2-SNAPSHOT</version>
 	<packaging>pom</packaging>
 
 	<name>EncomendaZ Services Parent</name>
@@ -120,13 +120,13 @@
 			<dependency>
 				<groupId>net.encomendaz</groupId>
 				<artifactId>encomendaz-services-core</artifactId>
-				<version>1.0.1</version>
+				<version>1.0.2-SNAPSHOT</version>
 			</dependency>
 
 			<dependency>
 				<groupId>net.encomendaz</groupId>
 				<artifactId>encomendaz-services-client</artifactId>
-				<version>1.0.1</version>
+				<version>1.0.2-SNAPSHOT</version>
 			</dependency>
 
 			<dependency>

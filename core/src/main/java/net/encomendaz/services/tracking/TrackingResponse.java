@@ -18,32 +18,11 @@
  * or write to the Free Software Foundation, Inc., 51 Franklin Street,
  * Fifth Floor, Boston, MA  02110-1301, USA.
  */
-package net.encomendaz.services;
-
-import static net.encomendaz.services.Response.MEDIA_TYPE;
-import static net.encomendaz.services.Tracking.SERVICE_PATH;
+package net.encomendaz.services.tracking;
 
 import java.util.List;
 
-import javax.ws.rs.Consumes;
-import javax.ws.rs.GET;
-import javax.ws.rs.Path;
-import javax.ws.rs.QueryParam;
-
 import net.encomendaz.services.Response;
-import net.encomendaz.services.Tracking;
 
-@Path(SERVICE_PATH)
-@Consumes(MEDIA_TYPE)
-public interface TrackingService {
-
-	@GET
-	Response<List<Tracking>> search(@QueryParam("id") String id);
-
-	@GET
-	Response<List<Tracking>> search(@QueryParam("id") String id, @QueryParam("start") Integer start);
-
-	@GET
-	Response<List<Tracking>> search(@QueryParam("id") String id, @QueryParam("start") Integer start,
-			@QueryParam("end") Integer end);
+public class TrackingResponse extends Response<List<TrackingData>> {
 }

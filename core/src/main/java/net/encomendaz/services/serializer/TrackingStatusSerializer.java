@@ -22,17 +22,17 @@ package net.encomendaz.services.serializer;
 
 import java.io.IOException;
 
-import net.encomendaz.services.Tracking;
+import net.encomendaz.services.tracking.TrackingData;
 
 import org.codehaus.jackson.JsonGenerator;
 import org.codehaus.jackson.JsonProcessingException;
 import org.codehaus.jackson.map.JsonSerializer;
 import org.codehaus.jackson.map.SerializerProvider;
 
-public class TrackingStatusSerializer extends JsonSerializer<Tracking.Status> {
+public class TrackingStatusSerializer extends JsonSerializer<TrackingData.Status> {
 
 	@Override
-	public void serialize(Tracking.Status type, JsonGenerator gen, SerializerProvider provider) throws IOException,
+	public void serialize(TrackingData.Status type, JsonGenerator gen, SerializerProvider provider) throws IOException,
 			JsonProcessingException {
 		gen.writeString(type.name().toLowerCase());
 	}

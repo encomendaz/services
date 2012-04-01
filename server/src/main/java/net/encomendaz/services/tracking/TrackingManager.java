@@ -24,7 +24,6 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-import net.encomendaz.services.Tracking;
 
 import org.alfredlibrary.utilitarios.correios.Rastreamento;
 import org.alfredlibrary.utilitarios.correios.RegistroRastreamento;
@@ -37,14 +36,14 @@ public class TrackingManager {
 		}
 	}
 
-	public List<Tracking> search(String id) {
+	public List<TrackingData> search(String id) {
 		return search(id, null, null);
 	}
 
-	public static List<Tracking> search(String id, Integer start, Integer end) {
+	public static List<TrackingData> search(String id, Integer start, Integer end) {
 		validateParameters(id);
 
-		List<Tracking> response = new ArrayList<Tracking>();
+		List<TrackingData> response = new ArrayList<TrackingData>();
 		List<RegistroRastreamento> list = Rastreamento.rastrear(id);
 		Collections.reverse(list);
 
@@ -58,11 +57,11 @@ public class TrackingManager {
 		return response;
 	}
 
-	private static Tracking parse(RegistroRastreamento registro) {
+	private static TrackingData parse(RegistroRastreamento registro) {
 		if (registro == null) {
 			throw new IllegalArgumentException("O registro de rastreamento não pode ser nulo.");
 		}
 
-		return new CorreiosTracking(registro);
+		return new CorreiosTrackingData(registro);
 	}
 }

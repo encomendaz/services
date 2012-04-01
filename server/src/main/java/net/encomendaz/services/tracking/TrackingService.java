@@ -22,7 +22,7 @@ package net.encomendaz.services.tracking;
 
 import static net.encomendaz.services.Response.MEDIA_TYPE;
 import static net.encomendaz.services.Response.Status.OK;
-import static net.encomendaz.services.Tracking.SERVICE_PATH;
+import static net.encomendaz.services.tracking.TrackingData.SERVICE_PATH;
 
 import java.util.List;
 
@@ -32,7 +32,6 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
 
 import net.encomendaz.services.Response;
-import net.encomendaz.services.Tracking;
 import net.encomendaz.services.util.Serializer;
 
 @Path(SERVICE_PATH)
@@ -42,9 +41,9 @@ public class TrackingService {
 	@GET
 	public String search(@QueryParam("id") String id, @QueryParam("start") Integer start,
 			@QueryParam("end") Integer end, @QueryParam("callback") String callback) {
-		Response<List<Tracking>> response = new Response<List<Tracking>>();
+		Response<List<TrackingData>> response = new Response<List<TrackingData>>();
 
-		List<Tracking> list = TrackingManager.search(id, start, end);
+		List<TrackingData> list = TrackingManager.search(id, start, end);
 		response.setStatus(OK);
 		response.setData(list);
 

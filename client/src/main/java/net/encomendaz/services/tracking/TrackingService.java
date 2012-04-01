@@ -18,26 +18,27 @@
  * or write to the Free Software Foundation, Inc., 51 Franklin Street,
  * Fifth Floor, Boston, MA  02110-1301, USA.
  */
-package net.encomendaz.services;
+package net.encomendaz.services.tracking;
 
-import net.encomendaz.services.tracking.TrackingService;
+import static net.encomendaz.services.Response.MEDIA_TYPE;
+import static net.encomendaz.services.tracking.TrackingData.SERVICE_PATH;
 
-/**
- * @see EncomendaZ
- * @deprecated
- * @author zyc
- */
-public class ServicesClient {
+import javax.ws.rs.Consumes;
+import javax.ws.rs.GET;
+import javax.ws.rs.Path;
+import javax.ws.rs.QueryParam;
 
-	private ServicesClient() {
-	}
+@Path(SERVICE_PATH)
+@Consumes(MEDIA_TYPE)
+public interface TrackingService {
 
-	/**
-	 * @see EncomendaZ#tracking
-	 * @deprecated
-	 * @return
-	 */
-	public static TrackingService tracking() {
-		return EncomendaZ.tracking;
-	}
+	@GET
+	TrackingResponse search(@QueryParam("id") String id);
+
+	@GET
+	TrackingResponse search(@QueryParam("id") String id, @QueryParam("start") Integer start);
+
+	@GET
+	TrackingResponse search(@QueryParam("id") String id, @QueryParam("start") Integer start,
+			@QueryParam("end") Integer end);
 }

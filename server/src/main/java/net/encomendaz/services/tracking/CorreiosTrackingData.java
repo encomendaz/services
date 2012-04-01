@@ -24,12 +24,11 @@ import java.util.Date;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import net.encomendaz.services.Tracking;
 import net.encomendaz.services.util.Strings;
 
 import org.alfredlibrary.utilitarios.correios.RegistroRastreamento;
 
-public class CorreiosTracking extends Tracking {
+public class CorreiosTrackingData extends TrackingData {
 
 	private static final Pattern pattern = Pattern.compile("^(.*?[A-Z]{2,3}) (.*) - (.*)/(\\w{2})$");
 
@@ -43,7 +42,7 @@ public class CorreiosTracking extends Tracking {
 
 	private Status status;
 
-	public CorreiosTracking(RegistroRastreamento registro) {
+	public CorreiosTrackingData(RegistroRastreamento registro) {
 		this.registro = registro;
 
 		initLocation();

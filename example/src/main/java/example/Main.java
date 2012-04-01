@@ -20,33 +20,33 @@
  */
 package example;
 
-import java.util.List;
-
-import net.encomendaz.services.Response;
-import net.encomendaz.services.ServicesClient;
-import net.encomendaz.services.Tracking;
+import net.encomendaz.services.EncomendaZ;
 import net.encomendaz.services.Response.Status;
+import net.encomendaz.services.tracking.TrackingData;
+import net.encomendaz.services.tracking.TrackingResponse;
 
 public class Main {
 
 	public static void main(String[] args) {
-		Response<List<Tracking>> result = ServicesClient.tracking().search("PB916125555BR");
+		TrackingResponse response;
 
-		if (result.getStatus() == Status.OK) {
+		response = EncomendaZ.tracking.search("PB916125555BR");
+
+		if (response.getStatus() == Status.OK) {
 			int count = 1;
 
-			for (Tracking tracking : result.getData()) {
+			for (TrackingData trackingData : response.getData()) {
 
 				System.out.println("\n#" + count++);
-				System.out.println("Status:      " + tracking.getStatus());
-				System.out.println("Date :       " + tracking.getDate());
-				System.out.println("City:        " + tracking.getCity());
-				System.out.println("State:       " + tracking.getState());
-				System.out.println("Description: " + tracking.getDescription());
+				System.out.println("Status:      " + trackingData.getStatus());
+				System.out.println("Date :       " + trackingData.getDate());
+				System.out.println("City:        " + trackingData.getCity());
+				System.out.println("State:       " + trackingData.getState());
+				System.out.println("Description: " + trackingData.getDescription());
 			}
 
 		} else {
-			System.out.println("Bad news: " + result.getMessage());
+			System.out.println("Bad news: " + response.getMessage());
 		}
 	}
 }

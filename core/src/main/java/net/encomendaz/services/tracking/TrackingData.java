@@ -18,7 +18,7 @@
  * or write to the Free Software Foundation, Inc., 51 Franklin Street,
  * Fifth Floor, Boston, MA  02110-1301, USA.
  */
-package net.encomendaz.services;
+package net.encomendaz.services.tracking;
 
 import static org.codehaus.jackson.map.annotate.JsonSerialize.Inclusion.NON_NULL;
 
@@ -34,7 +34,7 @@ import org.codehaus.jackson.map.annotate.JsonDeserialize;
 import org.codehaus.jackson.map.annotate.JsonSerialize;
 
 @JsonPropertyOrder({ "date", "city", "state", "country", "status", "description" })
-public class Tracking {
+public class TrackingData {
 
 	public static final String SERVICE_PATH = "/tracking.json";
 	

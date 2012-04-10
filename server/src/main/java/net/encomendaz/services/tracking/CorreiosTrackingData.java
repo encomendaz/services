@@ -67,7 +67,7 @@ public class CorreiosTrackingData extends TrackingData {
 	}
 
 	private void initDescription() {
-		if (registro.getDetalhe() != null) {
+		if (!Strings.isEmpty(registro.getDetalhe())) {
 			Matcher matcher = pattern.matcher(registro.getDetalhe());
 
 			if (matcher.matches()) {
@@ -82,6 +82,14 @@ public class CorreiosTrackingData extends TrackingData {
 				}
 
 				description = p1 + " " + Strings.firstToUpper(p2) + "/" + p3;
+				
+			} else {
+				if(!Strings.isEmpty(registro.getAcao())) {
+					description = registro.getAcao().trim();
+				}
+
+				description += ". " + registro.getDetalhe().trim() + ".";
+				description = description .replaceAll("[.][.]", ".").trim();
 			}
 
 		} else if (registro.getAcao().indexOf(" ") > 0) {
@@ -106,7 +114,7 @@ public class CorreiosTrackingData extends TrackingData {
 
 	@Override
 	public Status getStatus() {
-		final String acao = registro.getAcao().toLowerCase();
+		final String acao = registro.getAcao().toLowerCase().trim();
 
 		if (status == null) {
 			if ("entregue".equals(acao)) {
@@ -115,11 +123,17 @@ public class CorreiosTrackingData extends TrackingData {
 			} else if ("entrega efetuada".equals(acao)) {
 				status = Status.DELIVERED;
 				
+			} else if ("saiu para entrega".equals(acao)) {
+				status = Status.DELIVERING;
+
+			} else if ("encaminhado".equals(acao)) {
+				status = Status.ENROUTE;
+				
 			} else if ("postado".equals(acao)) {
 				status = Status.ACCEPTANCE;
 
 			} else {
-				status = Status.ENROUTE;
+				status = Status.UNKNOWN;
 			}
 		}
 

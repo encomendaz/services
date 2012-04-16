@@ -33,7 +33,9 @@ import org.alfredlibrary.utilitarios.correios.RegistroRastreamento;
 
 public class CorreiosTrackingData extends TrackingData {
 
-	private static final Pattern pattern = Pattern.compile("^(.*?[A-Z]{2,3}) (.*) - (.*)/(\\w{2})$");
+	private static final Pattern descriptionPattern = Pattern.compile("^(.*?[A-Z]{2,3}) (.*) - (.*)/(\\w{2})$");
+	
+	private static final Pattern localePattern = Pattern.compile("(((.+)-)|(.+)) (.+)/(\\w{2})$");
 
 	private final RegistroRastreamento registro;
 
@@ -53,25 +55,19 @@ public class CorreiosTrackingData extends TrackingData {
 	}
 
 	private void initLocation() {
-		String text = registro.getLocal();
-		Matcher matcher = pattern.matcher(text == null ? "" : text);
+		String text = registro.getLocal().replaceAll(" +", " ").trim();
+		Matcher matcher = localePattern.matcher(text == null ? "" : text);
 
 		if (matcher.matches()) {
-			state = matcher.group(4);
-
-			if (matcher.group(2).equals(matcher.group(3))) {
-				city = matcher.group(2);
-			} else {
-				city = matcher.group(2) + " – " + matcher.group(3);
-			}
-
-			city = Strings.firstToUpper(city);
+			city = Strings.firstToUpper(matcher.group(5)).trim();
+			state = matcher.group(6).trim();
 		}
 	}
 
 	private void initDescription() {
 		if (!Strings.isEmpty(registro.getDetalhe())) {
-			Matcher matcher = pattern.matcher(registro.getDetalhe());
+			String text = registro.getDetalhe().replaceAll(" +", " ").trim();
+			Matcher matcher = descriptionPattern.matcher(text);
 
 			if (matcher.matches()) {
 				String p1 = matcher.group(1);
@@ -93,7 +89,7 @@ public class CorreiosTrackingData extends TrackingData {
 					description += registro.getAcao().trim() + ". ";
 				}
 
-				description += registro.getDetalhe().trim() + ".";
+				description += text+ ".";
 				description = description.replaceAll("[.][.]", ".").trim();
 			}
 
@@ -119,9 +115,9 @@ public class CorreiosTrackingData extends TrackingData {
 
 	@Override
 	public Status getStatus() {
-		final String acao = registro.getAcao().toLowerCase().trim();
-
 		if (status == null) {
+			final String acao = registro.getAcao().toLowerCase().trim();
+			
 			if ("postado".equals(acao)) {
 				status = Status.ACCEPTANCE;
 				

@@ -20,6 +20,9 @@
  */
 package net.encomendaz.services.tracking;
 
+import static net.encomendaz.services.tracking.TrackingData.Status.UNKNOWN;
+import static net.encomendaz.services.tracking.TrackingData.Status.AWAITING;
+
 import java.util.Date;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -82,14 +85,16 @@ public class CorreiosTrackingData extends TrackingData {
 				}
 
 				description = p1 + " " + Strings.firstToUpper(p2) + "/" + p3;
-				
+
 			} else {
-				if(!Strings.isEmpty(registro.getAcao())) {
-					description = registro.getAcao().trim();
+				description = "";
+				
+				if (!Strings.isEmpty(registro.getAcao()) && (getStatus() == UNKNOWN || getStatus() == AWAITING )) {
+					description += registro.getAcao().trim() + ". ";
 				}
 
-				description += ". " + registro.getDetalhe().trim() + ".";
-				description = description .replaceAll("[.][.]", ".").trim();
+				description += registro.getDetalhe().trim() + ".";
+				description = description.replaceAll("[.][.]", ".").trim();
 			}
 
 		} else if (registro.getAcao().indexOf(" ") > 0) {
@@ -117,21 +122,30 @@ public class CorreiosTrackingData extends TrackingData {
 		final String acao = registro.getAcao().toLowerCase().trim();
 
 		if (status == null) {
-			if ("entregue".equals(acao)) {
+			if ("postado".equals(acao)) {
+				status = Status.ACCEPTANCE;
+				
+			} else if (acao.indexOf("postagem") >= 0) {
+					status = Status.ACCEPTANCE;
+
+			} else if ("encaminhado".equals(acao)) {
+				status = Status.ENROUTE;
+
+			} else if ("conferido".equals(acao)) {
+				status = Status.CHECKED;
+
+			} else if ("saiu para entrega".equals(acao)) {
+				status = Status.DELIVERING;
+
+			} else if ("entregue".equals(acao)) {
 				status = Status.DELIVERED;
 
 			} else if ("entrega efetuada".equals(acao)) {
 				status = Status.DELIVERED;
-				
-			} else if ("saiu para entrega".equals(acao)) {
-				status = Status.DELIVERING;
 
-			} else if ("encaminhado".equals(acao)) {
-				status = Status.ENROUTE;
+			} else if (acao.indexOf("aguardando") >= 0) {
+				status = Status.AWAITING;
 				
-			} else if ("postado".equals(acao)) {
-				status = Status.ACCEPTANCE;
-
 			} else {
 				status = Status.UNKNOWN;
 			}

@@ -50,7 +50,7 @@ public class TrackingData {
 
 	public enum Status {
 
-		DELIVERED, DELIVERING, UNKNOWN, ENROUTE, ACCEPTANCE;
+		ACCEPTANCE, ENROUTE, CHECKED, DELIVERING, DELIVERED, UNKNOWN, AWAITING
 	}
 
 	@JsonSerialize(using = DateSerializer.class)

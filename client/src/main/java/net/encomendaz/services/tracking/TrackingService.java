@@ -21,7 +21,7 @@
 package net.encomendaz.services.tracking;
 
 import static net.encomendaz.services.Response.MEDIA_TYPE;
-import static net.encomendaz.services.tracking.TrackingData.SERVICE_PATH;
+import static net.encomendaz.services.tracking.Trace.SERVICE_PATH;
 
 import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;

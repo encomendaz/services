@@ -34,7 +34,7 @@ import org.codehaus.jackson.map.annotate.JsonDeserialize;
 import org.codehaus.jackson.map.annotate.JsonSerialize;
 
 @JsonPropertyOrder({ "date", "city", "state", "country", "status", "description" })
-public class TrackingData {
+public class Trace {
 
 	public static final String SERVICE_PATH = "/tracking.json";
 	

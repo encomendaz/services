@@ -24,5 +24,5 @@ import java.util.List;
 
 import net.encomendaz.services.Response;
 
-public class TrackingResponse extends Response<List<TrackingData>> {
+public class TrackingResponse extends Response<List<Trace>> {
 }

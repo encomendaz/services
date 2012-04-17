@@ -36,14 +36,14 @@ public class TrackingManager {
 		}
 	}
 
-	public List<TrackingData> search(String id) {
+	public List<Trace> search(String id) {
 		return search(id, null, null);
 	}
 
-	public static List<TrackingData> search(String id, Integer start, Integer end) {
+	public static List<Trace> search(String id, Integer start, Integer end) {
 		validateParameters(id);
 
-		List<TrackingData> response = new ArrayList<TrackingData>();
+		List<Trace> response = new ArrayList<Trace>();
 		List<RegistroRastreamento> list = Rastreamento.rastrear(id);
 		Collections.reverse(list);
 
@@ -57,11 +57,11 @@ public class TrackingManager {
 		return response;
 	}
 
-	private static TrackingData parse(RegistroRastreamento registro) {
+	private static Trace parse(RegistroRastreamento registro) {
 		if (registro == null) {
 			throw new IllegalArgumentException("O registro de rastreamento não pode ser nulo.");
 		}
 
-		return new CorreiosTrackingData(registro);
+		return new CorreiosTrace(registro);
 	}
 }

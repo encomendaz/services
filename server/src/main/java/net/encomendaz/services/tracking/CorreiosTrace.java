@@ -20,8 +20,8 @@
  */
 package net.encomendaz.services.tracking;
 
-import static net.encomendaz.services.tracking.TrackingData.Status.UNKNOWN;
-import static net.encomendaz.services.tracking.TrackingData.Status.AWAITING;
+import static net.encomendaz.services.tracking.Trace.Status.UNKNOWN;
+import static net.encomendaz.services.tracking.Trace.Status.AWAITING;
 
 import java.util.Date;
 import java.util.regex.Matcher;
@@ -31,7 +31,7 @@ import net.encomendaz.services.util.Strings;
 
 import org.alfredlibrary.utilitarios.correios.RegistroRastreamento;
 
-public class CorreiosTrackingData extends TrackingData {
+public class CorreiosTrace extends Trace {
 
 	private static final Pattern descriptionPattern = Pattern.compile("^(.*?[A-Z]{2,3}) (.*) - (.*)/(\\w{2})$");
 	
@@ -47,7 +47,7 @@ public class CorreiosTrackingData extends TrackingData {
 
 	private Status status;
 
-	public CorreiosTrackingData(RegistroRastreamento registro) {
+	public CorreiosTrace(RegistroRastreamento registro) {
 		this.registro = registro;
 
 		initLocation();

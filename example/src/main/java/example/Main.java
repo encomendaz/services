@@ -22,7 +22,7 @@ package example;
 
 import net.encomendaz.services.EncomendaZ;
 import net.encomendaz.services.Response.Status;
-import net.encomendaz.services.tracking.TrackingData;
+import net.encomendaz.services.tracking.Trace;
 import net.encomendaz.services.tracking.TrackingResponse;
 
 public class Main {
@@ -35,14 +35,14 @@ public class Main {
 		if (response.getStatus() == Status.OK) {
 			int count = 1;
 
-			for (TrackingData trackingData : response.getData()) {
+			for (Trace trace : response.getData()) {
 
 				System.out.println("\n#" + count++);
-				System.out.println("Status:      " + trackingData.getStatus());
-				System.out.println("Date :       " + trackingData.getDate());
-				System.out.println("City:        " + trackingData.getCity());
-				System.out.println("State:       " + trackingData.getState());
-				System.out.println("Description: " + trackingData.getDescription());
+				System.out.println("Status:      " + trace.getStatus());
+				System.out.println("Date :       " + trace.getDate());
+				System.out.println("City:        " + trace.getCity());
+				System.out.println("State:       " + trace.getState());
+				System.out.println("Description: " + trace.getDescription());
 			}
 
 		} else {

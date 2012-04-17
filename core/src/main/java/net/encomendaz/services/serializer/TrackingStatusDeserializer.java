@@ -22,18 +22,18 @@ package net.encomendaz.services.serializer;
 
 import java.io.IOException;
 
-import net.encomendaz.services.tracking.TrackingData;
+import net.encomendaz.services.tracking.Trace;
 
 import org.codehaus.jackson.JsonParser;
 import org.codehaus.jackson.JsonProcessingException;
 import org.codehaus.jackson.map.DeserializationContext;
 import org.codehaus.jackson.map.JsonDeserializer;
 
-public class TrackingStatusDeserializer extends JsonDeserializer<TrackingData.Status> {
+public class TrackingStatusDeserializer extends JsonDeserializer<Trace.Status> {
 
 	@Override
-	public TrackingData.Status deserialize(JsonParser jp, DeserializationContext ctxt) throws IOException,
+	public Trace.Status deserialize(JsonParser jp, DeserializationContext ctxt) throws IOException,
 			JsonProcessingException {
-		return TrackingData.Status.valueOf(jp.getText().toUpperCase());
+		return Trace.Status.valueOf(jp.getText().toUpperCase());
 	}
 }

@@ -24,12 +24,16 @@ import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 
+import com.googlecode.objectify.Objectify;
+import com.googlecode.objectify.ObjectifyService;
+
 @Produces
 @Path("/notification.cron")
 public class CronService {
 
 	@GET
 	public void x() {
-		System.out.println("xxxx");
+		
+		ObjectifyService.register(getClass());
 	}
 }

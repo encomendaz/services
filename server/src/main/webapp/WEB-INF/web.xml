@@ -24,12 +24,6 @@
 
 	<distributable />
 
-	<!--
-	<listener>
-		<listener-class>net.encomendaz.services.monitoramento.MonitoramentoContextListener</listener-class>
-	</listener>
-	-->
-
 	<filter>
 		<filter-name>Resteasy</filter-name>
 		<filter-class>org.jboss.resteasy.plugins.server.servlet.FilterDispatcher</filter-class>
@@ -44,6 +38,7 @@
 		<param-value>true</param-value>
 	</context-param>
 
+<!--
 	<security-constraint>
 		<web-resource-collection>
 			<url-pattern>*.cron</url-pattern>
@@ -52,4 +47,5 @@
 			<role-name>admin</role-name>
 		</auth-constraint>
 	</security-constraint>
+-->
 </web-app>

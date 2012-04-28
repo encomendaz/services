@@ -21,19 +21,26 @@
 package net.encomendaz.services.notification;
 
 import static net.encomendaz.services.Response.MEDIA_TYPE;
+import static net.encomendaz.services.Response.Status.OK;
 
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
+
+import net.encomendaz.services.Response;
 
 @Path("/notification.json")
 @Produces(MEDIA_TYPE)
 public class NotificationService {
 
 	@GET
-	public void x() {
-		// TODO
+	public Response<?> x() {
 		
 		System.out.println("xxxx");
+		
+		Response<String> response = new Response<String>();
+		response.setStatus(OK);
+		
+		return response;
 	}
 }

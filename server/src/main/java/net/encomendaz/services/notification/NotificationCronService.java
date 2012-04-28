@@ -20,20 +20,28 @@
  */
 package net.encomendaz.services.notification;
 
+import static net.encomendaz.services.Response.MEDIA_TYPE;
+import static net.encomendaz.services.Response.Status.OK;
+
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 
-import com.googlecode.objectify.Objectify;
-import com.googlecode.objectify.ObjectifyService;
+import net.encomendaz.services.Response;
 
-@Produces
 @Path("/notification.cron")
-public class CronService {
+@Produces(MEDIA_TYPE)
+public class NotificationCronService {
 
 	@GET
-	public void x() {
-		
-		ObjectifyService.register(getClass());
+	public Response<String> x() {
+		Notification notification = new Notification();
+		NotificationManager.ops(notification);
+
+		Response<String> response = new Response<String>();
+		response.setStatus(OK);
+		response.setMessage("Notification was created successfully with id #" + notification.getId());
+
+		return response;
 	}
 }

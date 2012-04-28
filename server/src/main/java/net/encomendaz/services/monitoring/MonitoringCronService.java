@@ -18,7 +18,7 @@
  * or write to the Free Software Foundation, Inc., 51 Franklin Street,
  * Fifth Floor, Boston, MA  02110-1301, USA.
  */
-package net.encomendaz.services.notification;
+package net.encomendaz.services.monitoring;
 
 import static net.encomendaz.services.Response.MEDIA_TYPE;
 import static net.encomendaz.services.Response.Status.OK;
@@ -29,18 +29,14 @@ import javax.ws.rs.Produces;
 
 import net.encomendaz.services.Response;
 
-@Path("/notification.cron")
+@Path("/monitoring.cron")
 @Produces(MEDIA_TYPE)
-public class NotificationCronService {
+public class MonitoringCronService {
 
 	@GET
-	public Response<String> x() {
-		Notification notification = new Notification();
-		NotificationManager.ops(notification);
-
+	public Response<String> execute() {
 		Response<String> response = new Response<String>();
 		response.setStatus(OK);
-		response.setMessage("Notification was created successfully with id #" + notification.getId());
 
 		return response;
 	}

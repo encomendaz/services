@@ -18,29 +18,37 @@
  * or write to the Free Software Foundation, Inc., 51 Franklin Street,
  * Fifth Floor, Boston, MA  02110-1301, USA.
  */
-package net.encomendaz.services.notification;
+package net.encomendaz.services.monitoring;
 
 import static net.encomendaz.services.Response.MEDIA_TYPE;
 import static net.encomendaz.services.Response.Status.OK;
 
-import javax.ws.rs.GET;
+import javax.ws.rs.FormParam;
+import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 
 import net.encomendaz.services.Response;
 
-@Path("/notification.json")
+@Path("/monitoring.json")
 @Produces(MEDIA_TYPE)
-public class NotificationService {
+public class MonitoringService {
 
-	@GET
-	public Response<?> x() {
-		
-		System.out.println("xxxx");
-		
+	@PUT
+	public Response<String> insert(@FormParam("trackId") String trackId, @FormParam("clientId") String clientId,
+			@FormParam("type") String type) {
+
+		Monitoring monitoring = new Monitoring();
+		monitoring.setClientId(clientId);
+		monitoring.setType(type);
+		monitoring.setTrackId(trackId);
+
+		MonitoringManager.insert(monitoring);
+
 		Response<String> response = new Response<String>();
 		response.setStatus(OK);
-		
+		response.setMessage("Monitoring was created successfully with id #" + monitoring.getId());
+
 		return response;
 	}
 }

@@ -43,9 +43,9 @@ public class TrackingService {
 			@QueryParam("end") Integer end, @QueryParam("callback") String callback) {
 		Response<List<Trace>> response = new Response<List<Trace>>();
 
-		List<Trace> list = TrackingManager.search(id, start, end);
+		List<Trace> traces = TrackingManager.search(id, start, end);
 		response.setStatus(OK);
-		response.setData(list);
+		response.setData(traces);
 
 		return Serializer.json(response, callback);
 	}

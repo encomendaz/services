@@ -23,11 +23,20 @@ package net.encomendaz.services.monitoring;
 import static net.encomendaz.services.Response.MEDIA_TYPE;
 import static net.encomendaz.services.Response.Status.OK;
 
+import java.util.Date;
+import java.util.Properties;
+
+import javax.mail.Message;
+import javax.mail.Session;
+import javax.mail.Transport;
+import javax.mail.internet.InternetAddress;
+import javax.mail.internet.MimeMessage;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 
 import net.encomendaz.services.Response;
+import net.encomendaz.services.tracking.TrackingManager;
 
 @Path("/monitoring.cron")
 @Produces(MEDIA_TYPE)
@@ -35,9 +44,46 @@ public class MonitoringCronService {
 
 	@GET
 	public Response<String> execute() {
+		String hash;
+		Date date;
+
+		for (Monitoring monitoring : MonitoringManager.x()) {
+			date = new Date();
+			hash = TrackingManager.hash(monitoring.getTrackId());
+
+			if (!monitoring.getHash().equals(hash)) {
+				monitoring.setHash(hash);
+				monitoring.setUpdated(date);
+
+				mail(monitoring);
+			}
+
+			monitoring.setMonitored(date);
+			MonitoringManager.update(monitoring);
+		}
+
 		Response<String> response = new Response<String>();
 		response.setStatus(OK);
 
 		return response;
+	}
+
+	private void mail(Monitoring monitoring) {
+		try {
+			Properties props = new Properties();
+			Session session = Session.getDefaultInstance(props, null);
+
+			String msgBody = "O status da encomenda " + monitoring.getTrackId() + " mudou!";
+
+			Message msg = new MimeMessage(session);
+			msg.setFrom(new InternetAddress("cleverson.sacramento@gmail.com"));
+			msg.addRecipient(Message.RecipientType.TO, new InternetAddress(monitoring.getClientId()));
+			msg.setSubject(msgBody);
+			msg.setText(msgBody);
+			Transport.send(msg);
+
+		} catch (Exception cause) {
+			throw new RuntimeException(cause);
+		}
 	}
 }

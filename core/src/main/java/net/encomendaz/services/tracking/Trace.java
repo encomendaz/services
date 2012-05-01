@@ -37,7 +37,7 @@ import org.codehaus.jackson.map.annotate.JsonSerialize;
 public class Trace {
 
 	public static final String SERVICE_PATH = "/tracking.json";
-	
+
 	private Date date;
 
 	private String city;

@@ -23,24 +23,26 @@ package net.encomendaz.services.monitoring;
 import static net.encomendaz.services.Response.MEDIA_TYPE;
 import static net.encomendaz.services.Response.Status.OK;
 
+import java.util.List;
+
 import javax.ws.rs.FormParam;
+import javax.ws.rs.GET;
 import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
+import javax.ws.rs.QueryParam;
 
 import net.encomendaz.services.Response;
+import net.encomendaz.services.util.Serializer;
 
 @Path("/monitoring.json")
 @Produces(MEDIA_TYPE)
 public class MonitoringService {
 
 	@PUT
-	public Response<String> insert(@FormParam("trackId") String trackId, @FormParam("clientId") String clientId,
-			@FormParam("type") String type) {
-
+	public Response<String> insert(@FormParam("trackId") String trackId, @FormParam("clientId") String clientId) {
 		Monitoring monitoring = new Monitoring();
 		monitoring.setClientId(clientId);
-		monitoring.setType(type);
 		monitoring.setTrackId(trackId);
 
 		MonitoringManager.insert(monitoring);
@@ -50,5 +52,16 @@ public class MonitoringService {
 		response.setMessage("Monitoring was created successfully with id #" + monitoring.getId());
 
 		return response;
+	}
+
+	@GET
+	public String search(@QueryParam("callback") String callback) {
+		Response<List<Monitoring>> response = new Response<List<Monitoring>>();
+
+		List<Monitoring> monitorings = MonitoringManager.x();
+		response.setStatus(OK);
+		response.setData(monitorings);
+
+		return Serializer.json(response, callback);
 	}
 }

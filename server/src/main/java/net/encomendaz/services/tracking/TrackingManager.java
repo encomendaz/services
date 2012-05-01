@@ -24,7 +24,10 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+import net.encomendaz.services.util.Hasher;
+import net.encomendaz.services.util.Serializer;
 
+import org.alfredlibrary.AlfredException;
 import org.alfredlibrary.utilitarios.correios.Rastreamento;
 import org.alfredlibrary.utilitarios.correios.RegistroRastreamento;
 
@@ -36,7 +39,7 @@ public class TrackingManager {
 		}
 	}
 
-	public List<Trace> search(String id) {
+	public static List<Trace> search(String id) {
 		return search(id, null, null);
 	}
 
@@ -55,6 +58,18 @@ public class TrackingManager {
 		}
 
 		return response;
+	}
+
+	public static String hash(String id) {
+		List<Trace> traces;
+
+		try {
+			traces = search(id);
+		} catch (AlfredException cause) {
+			traces = new ArrayList<Trace>();
+		}
+
+		return Hasher.sha1(Serializer.json(traces));
 	}
 
 	private static Trace parse(RegistroRastreamento registro) {

@@ -20,11 +20,22 @@
  */
 package net.encomendaz.services.monitoring;
 
+import static org.codehaus.jackson.map.annotate.JsonSerialize.Inclusion.NON_NULL;
+
 import java.util.Date;
 
 import javax.persistence.Id;
 
+import net.encomendaz.services.serializer.DateSerializer;
+
+import org.codehaus.jackson.annotate.JsonIgnore;
+import org.codehaus.jackson.annotate.JsonPropertyOrder;
+import org.codehaus.jackson.map.annotate.JsonSerialize;
+
+@JsonPropertyOrder({ "clientId", "trackId", "created", "monitored", "updated", "hash" })
 public class Monitoring {
+
+	public static final String SERVICE_PATH = "/monitoring.json";
 
 	@Id
 	private Long id;
@@ -33,12 +44,15 @@ public class Monitoring {
 
 	private String trackId;
 
-	private String type;
+	private Date created;
 
-	private String hash;
+	private Date monitored;
 
 	private Date updated;
 
+	private String hash;
+
+	@JsonIgnore
 	public Long getId() {
 		return id;
 	}
@@ -63,14 +77,6 @@ public class Monitoring {
 		this.trackId = trackId;
 	}
 
-	public String getType() {
-		return this.type;
-	}
-
-	public void setType(String type) {
-		this.type = type;
-	}
-
 	public String getHash() {
 		return hash;
 	}
@@ -79,11 +85,30 @@ public class Monitoring {
 		this.hash = hash;
 	}
 
+	@JsonSerialize(using = DateSerializer.class, include = NON_NULL)
 	public Date getUpdated() {
 		return updated;
 	}
 
 	public void setUpdated(Date updated) {
 		this.updated = updated;
+	}
+
+	@JsonSerialize(using = DateSerializer.class, include = NON_NULL)
+	public Date getCreated() {
+		return created;
+	}
+
+	public void setCreated(Date created) {
+		this.created = created;
+	}
+
+	@JsonSerialize(using = DateSerializer.class, include = NON_NULL)
+	public Date getMonitored() {
+		return monitored;
+	}
+
+	public void setMonitored(Date monitored) {
+		this.monitored = monitored;
 	}
 }

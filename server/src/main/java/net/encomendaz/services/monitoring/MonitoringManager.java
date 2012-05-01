@@ -23,6 +23,7 @@ package net.encomendaz.services.monitoring;
 import java.util.Date;
 import java.util.List;
 
+import net.encomendaz.services.tracking.Tracking;
 import net.encomendaz.services.tracking.TrackingManager;
 
 import com.googlecode.objectify.Objectify;
@@ -36,8 +37,9 @@ public class MonitoringManager {
 	}
 
 	public static void insert(Monitoring monitoring) {
-		String hash = TrackingManager.hash(monitoring.getTrackId());
-		monitoring.setHash(hash);
+		Tracking tracking = TrackingManager.search(monitoring.getTrackId());
+
+		monitoring.setHash(tracking.getHash());
 		monitoring.setCreated(new Date());
 
 		Objectify objectify = ObjectifyService.begin();
@@ -48,8 +50,13 @@ public class MonitoringManager {
 		Objectify objectify = ObjectifyService.begin();
 		objectify.put(monitoring);
 	}
+	
+	public static void delete(Monitoring monitoring) {
+		Objectify objectify = ObjectifyService.begin();
+		objectify.delete(monitoring);
+	}
 
-	public static List<Monitoring> x() {
+	public static List<Monitoring> findAll() {
 		Objectify objectify = ObjectifyService.begin();
 		Query<Monitoring> query = objectify.query(Monitoring.class).order("clientId").order("trackId");
 

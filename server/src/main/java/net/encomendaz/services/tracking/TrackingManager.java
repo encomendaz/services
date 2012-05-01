@@ -24,9 +24,6 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-import net.encomendaz.services.util.Hasher;
-import net.encomendaz.services.util.Serializer;
-
 import org.alfredlibrary.AlfredException;
 import org.alfredlibrary.utilitarios.correios.Rastreamento;
 import org.alfredlibrary.utilitarios.correios.RegistroRastreamento;
@@ -39,37 +36,35 @@ public class TrackingManager {
 		}
 	}
 
-	public static List<Trace> search(String id) {
+	public static Tracking search(String id) {
 		return search(id, null, null);
 	}
 
-	public static List<Trace> search(String id, Integer start, Integer end) {
+	public static Tracking search(String id, Integer start, Integer end) {
 		validateParameters(id);
 
-		List<Trace> response = new ArrayList<Trace>();
-		List<RegistroRastreamento> list = Rastreamento.rastrear(id);
-		Collections.reverse(list);
-
-		int _start = (start == null || start < 1 ? 1 : start);
-		int _end = (end == null || end > list.size() ? list.size() : end);
-
-		for (int i = _start; i <= _end; i++) {
-			response.add(parse(list.get(i - 1)));
-		}
-
-		return response;
-	}
-
-	public static String hash(String id) {
-		List<Trace> traces;
+		List<Trace> traces = new ArrayList<Trace>();
 
 		try {
-			traces = search(id);
+			List<RegistroRastreamento> list = Rastreamento.rastrear(id);
+			Collections.reverse(list);
+
+			int _start = (start == null || start < 1 ? 1 : start);
+			int _end = (end == null || end > list.size() ? list.size() : end);
+
+			for (int i = _start; i <= _end; i++) {
+				traces.add(parse(list.get(i - 1)));
+			}
+
 		} catch (AlfredException cause) {
-			traces = new ArrayList<Trace>();
+			cause.printStackTrace();
 		}
 
-		return Hasher.sha1(Serializer.json(traces));
+		Tracking response = new Tracking();
+		response.setId(id);
+		response.setTraces(traces);
+
+		return response;
 	}
 
 	private static Trace parse(RegistroRastreamento registro) {

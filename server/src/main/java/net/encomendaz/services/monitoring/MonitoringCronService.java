@@ -36,6 +36,7 @@ import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 
 import net.encomendaz.services.Response;
+import net.encomendaz.services.tracking.Tracking;
 import net.encomendaz.services.tracking.TrackingManager;
 
 @Path("/monitoring.cron")
@@ -46,10 +47,12 @@ public class MonitoringCronService {
 	public Response<String> execute() {
 		String hash;
 		Date date;
+		Tracking tracking;
 
-		for (Monitoring monitoring : MonitoringManager.x()) {
+		for (Monitoring monitoring : MonitoringManager.findAll()) {
 			date = new Date();
-			hash = TrackingManager.hash(monitoring.getTrackId());
+			tracking = TrackingManager.search(monitoring.getTrackId());
+			hash = tracking.getHash();
 
 			if (!monitoring.getHash().equals(hash)) {
 				monitoring.setHash(hash);
@@ -58,8 +61,13 @@ public class MonitoringCronService {
 				mail(monitoring);
 			}
 
-			monitoring.setMonitored(date);
-			MonitoringManager.update(monitoring);
+			if (tracking.isCompleted()) {
+				MonitoringManager.delete(monitoring);
+
+			} else {
+				monitoring.setMonitored(date);
+				MonitoringManager.update(monitoring);
+			}
 		}
 
 		Response<String> response = new Response<String>();

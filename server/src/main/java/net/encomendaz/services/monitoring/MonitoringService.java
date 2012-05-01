@@ -58,7 +58,7 @@ public class MonitoringService {
 	public String search(@QueryParam("callback") String callback) {
 		Response<List<Monitoring>> response = new Response<List<Monitoring>>();
 
-		List<Monitoring> monitorings = MonitoringManager.x();
+		List<Monitoring> monitorings = MonitoringManager.findAll();
 		response.setStatus(OK);
 		response.setData(monitorings);
 

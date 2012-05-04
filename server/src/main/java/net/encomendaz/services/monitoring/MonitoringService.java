@@ -25,6 +25,7 @@ import static net.encomendaz.services.Response.Status.OK;
 
 import java.util.List;
 
+import javax.ws.rs.DELETE;
 import javax.ws.rs.FormParam;
 import javax.ws.rs.GET;
 import javax.ws.rs.PUT;
@@ -40,16 +41,41 @@ import net.encomendaz.services.util.Serializer;
 public class MonitoringService {
 
 	@PUT
-	public Response<String> insert(@FormParam("trackId") String trackId, @FormParam("clientId") String clientId) {
+	public Response<String> insert(@FormParam("trackId") String trackId, @FormParam("clientId") String clientId)
+			throws MonitoringException {
 		Monitoring monitoring = new Monitoring();
 		monitoring.setClientId(clientId);
 		monitoring.setTrackId(trackId);
 
-		MonitoringManager.insert(monitoring);
+		if (MonitoringManager.exists(clientId, trackId)) {
+			throw new MonitoringException("Duplicated");
+
+		} else {
+			MonitoringManager.insert(monitoring);
+		}
 
 		Response<String> response = new Response<String>();
 		response.setStatus(OK);
 		response.setMessage("Monitoring was created successfully with id #" + monitoring.getId());
+
+		return response;
+	}
+
+	@DELETE
+	public Response<String> delete(@QueryParam("trackId") String trackId, @QueryParam("clientId") String clientId)
+			throws MonitoringException {
+		Monitoring monitoring = MonitoringManager.load(clientId, trackId);
+
+		if (monitoring == null) {
+			throw new MonitoringException("Does not exists");
+
+		} else {
+			MonitoringManager.delete(monitoring);
+		}
+
+		Response<String> response = new Response<String>();
+		response.setStatus(OK);
+		response.setMessage("Registered successfully with id #" + monitoring.getId());
 
 		return response;
 	}

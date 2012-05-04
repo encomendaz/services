@@ -56,6 +56,24 @@ public class MonitoringManager {
 		objectify.delete(monitoring);
 	}
 
+	public static boolean exists(String clientId, String trackId) {
+		return load(clientId, trackId) != null;
+	}
+	
+	public static Monitoring load(String clientId, String trackId) {
+		Objectify objectify = ObjectifyService.begin();
+		Query<Monitoring> query = objectify.query(Monitoring.class).filter("trackId", trackId).filter("clientId", clientId);
+		
+		Monitoring result = null;
+		List<Monitoring> list = query.list();	
+		
+		if(!list.isEmpty()) {
+			result = list.get(0);
+		}
+		
+		return result;
+	}
+	
 	public static List<Monitoring> findAll() {
 		Objectify objectify = ObjectifyService.begin();
 		Query<Monitoring> query = objectify.query(Monitoring.class).order("clientId").order("trackId");

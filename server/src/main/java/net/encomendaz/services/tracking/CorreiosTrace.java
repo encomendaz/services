@@ -20,8 +20,8 @@
  */
 package net.encomendaz.services.tracking;
 
-import static net.encomendaz.services.tracking.Trace.Status.UNKNOWN;
 import static net.encomendaz.services.tracking.Trace.Status.AWAITING;
+import static net.encomendaz.services.tracking.Trace.Status.UNKNOWN;
 
 import java.util.Date;
 import java.util.regex.Matcher;

@@ -25,10 +25,13 @@ import static net.encomendaz.services.Response.Status.OK;
 
 import java.util.Date;
 import java.util.Properties;
+import java.util.ResourceBundle;
 
 import javax.mail.Message;
+import javax.mail.MessagingException;
 import javax.mail.Session;
 import javax.mail.Transport;
+import javax.mail.internet.AddressException;
 import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeMessage;
 import javax.ws.rs.GET;
@@ -36,38 +39,60 @@ import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 
 import net.encomendaz.services.Response;
+import net.encomendaz.services.notification.Aps;
+import net.encomendaz.services.notification.Notification;
+import net.encomendaz.services.notification.NotificationService;
 import net.encomendaz.services.tracking.Tracking;
 import net.encomendaz.services.tracking.TrackingManager;
+
+import org.apache.http.auth.Credentials;
+import org.apache.http.auth.UsernamePasswordCredentials;
+import org.apache.http.impl.client.DefaultHttpClient;
+import org.codehaus.jackson.jaxrs.JacksonJsonProvider;
+import org.jboss.resteasy.client.ClientExecutor;
+import org.jboss.resteasy.client.ProxyFactory;
+import org.jboss.resteasy.client.core.executors.ApacheHttpClient4Executor;
+import org.jboss.resteasy.spi.ResteasyProviderFactory;
 
 @Path("/monitoring.cron")
 @Produces(MEDIA_TYPE)
 public class MonitoringCronService {
 
 	@GET
-	public Response<String> execute() {
+	public Response<String> execute() throws Exception {
 		String hash;
 		Date date;
 		Tracking tracking;
+		Exception exception = null;
 
 		for (Monitoring monitoring : MonitoringManager.findAll()) {
-			date = new Date();
-			tracking = TrackingManager.search(monitoring.getTrackId());
-			hash = tracking.getHash();
+			try {
+				date = new Date();
+				tracking = TrackingManager.search(monitoring.getTrackId());
+				hash = tracking.getHash();
 
-			if (!monitoring.getHash().equals(hash)) {
-				monitoring.setHash(hash);
-				monitoring.setUpdated(date);
+				if (!monitoring.getHash().equals(hash)) {
+					monitoring.setHash(hash);
+					monitoring.setUpdated(date);
 
-				mail(monitoring);
+					notify(monitoring);
+				}
+
+				if (tracking.isCompleted()) {
+					MonitoringManager.delete(monitoring);
+
+				} else {
+					monitoring.setMonitored(date);
+					MonitoringManager.update(monitoring);
+				}
+
+			} catch (Exception cause) {
+				exception = cause;
 			}
+		}
 
-			if (tracking.isCompleted()) {
-				MonitoringManager.delete(monitoring);
-
-			} else {
-				monitoring.setMonitored(date);
-				MonitoringManager.update(monitoring);
-			}
+		if (exception != null) {
+			throw exception;
 		}
 
 		Response<String> response = new Response<String>();
@@ -76,22 +101,56 @@ public class MonitoringCronService {
 		return response;
 	}
 
-	private void mail(Monitoring monitoring) {
-		try {
-			Properties props = new Properties();
-			Session session = Session.getDefaultInstance(props, null);
+	private void notify(Monitoring monitoring) throws Exception {
+		if (monitoring.getClientId().indexOf("@") > 0) {
+			mail(monitoring);
 
-			String msgBody = "O status da encomenda " + monitoring.getTrackId() + " mudou!";
-
-			Message msg = new MimeMessage(session);
-			msg.setFrom(new InternetAddress("cleverson.sacramento@gmail.com"));
-			msg.addRecipient(Message.RecipientType.TO, new InternetAddress(monitoring.getClientId()));
-			msg.setSubject(msgBody);
-			msg.setText(msgBody);
-			Transport.send(msg);
-
-		} catch (Exception cause) {
-			throw new RuntimeException(cause);
+		} else {
+			push(monitoring);
 		}
+	}
+
+	private void mail(Monitoring monitoring) throws AddressException, MessagingException {
+		Properties props = new Properties();
+		Session session = Session.getDefaultInstance(props, null);
+
+		String msgBody = "O status da encomenda " + monitoring.getTrackId() + " mudou!";
+
+		Message msg = new MimeMessage(session);
+		msg.setFrom(new InternetAddress("cleverson.sacramento@gmail.com"));
+		msg.addRecipient(Message.RecipientType.TO, new InternetAddress(monitoring.getClientId()));
+		msg.setSubject(msgBody);
+		msg.setText(msgBody);
+		Transport.send(msg);
+	}
+
+	static {
+		ResteasyProviderFactory.setRegisterBuiltinByDefault(false);
+		ResteasyProviderFactory.getInstance().registerProvider(JacksonJsonProvider.class);
+	}
+
+	private void push(Monitoring monitoring) {
+		ResourceBundle bundle = ResourceBundle.getBundle("encomendaz-server");
+		String username = bundle.getString("airhsip-username");
+		String password = bundle.getString("airhsip-password");
+
+		DefaultHttpClient httpClient = new DefaultHttpClient();
+		Credentials credentials = new UsernamePasswordCredentials(username, password);
+		httpClient.getCredentialsProvider().setCredentials(org.apache.http.auth.AuthScope.ANY, credentials);
+		ClientExecutor clientExecutor = new ApacheHttpClient4Executor(httpClient);
+
+		NotificationService service = ProxyFactory.create(NotificationService.class, "https://go.urbanairship.com",
+				clientExecutor);
+
+		Aps aps = new Aps();
+		aps.setAlert("O status da encomenda " + monitoring.getTrackId() + " mudou!");
+		aps.setSound("default");
+		//aps.setBadge("+1");
+
+		Notification notification = new Notification();
+		notification.addAlias(monitoring.getClientId());
+		notification.setAps(aps);
+
+		service.notify(notification);
 	}
 }

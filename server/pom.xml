@@ -103,10 +103,16 @@
 			<groupId>org.jboss.resteasy</groupId>
 			<artifactId>resteasy-jaxrs</artifactId>
 			<exclusions>
+				<!--
 				<exclusion>
 					<groupId>org.apache.httpcomponents</groupId>
 					<artifactId>httpclient</artifactId>
 				</exclusion>
+				<exclusion>
+					<groupId>commons-httpclient</groupId>
+					<artifactId>commons-httpclient</artifactId>
+				</exclusion>
+				-->
 				<exclusion>
 					<groupId>javax.annotation</groupId>
 					<artifactId>jsr250-api</artifactId>
@@ -114,10 +120,6 @@
 				<exclusion>
 					<groupId>javax.activation</groupId>
 					<artifactId>activation</artifactId>
-				</exclusion>
-				<exclusion>
-					<groupId>commons-httpclient</groupId>
-					<artifactId>commons-httpclient</artifactId>
 				</exclusion>
 			</exclusions>
 		</dependency>

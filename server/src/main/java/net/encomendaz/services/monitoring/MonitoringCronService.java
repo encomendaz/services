@@ -25,7 +25,6 @@ import static net.encomendaz.services.Response.Status.OK;
 
 import java.util.Date;
 import java.util.Properties;
-import java.util.ResourceBundle;
 
 import javax.mail.Message;
 import javax.mail.MessagingException;
@@ -40,18 +39,14 @@ import javax.ws.rs.Produces;
 
 import net.encomendaz.services.Response;
 import net.encomendaz.services.notification.Aps;
-import net.encomendaz.services.notification.Notification;
-import net.encomendaz.services.notification.NotificationService;
+import net.encomendaz.services.notification.MyClientExecutor;
+import net.encomendaz.services.notification.Push;
+import net.encomendaz.services.notification.NotificationProxy;
 import net.encomendaz.services.tracking.Tracking;
 import net.encomendaz.services.tracking.TrackingManager;
 
-import org.apache.http.auth.Credentials;
-import org.apache.http.auth.UsernamePasswordCredentials;
-import org.apache.http.impl.client.DefaultHttpClient;
 import org.codehaus.jackson.jaxrs.JacksonJsonProvider;
-import org.jboss.resteasy.client.ClientExecutor;
 import org.jboss.resteasy.client.ProxyFactory;
-import org.jboss.resteasy.client.core.executors.ApacheHttpClient4Executor;
 import org.jboss.resteasy.spi.ResteasyProviderFactory;
 
 @Path("/monitoring.cron")
@@ -130,27 +125,29 @@ public class MonitoringCronService {
 	}
 
 	private void push(Monitoring monitoring) {
-		ResourceBundle bundle = ResourceBundle.getBundle("encomendaz-server");
-		String username = bundle.getString("airhsip-username");
-		String password = bundle.getString("airhsip-password");
+		// ResourceBundle bundle = ResourceBundle.getBundle("encomendaz-server");
+		// String username = bundle.getString("airhsip-username");
+		// String password = bundle.getString("airhsip-password");
 
-		DefaultHttpClient httpClient = new DefaultHttpClient();
-		Credentials credentials = new UsernamePasswordCredentials(username, password);
-		httpClient.getCredentialsProvider().setCredentials(org.apache.http.auth.AuthScope.ANY, credentials);
-		ClientExecutor clientExecutor = new ApacheHttpClient4Executor(httpClient);
+		// DefaultHttpClient httpClient = new DefaultHttpClient();
+		// Credentials credentials = new UsernamePasswordCredentials(username, password);
+		// httpClient.getCredentialsProvider().setCredentials(org.apache.http.auth.AuthScope.ANY, credentials);
 
-		NotificationService service = ProxyFactory.create(NotificationService.class, "https://go.urbanairship.com",
-				clientExecutor);
+		// ClientRequest request = new ClientRequest(password);
+
+		// ClientExecutor clientExecutor = new ApacheHttpClient4Executor(httpClient);
 
 		Aps aps = new Aps();
 		aps.setAlert("O status da encomenda " + monitoring.getTrackId() + " mudou!");
 		aps.setSound("default");
-		//aps.setBadge("+1");
+		// aps.setBadge("+1");
 
-		Notification notification = new Notification();
-		notification.addAlias(monitoring.getClientId());
-		notification.setAps(aps);
+		Push push = new Push();
+		push.addAlias(monitoring.getClientId());
+		push.setAps(aps);
 
-		service.notify(notification);
+		NotificationProxy proxy = ProxyFactory.create(NotificationProxy.class, "https://go.urbanairship.com",
+				new MyClientExecutor());
+		proxy.notify(push);
 	}
 }

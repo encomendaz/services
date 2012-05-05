@@ -30,6 +30,8 @@ public class ExceptionMapper implements javax.ws.rs.ext.ExceptionMapper<Exceptio
 
 	@Override
 	public Response toResponse(Exception exception) {
+		exception.printStackTrace();
+		
 		net.encomendaz.services.Response<Object> response = new net.encomendaz.services.Response<Object>();
 		response.setStatus(ERROR);
 		response.setMessage(exception.getMessage());

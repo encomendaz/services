@@ -20,44 +20,17 @@
  */
 package net.encomendaz.services.notification;
 
-import static org.codehaus.jackson.map.annotate.JsonSerialize.Inclusion.NON_NULL;
+import static net.encomendaz.services.Response.MEDIA_TYPE;
 
-import org.codehaus.jackson.annotate.JsonPropertyOrder;
-import org.codehaus.jackson.map.annotate.JsonSerialize;
+import javax.ws.rs.Consumes;
+import javax.ws.rs.POST;
+import javax.ws.rs.Path;
 
-@JsonPropertyOrder({ "alert", "sound", "badge" })
-public class Aps {
+@Path("/api/push/")
+@Consumes(MEDIA_TYPE)
+public interface NotificationProxy {
 
-	private String alert;
-
-	private String sound;
-
-	private String badge;
-
-	public String getAlert() {
-		return alert;
-	}
-
-	public void setAlert(String alert) {
-		this.alert = alert;
-	}
-
-	public String getSound() {
-		return sound;
-	}
-
-	@JsonSerialize(include = NON_NULL)
-	public void setSound(String sound) {
-		this.sound = sound;
-	}
-
-	@JsonSerialize(include = NON_NULL)
-	public String getBadge() {
-		return badge;
-	}
-
-	public void setBadge(String badge) {
-		this.badge = badge;
-	}
+	@POST
+	public void notify(Push push);
 
 }

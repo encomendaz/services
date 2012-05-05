@@ -20,44 +20,35 @@
  */
 package net.encomendaz.services.notification;
 
-import static org.codehaus.jackson.map.annotate.JsonSerialize.Inclusion.NON_NULL;
+import java.util.ArrayList;
+import java.util.List;
 
 import org.codehaus.jackson.annotate.JsonPropertyOrder;
-import org.codehaus.jackson.map.annotate.JsonSerialize;
 
-@JsonPropertyOrder({ "alert", "sound", "badge" })
-public class Aps {
+@JsonPropertyOrder({ "aliases", "aps" })
+public class Push {
 
-	private String alert;
+	private Aps aps;
 
-	private String sound;
+	private List<String> aliases = new ArrayList<String>();
 
-	private String badge;
-
-	public String getAlert() {
-		return alert;
+	public Aps getAps() {
+		return aps;
 	}
 
-	public void setAlert(String alert) {
-		this.alert = alert;
+	public void setAps(Aps aps) {
+		this.aps = aps;
 	}
 
-	public String getSound() {
-		return sound;
+	public List<String> getAliases() {
+		return aliases;
 	}
 
-	@JsonSerialize(include = NON_NULL)
-	public void setSound(String sound) {
-		this.sound = sound;
+	public void setAliases(List<String> aliases) {
+		this.aliases = aliases;
 	}
 
-	@JsonSerialize(include = NON_NULL)
-	public String getBadge() {
-		return badge;
+	public void addAlias(String alias) {
+		this.aliases.add(alias);
 	}
-
-	public void setBadge(String badge) {
-		this.badge = badge;
-	}
-
 }

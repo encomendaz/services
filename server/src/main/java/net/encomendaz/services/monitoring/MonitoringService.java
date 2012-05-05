@@ -41,28 +41,45 @@ import net.encomendaz.services.util.Serializer;
 public class MonitoringService {
 
 	@PUT
-	public Response<String> insert(@FormParam("trackId") String trackId, @FormParam("clientId") String clientId)
-			throws MonitoringException {
-		Monitoring monitoring = new Monitoring();
-		monitoring.setClientId(clientId);
-		monitoring.setTrackId(trackId);
-
-		if (MonitoringManager.exists(clientId, trackId)) {
-			throw new MonitoringException("Duplicated");
-
-		} else {
-			MonitoringManager.insert(monitoring);
-		}
+	public Response<String> register(@FormParam("clientId") String clientId, @FormParam("trackId") String trackId,
+			@FormParam("label") String label) throws MonitoringException {
+		Monitoring monitoring = MonitoringManager.load(clientId, trackId);
 
 		Response<String> response = new Response<String>();
-		response.setStatus(OK);
-		response.setMessage("Monitoring was created successfully with id #" + monitoring.getId());
+
+		// System.out.println("-------------------");
+		// System.out.println(monitoring.getLabel());
+		// System.out.println(label);
+		// System.out.println(!(monitoring.getLabel() == null ? "" : monitoring.getLabel()).equals(label == null ? "" :
+		// label));
+		// System.out.println("-------------------");
+
+		if (monitoring == null) {
+			monitoring = new Monitoring();
+			monitoring.setTrackId(trackId);
+			monitoring.setClientId(clientId);
+			monitoring.setLabel(label);
+			MonitoringManager.insert(monitoring);
+
+			response.setStatus(OK);
+			response.setMessage("Created successfully with id #" + monitoring.getId());
+
+		} else if (!(monitoring.getLabel() == null ? "" : monitoring.getLabel()).equals(label == null ? "" : label)) {
+			monitoring.setLabel(label);
+			MonitoringManager.update(monitoring);
+
+			response.setStatus(OK);
+			response.setMessage("Label updated");
+
+		} else {
+			throw new MonitoringException("Duplicated");
+		}
 
 		return response;
 	}
 
 	@DELETE
-	public Response<String> delete(@QueryParam("trackId") String trackId, @QueryParam("clientId") String clientId)
+	public Response<String> delete(@QueryParam("clientId") String clientId, @QueryParam("trackId") String trackId)
 			throws MonitoringException {
 		Monitoring monitoring = MonitoringManager.load(clientId, trackId);
 

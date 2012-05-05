@@ -62,7 +62,7 @@ public class MonitoringManager {
 	
 	public static Monitoring load(String clientId, String trackId) {
 		Objectify objectify = ObjectifyService.begin();
-		Query<Monitoring> query = objectify.query(Monitoring.class).filter("trackId", trackId).filter("clientId", clientId);
+		Query<Monitoring> query = objectify.query(Monitoring.class).filter("clientId", clientId).filter("trackId", trackId);
 		
 		Monitoring result = null;
 		List<Monitoring> list = query.list();	

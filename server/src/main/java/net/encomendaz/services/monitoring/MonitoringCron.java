@@ -40,18 +40,20 @@ import javax.ws.rs.Produces;
 import net.encomendaz.services.Response;
 import net.encomendaz.services.notification.Aps;
 import net.encomendaz.services.notification.MyClientExecutor;
-import net.encomendaz.services.notification.Push;
 import net.encomendaz.services.notification.NotificationProxy;
+import net.encomendaz.services.notification.Push;
 import net.encomendaz.services.tracking.Tracking;
 import net.encomendaz.services.tracking.TrackingManager;
+import net.encomendaz.services.util.Strings;
 
 import org.codehaus.jackson.jaxrs.JacksonJsonProvider;
+import org.jboss.resteasy.client.ClientRequest;
 import org.jboss.resteasy.client.ProxyFactory;
 import org.jboss.resteasy.spi.ResteasyProviderFactory;
 
 @Path("/monitoring.cron")
 @Produces(MEDIA_TYPE)
-public class MonitoringCronService {
+public class MonitoringCron {
 
 	@GET
 	public Response<String> execute() throws Exception {
@@ -70,7 +72,7 @@ public class MonitoringCronService {
 					monitoring.setHash(hash);
 					monitoring.setUpdated(date);
 
-					notify(monitoring);
+					notify(monitoring, tracking);
 				}
 
 				if (tracking.isCompleted()) {
@@ -96,16 +98,16 @@ public class MonitoringCronService {
 		return response;
 	}
 
-	private void notify(Monitoring monitoring) throws Exception {
+	private void notify(Monitoring monitoring, Tracking tracking) throws Exception {
 		if (monitoring.getClientId().indexOf("@") > 0) {
-			mail(monitoring);
+			mail(monitoring, tracking);
 
 		} else {
-			push(monitoring);
+			push(monitoring, tracking);
 		}
 	}
 
-	private void mail(Monitoring monitoring) throws AddressException, MessagingException {
+	private void mail(Monitoring monitoring, Tracking tracking) throws AddressException, MessagingException {
 		Properties props = new Properties();
 		Session session = Session.getDefaultInstance(props, null);
 
@@ -122,23 +124,16 @@ public class MonitoringCronService {
 	static {
 		ResteasyProviderFactory.setRegisterBuiltinByDefault(false);
 		ResteasyProviderFactory.getInstance().registerProvider(JacksonJsonProvider.class);
+		ClientRequest.setDefaultExecutorClass(MyClientExecutor.class.getCanonicalName());
 	}
 
-	private void push(Monitoring monitoring) {
-		// ResourceBundle bundle = ResourceBundle.getBundle("encomendaz-server");
-		// String username = bundle.getString("airhsip-username");
-		// String password = bundle.getString("airhsip-password");
-
-		// DefaultHttpClient httpClient = new DefaultHttpClient();
-		// Credentials credentials = new UsernamePasswordCredentials(username, password);
-		// httpClient.getCredentialsProvider().setCredentials(org.apache.http.auth.AuthScope.ANY, credentials);
-
-		// ClientRequest request = new ClientRequest(password);
-
-		// ClientExecutor clientExecutor = new ApacheHttpClient4Executor(httpClient);
+	private void push(Monitoring monitoring, Tracking tracking) {
+		String label = Strings.isEmpty(monitoring.getLabel()) ? "" : " (" + monitoring.getLabel() + ")";
+		String alert = "O status da encomenda " + monitoring.getTrackId() + label + " mudou para "
+				+ tracking.getLastTrace().getStatus();
 
 		Aps aps = new Aps();
-		aps.setAlert("O status da encomenda " + monitoring.getTrackId() + " mudou!");
+		aps.setAlert(alert);
 		aps.setSound("default");
 		// aps.setBadge("+1");
 
@@ -146,8 +141,7 @@ public class MonitoringCronService {
 		push.addAlias(monitoring.getClientId());
 		push.setAps(aps);
 
-		NotificationProxy proxy = ProxyFactory.create(NotificationProxy.class, "https://go.urbanairship.com",
-				new MyClientExecutor());
+		NotificationProxy proxy = ProxyFactory.create(NotificationProxy.class, "https://go.urbanairship.com");
 		proxy.notify(push);
 	}
 }

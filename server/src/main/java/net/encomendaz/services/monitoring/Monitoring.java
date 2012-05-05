@@ -32,7 +32,7 @@ import org.codehaus.jackson.annotate.JsonIgnore;
 import org.codehaus.jackson.annotate.JsonPropertyOrder;
 import org.codehaus.jackson.map.annotate.JsonSerialize;
 
-@JsonPropertyOrder({ "clientId", "trackId", "created", "monitored", "updated", "hash" })
+@JsonPropertyOrder({ "clientId", "trackId", "label", "created", "monitored", "updated", "hash" })
 public class Monitoring {
 
 	public static final String SERVICE_PATH = "/monitoring.json";
@@ -43,6 +43,8 @@ public class Monitoring {
 	private String clientId;
 
 	private String trackId;
+
+	private String label;
 
 	private Date created;
 
@@ -110,5 +112,13 @@ public class Monitoring {
 
 	public void setMonitored(Date monitored) {
 		this.monitored = monitored;
+	}
+
+	public String getLabel() {
+		return label;
+	}
+
+	public void setLabel(String label) {
+		this.label = label;
 	}
 }

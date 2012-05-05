@@ -22,10 +22,11 @@ package net.encomendaz.services.tracking;
 
 import net.encomendaz.services.notification.Aps;
 import net.encomendaz.services.notification.MyClientExecutor;
-import net.encomendaz.services.notification.Push;
 import net.encomendaz.services.notification.NotificationProxy;
+import net.encomendaz.services.notification.Push;
 
 import org.codehaus.jackson.jaxrs.JacksonJsonProvider;
+import org.jboss.resteasy.client.ClientRequest;
 import org.jboss.resteasy.client.ProxyFactory;
 import org.jboss.resteasy.spi.ResteasyProviderFactory;
 import org.junit.Before;
@@ -38,31 +39,22 @@ public class NotificationTest {
 	public void before() {
 		ResteasyProviderFactory.setRegisterBuiltinByDefault(false);
 		ResteasyProviderFactory.getInstance().registerProvider(JacksonJsonProvider.class);
+		ClientRequest.setDefaultExecutorClass(MyClientExecutor.class.getCanonicalName());
 	}
 
 	@Test
-	@Ignore
+//	@Ignore
 	public void push() {
-		// ResourceBundle bundle = ResourceBundle.getBundle("encomendaz-server");
-		// String username = bundle.getString("airhsip-username");
-		// String password = bundle.getString("airhsip-password");
-		//
-		// DefaultHttpClient httpClient = new DefaultHttpClient();
-		// Credentials credentials = new UsernamePasswordCredentials(username, password);
-		// httpClient.getCredentialsProvider().setCredentials(org.apache.http.auth.AuthScope.ANY, credentials);
-		// ClientExecutor clientExecutor = new ApacheHttpClient4Executor(httpClient);
-
 		Aps aps = new Aps();
-		aps.setAlert("opa opa");
+		aps.setAlert("opa opa 2");
 		aps.setSound("default");
 		// aps.setBadge("+1");
 
 		Push push = new Push();
-		push.addAlias("4047646072210958685725219983627208515076714460526118401538638053");
+		push.addAlias("1340967452355975009635683525851411075792113605293178132545534717");
 		push.setAps(aps);
 
-		NotificationProxy proxy = ProxyFactory.create(NotificationProxy.class, "https://go.urbanairship.com",
-				new MyClientExecutor());
+		NotificationProxy proxy = ProxyFactory.create(NotificationProxy.class, "https://go.urbanairship.com");
 		proxy.notify(push);
 	}
 }

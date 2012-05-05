@@ -6,6 +6,7 @@ import net.encomendaz.services.tracking.Trace.Status;
 import net.encomendaz.services.util.Hasher;
 import net.encomendaz.services.util.Serializer;
 
+import org.codehaus.jackson.annotate.JsonIgnore;
 import org.codehaus.jackson.annotate.JsonPropertyOrder;
 
 @JsonPropertyOrder({ "id", "traces" })
@@ -56,4 +57,8 @@ public class Tracking {
 		this.traces = traces;
 	}
 
+	@JsonIgnore
+	public Trace getLastTrace() {
+		return this.traces.isEmpty() ? null : this.traces.get(this.traces.size() - 1); 
+	}
 }

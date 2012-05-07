@@ -35,24 +35,39 @@ import javax.ws.rs.QueryParam;
 
 import net.encomendaz.services.Response;
 import net.encomendaz.services.util.Serializer;
+import net.encomendaz.services.util.Strings;
 
 @Path("/monitoring.json")
 @Produces(MEDIA_TYPE)
 public class MonitoringService {
 
+	@GET
+	public String search(@QueryParam("clientId") String clientId, @QueryParam("trackId") String trackId,
+			@QueryParam("callback") String callback) throws MonitoringException {
+
+		validateClientId(clientId);
+
+		List<Monitoring> list = MonitoringManager.find(clientId);
+		for (Monitoring monitoring : list) {
+			monitoring.setClientId(null);
+		}
+
+		Response<List<Monitoring>> response = new Response<List<Monitoring>>();
+		response.setStatus(OK);
+		response.setData(list);
+
+		return Serializer.json(response, callback);
+	}
+
 	@PUT
-	public Response<String> register(@FormParam("clientId") String clientId, @FormParam("trackId") String trackId,
-			@FormParam("label") String label) throws MonitoringException {
-		Monitoring monitoring = MonitoringManager.load(clientId, trackId);
+	public String register(@FormParam("clientId") String clientId, @FormParam("trackId") String trackId,
+			@FormParam("label") String label, @FormParam("callback") String callback) throws MonitoringException {
+
+		validateClientId(clientId);
+		validateTrackId(trackId);
 
 		Response<String> response = new Response<String>();
-
-		// System.out.println("-------------------");
-		// System.out.println(monitoring.getLabel());
-		// System.out.println(label);
-		// System.out.println(!(monitoring.getLabel() == null ? "" : monitoring.getLabel()).equals(label == null ? "" :
-		// label));
-		// System.out.println("-------------------");
+		Monitoring monitoring = MonitoringManager.load(clientId, trackId);
 
 		if (monitoring == null) {
 			monitoring = new Monitoring();
@@ -62,29 +77,32 @@ public class MonitoringService {
 			MonitoringManager.insert(monitoring);
 
 			response.setStatus(OK);
-			response.setMessage("Created successfully with id #" + monitoring.getId());
 
 		} else if (!(monitoring.getLabel() == null ? "" : monitoring.getLabel()).equals(label == null ? "" : label)) {
 			monitoring.setLabel(label);
 			MonitoringManager.update(monitoring);
 
 			response.setStatus(OK);
-			response.setMessage("Label updated");
 
 		} else {
 			throw new MonitoringException("Duplicated");
 		}
 
-		return response;
+		return Serializer.json(response, callback);
 	}
 
 	@DELETE
-	public Response<String> delete(@QueryParam("clientId") String clientId, @QueryParam("trackId") String trackId)
-			throws MonitoringException {
+	public String delete(@QueryParam("clientId") String clientId, @QueryParam("trackId") String trackId,
+			@QueryParam("callback") String callback) throws MonitoringException {
+
+		validateClientId(clientId);
+		validateTrackId(trackId);
+
 		Monitoring monitoring = MonitoringManager.load(clientId, trackId);
 
 		if (monitoring == null) {
-			throw new MonitoringException("Does not exists");
+			throw new MonitoringException("Não existe monitoramento para o clientId=" + clientId + " e trackId="
+					+ trackId);
 
 		} else {
 			MonitoringManager.delete(monitoring);
@@ -92,19 +110,19 @@ public class MonitoringService {
 
 		Response<String> response = new Response<String>();
 		response.setStatus(OK);
-		response.setMessage("Registered successfully with id #" + monitoring.getId());
-
-		return response;
-	}
-
-	@GET
-	public String search(@QueryParam("callback") String callback) {
-		Response<List<Monitoring>> response = new Response<List<Monitoring>>();
-
-		List<Monitoring> monitorings = MonitoringManager.findAll();
-		response.setStatus(OK);
-		response.setData(monitorings);
 
 		return Serializer.json(response, callback);
+	}
+
+	private void validateClientId(String clientId) throws MonitoringException {
+		if (Strings.isEmpty(clientId)) {
+			throw new MonitoringException("O parâmetro clientId é obrigatório!");
+		}
+	}
+
+	private void validateTrackId(String trackId) throws MonitoringException {
+		if (Strings.isEmpty(trackId)) {
+			throw new MonitoringException("O parâmetro trackId é obrigatório!");
+		}
 	}
 }

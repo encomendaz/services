@@ -50,7 +50,7 @@ public class MonitoringManager {
 		Objectify objectify = ObjectifyService.begin();
 		objectify.put(monitoring);
 	}
-	
+
 	public static void delete(Monitoring monitoring) {
 		Objectify objectify = ObjectifyService.begin();
 		objectify.delete(monitoring);
@@ -59,24 +59,32 @@ public class MonitoringManager {
 	public static boolean exists(String clientId, String trackId) {
 		return load(clientId, trackId) != null;
 	}
-	
+
 	public static Monitoring load(String clientId, String trackId) {
 		Objectify objectify = ObjectifyService.begin();
-		Query<Monitoring> query = objectify.query(Monitoring.class).filter("clientId", clientId).filter("trackId", trackId);
-		
+		Query<Monitoring> query = objectify.query(Monitoring.class).filter("clientId", clientId)
+				.filter("trackId", trackId);
+
 		Monitoring result = null;
-		List<Monitoring> list = query.list();	
-		
-		if(!list.isEmpty()) {
+		List<Monitoring> list = query.list();
+
+		if (!list.isEmpty()) {
 			result = list.get(0);
 		}
-		
+
 		return result;
 	}
-	
+
 	public static List<Monitoring> findAll() {
 		Objectify objectify = ObjectifyService.begin();
 		Query<Monitoring> query = objectify.query(Monitoring.class).order("clientId").order("trackId");
+
+		return query.list();
+	}
+
+	public static List<Monitoring> find(String clientId) {
+		Objectify objectify = ObjectifyService.begin();
+		Query<Monitoring> query = objectify.query(Monitoring.class).filter("clientId", clientId).order("trackId");
 
 		return query.list();
 	}

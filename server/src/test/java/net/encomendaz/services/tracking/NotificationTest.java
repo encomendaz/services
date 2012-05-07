@@ -43,7 +43,7 @@ public class NotificationTest {
 	}
 
 	@Test
-//	@Ignore
+	@Ignore
 	public void push() {
 		Aps aps = new Aps();
 		aps.setAlert("opa opa 2");

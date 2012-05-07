@@ -63,6 +63,7 @@ public class Monitoring {
 		this.id = id;
 	}
 
+	@JsonSerialize(include = NON_NULL)
 	public String getClientId() {
 		return clientId;
 	}
@@ -79,6 +80,7 @@ public class Monitoring {
 		this.trackId = trackId;
 	}
 
+	@JsonIgnore
 	public String getHash() {
 		return hash;
 	}
@@ -114,6 +116,7 @@ public class Monitoring {
 		this.monitored = monitored;
 	}
 
+	@JsonSerialize(include = NON_NULL)
 	public String getLabel() {
 		return label;
 	}

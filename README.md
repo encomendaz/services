@@ -33,6 +33,10 @@ http://services.encomendaz.net/monitoring.json?clientId=cleverson.sacramento@gma
 
 O parâmetro "clientId" é obrigatório e deve corresponder ao e-mail do interessado no monitoramento da encomenda enviado via query.
 
+Para resquisições JSONP, use esta URL:
+
+http://services.encomendaz.net/monitoring.json?clientId=cleverson.sacramento@gmail.com&callback=myJSONPCallback
+
 ### Inclusão (PUT Method)
 
 Os parâmetros "clientId" e "trackId" são obrigatórios e devem corresponder ao e-mail do interessado (clientId) no monitoramento de uma determianda encomenda (trackId) e devem ser enviados via post.

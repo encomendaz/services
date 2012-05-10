@@ -85,7 +85,7 @@ public class MonitoringService {
 			response.setStatus(OK);
 
 		} else {
-			throw new MonitoringException("Duplicated");
+			throw new MonitoringException("Duplicado");
 		}
 
 		return Serializer.json(response, callback);
@@ -116,13 +116,13 @@ public class MonitoringService {
 
 	private void validateClientId(String clientId) throws MonitoringException {
 		if (Strings.isEmpty(clientId)) {
-			throw new MonitoringException("O parâmetro clientId é obrigatório!");
+			throw new MonitoringException("O parâmetro clientId é obrigatório");
 		}
 	}
 
 	private void validateTrackId(String trackId) throws MonitoringException {
 		if (Strings.isEmpty(trackId)) {
-			throw new MonitoringException("O parâmetro trackId é obrigatório!");
+			throw new MonitoringException("O parâmetro trackId é obrigatório");
 		}
 	}
 }

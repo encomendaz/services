@@ -11,6 +11,7 @@ import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeMessage;
 
 import net.encomendaz.services.monitoring.Monitoring;
+import net.encomendaz.services.tracking.Trace;
 import net.encomendaz.services.tracking.Tracking;
 import net.encomendaz.services.util.Strings;
 
@@ -24,7 +25,7 @@ public class NotificationManager {
 	static {
 		ResteasyProviderFactory.setRegisterBuiltinByDefault(false);
 		ResteasyProviderFactory.getInstance().registerProvider(JacksonJsonProvider.class);
-		ClientRequest.setDefaultExecutorClass(MyClientExecutor.class.getCanonicalName());
+		ClientRequest.setDefaultExecutorClass(AirshipClientExecutor.class.getCanonicalName());
 	}
 
 	public static void send(Monitoring monitoring, Tracking tracking) throws Exception {
@@ -51,12 +52,8 @@ public class NotificationManager {
 	}
 
 	private static void push(Monitoring monitoring, Tracking tracking) {
-		String label = Strings.isEmpty(monitoring.getLabel()) ? "" : " (" + monitoring.getLabel() + ")";
-		String alert = "O status da encomenda " + monitoring.getTrackId() + label + " mudou para "
-				+ tracking.getLastTrace().getStatus();
-
 		Aps aps = new Aps();
-		aps.setAlert(alert);
+		aps.setAlert(buildMessage(monitoring, tracking));
 		aps.setSound("default");
 		// aps.setBadge("+1");
 
@@ -66,5 +63,74 @@ public class NotificationManager {
 
 		NotificationProxy proxy = ProxyFactory.create(NotificationProxy.class, "https://go.urbanairship.com");
 		proxy.notify(push);
+	}
+
+	private static String buildMessage(Monitoring monitoring, Tracking tracking) {
+		StringBuffer message = new StringBuffer();
+
+		message.append("A encomenda ");
+		message.append(monitoring.getTrackId());
+
+		if (!Strings.isEmpty(monitoring.getLabel())) {
+			message.append(" (" + monitoring.getLabel() + ")");
+		}
+		
+		message.append(" ");
+
+		switch (tracking.getLastTrace().getStatus()) {
+			case ACCEPTANCE:
+				message.append("foi postada");
+				message.append(buildCity(tracking.getLastTrace()));
+
+				break;
+			case ENROUTE:
+				message.append("foi encaminhada para o próximo destino");
+
+				break;
+			case CHECKED:
+				message.append("foi verificada");
+				message.append(buildCity(tracking.getLastTrace()));
+
+				break;
+
+			case DELIVERING:
+				message.append("saiu para entrega");
+				message.append(buildCity(tracking.getLastTrace()));
+
+				break;
+
+			case DELIVERED:
+				message.append("foi entrega");
+				message.append(buildCity(tracking.getLastTrace()));
+
+				break;
+
+			case AWAITING:
+				message.append("está aguardando retirada");
+				message.append(buildCity(tracking.getLastTrace()));
+
+				break;
+
+			default:
+				message.append("está com um status desconhecido");
+		}
+		
+		message.append(".");
+
+		return message.toString();
+	}
+
+	private static String buildCity(Trace trace) {
+		StringBuffer city = new StringBuffer();
+
+		if (!Strings.isEmpty(trace.getCity())) {
+			city.append(" em " + trace.getCity());
+
+			if (!Strings.isEmpty(trace.getState())) {
+				city.append("/" + trace.getState());
+			}
+		}
+
+		return city.toString();
 	}
 }

@@ -44,7 +44,23 @@ import org.jboss.resteasy.util.Base64;
 import org.jboss.resteasy.util.CaseInsensitiveMap;
 import org.jboss.resteasy.util.CommitHeaderOutputStream;
 
-public class MyClientExecutor extends URLConnectionClientExecutor {
+public class AirshipClientExecutor extends URLConnectionClientExecutor {
+
+	// @Override
+	// protected void setupRequest(ClientRequest request, HttpURLConnection connection) throws ProtocolException {
+	//
+	// ResourceBundle bundle = ResourceBundle.getBundle("encomendaz-server");
+	// String username = bundle.getString("airhsip-username");;
+	// String password = bundle.getString("airhsip-password");
+	//
+	// String authString = username + ":" + password;
+	// String authStringBase64 = Base64.encodeBytes(authString.getBytes());
+	// authStringBase64 = authStringBase64.trim();
+	//
+	// connection.addRequestProperty("Authorization", "Basic " + authStringBase64);
+	//
+	// super.setupRequest(request, connection);
+	// }
 
 	public ClientResponse execute(ClientRequest request) throws Exception {
 		String uri = request.getUri();

@@ -104,6 +104,7 @@
 			<artifactId>resteasy-jaxrs</artifactId>
 			<exclusions>
 				<!--
+				-->
 				<exclusion>
 					<groupId>org.apache.httpcomponents</groupId>
 					<artifactId>httpclient</artifactId>
@@ -112,7 +113,6 @@
 					<groupId>commons-httpclient</groupId>
 					<artifactId>commons-httpclient</artifactId>
 				</exclusion>
-				-->
 				<exclusion>
 					<groupId>javax.annotation</groupId>
 					<artifactId>jsr250-api</artifactId>

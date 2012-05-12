@@ -21,7 +21,7 @@
 package net.encomendaz.services.tracking;
 
 import net.encomendaz.services.notification.Aps;
-import net.encomendaz.services.notification.MyClientExecutor;
+import net.encomendaz.services.notification.AirshipClientExecutor;
 import net.encomendaz.services.notification.NotificationProxy;
 import net.encomendaz.services.notification.Push;
 
@@ -39,11 +39,11 @@ public class NotificationTest {
 	public void before() {
 		ResteasyProviderFactory.setRegisterBuiltinByDefault(false);
 		ResteasyProviderFactory.getInstance().registerProvider(JacksonJsonProvider.class);
-		ClientRequest.setDefaultExecutorClass(MyClientExecutor.class.getCanonicalName());
+		ClientRequest.setDefaultExecutorClass(AirshipClientExecutor.class.getCanonicalName());
 	}
 
 	@Test
-	@Ignore
+//	@Ignore
 	public void push() {
 		Aps aps = new Aps();
 		aps.setAlert("opa opa 2");

@@ -18,15 +18,11 @@
  or write to the Free Software Foundation, Inc., 51 Franklin Street,
  Fifth Floor, Boston, MA  02110-1301, USA.
 -->
-<appengine-web-app xmlns="http://appengine.google.com/ns/1.0">
+<datastore-indexes autoGenerate="false">
 
-	<application>${gae.application}</application>
-	<version>2</version>
+	<datastore-index kind="Monitoring" ancestor="false" source="manual">
+		<property name="clientId" direction="asc" />
+		<property name="trackId" direction="asc" />
+	</datastore-index>
 
-	<system-properties>
-		<property name="java.util.logging.config.file" value="WEB-INF/logging.properties" />
-	</system-properties>
-
-	<threadsafe>true</threadsafe>
-
-</appengine-web-app>
+</datastore-indexes>

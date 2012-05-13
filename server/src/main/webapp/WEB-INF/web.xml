@@ -37,7 +37,11 @@
 		<param-name>resteasy.scan</param-name>
 		<param-value>true</param-value>
 	</context-param>
-
+	
+	<mime-mapping>
+		<extension>ipa</extension>
+		<mime-type>application/octet-stream</mime-type>
+	</mime-mapping>
 <!--
 	<security-constraint>
 		<web-resource-collection>

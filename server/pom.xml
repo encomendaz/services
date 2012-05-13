@@ -187,8 +187,6 @@
 		-->
 	</dependencies>
 
-<!--
--->
 	<repositories>
 		<repository>
 			<id>objectify-appengine</id>
@@ -196,8 +194,30 @@
 		</repository>
 	</repositories>
 
-<!--
--->
+	<profiles>
+		<profile>
+			<id>sandbox</id>
+			<activation>
+				<activeByDefault>true</activeByDefault>
+			</activation>
+			<properties>
+				<gae.application>encomendaz-services-sandbox</gae.application>
+
+				<airship.username>${env.ENCOMENDAZ_AIRSHIP_DEV_APP_KEY}</airship.username>
+				<airship.password>${env.ENCOMENDAZ_AIRSHIP_DEV_APP_MASTER_SECRET}</airship.password>
+			</properties>
+		</profile>
+		<profile>
+			<id>dist</id>
+			<properties>
+				<gae.application>encomendaz-services</gae.application>
+
+				<airship.username>${env.ENCOMENDAZ_AIRSHIP_PROD_APP_KEY}</airship.username>
+				<airship.password>${env.ENCOMENDAZ_AIRSHIP_PROD_APP_MASTER_SECRET}</airship.password>
+			</properties>
+		</profile>
+	</profiles>
+
 	<properties>
 		<gae.version>1.6.5</gae.version>
 	</properties>

@@ -50,8 +50,8 @@ public class AirshipClientExecutor extends URLConnectionClientExecutor {
 	// protected void setupRequest(ClientRequest request, HttpURLConnection connection) throws ProtocolException {
 	//
 	// ResourceBundle bundle = ResourceBundle.getBundle("encomendaz-server");
-	// String username = bundle.getString("airhsip-username");;
-	// String password = bundle.getString("airhsip-password");
+	// String username = bundle.getString("airship.username");;
+	// String password = bundle.getString("airship.password");
 	//
 	// String authString = username + ":" + password;
 	// String authStringBase64 = Base64.encodeBytes(authString.getBytes());
@@ -62,7 +62,7 @@ public class AirshipClientExecutor extends URLConnectionClientExecutor {
 	// super.setupRequest(request, connection);
 	// }
 
-	public ClientResponse execute(ClientRequest request) throws Exception {
+	public ClientResponse<?> execute(ClientRequest request) throws Exception {
 		String uri = request.getUri();
 		String httpMethod = request.getHttpMethod();
 
@@ -70,8 +70,8 @@ public class AirshipClientExecutor extends URLConnectionClientExecutor {
 		connection.setRequestMethod(httpMethod);
 
 		ResourceBundle bundle = ResourceBundle.getBundle("encomendaz-server");
-		String appKey = bundle.getString("airhsip-username");;
-		String appMasterSecret = bundle.getString("airhsip-password");
+		String appKey = bundle.getString("airship.username");
+		String appMasterSecret = bundle.getString("airship.password");
 
 		String authString = appKey + ":" + appMasterSecret;
 		String authStringBase64 = Base64.encodeBytes(authString.getBytes());

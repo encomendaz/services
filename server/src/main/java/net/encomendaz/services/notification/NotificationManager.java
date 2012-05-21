@@ -100,7 +100,7 @@ public class NotificationManager {
 				break;
 
 			case DELIVERED:
-				message.append("foi entrega");
+				message.append("foi entregue");
 				message.append(buildCity(tracking.getLastTrace()));
 
 				break;

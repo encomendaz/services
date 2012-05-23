@@ -34,6 +34,7 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
 
 import net.encomendaz.services.Response;
+import net.encomendaz.services.notification.NotificationManager;
 import net.encomendaz.services.util.Serializer;
 import net.encomendaz.services.util.Strings;
 
@@ -66,8 +67,17 @@ public class MonitoringService {
 		validateClientId(clientId);
 		validateTrackId(trackId);
 
-		Response<String> response = new Response<String>();
+		String deviceToken = null;
+		int i;
+		if ((i = clientId.indexOf(":")) > 0) {
+			deviceToken = clientId.substring(i + 1, clientId.length());
+			clientId = clientId.substring(0, i);
+			
+			NotificationManager.register(deviceToken, clientId);
+		}
+
 		Monitoring monitoring = MonitoringManager.load(clientId, trackId);
+		Response<String> response = new Response<String>();
 
 		if (monitoring == null) {
 			monitoring = new Monitoring();

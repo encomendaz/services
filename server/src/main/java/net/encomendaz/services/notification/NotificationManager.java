@@ -27,6 +27,14 @@ public class NotificationManager {
 		ResteasyProviderFactory.getInstance().registerProvider(JacksonJsonProvider.class);
 		ClientRequest.setDefaultExecutorClass(AirshipClientExecutor.class.getCanonicalName());
 	}
+	
+	public static void register(String deviceToken, String clientId) {
+		Registration registration = new Registration();
+		registration.setAlias(clientId);
+		
+		RegistrationProxy proxy = ProxyFactory.create(RegistrationProxy.class, "https://go.urbanairship.com");
+		proxy.register(deviceToken, registration);
+	}
 
 	public static void send(Monitoring monitoring, Tracking tracking) throws Exception {
 		if (monitoring.getClientId().indexOf("@") > 0) {

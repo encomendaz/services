@@ -25,15 +25,17 @@ import static org.codehaus.jackson.map.annotate.JsonSerialize.Inclusion.NON_NULL
 import java.util.Date;
 
 import javax.persistence.Id;
+import javax.persistence.Transient;
 
 import net.encomendaz.services.serializer.DateSerializer;
+import net.encomendaz.services.util.Serializer;
 
 import org.codehaus.jackson.annotate.JsonIgnore;
 import org.codehaus.jackson.annotate.JsonPropertyOrder;
 import org.codehaus.jackson.map.annotate.JsonSerialize;
 
 @JsonPropertyOrder({ "clientId", "trackId", "label", "created", "monitored", "updated", "hash" })
-public class Monitoring {
+public class Monitoring implements Comparable<Monitoring>, Cloneable {
 
 	public static final String SERVICE_PATH = "/monitoring.json";
 
@@ -48,11 +50,33 @@ public class Monitoring {
 
 	private Date created;
 
+	@Transient
 	private Date monitored;
 
 	private Date updated;
 
 	private String hash;
+
+	public Monitoring() {
+	}
+
+	public Monitoring(String clientId, String trackId) {
+		this.setClientId(clientId);
+		this.setTrackId(trackId);
+	}
+
+	@Override
+	protected Object clone() {
+		Object clone = null;
+
+		try {
+			clone = super.clone();
+		} catch (CloneNotSupportedException e) {
+			e.printStackTrace();
+		}
+
+		return clone;
+	}
 
 	@JsonIgnore
 	public Long getId() {
@@ -77,7 +101,65 @@ public class Monitoring {
 	}
 
 	public void setTrackId(String trackId) {
-		this.trackId = trackId;
+		this.trackId = trackId != null ? trackId.toUpperCase() : null;
+	}
+
+	@Override
+	public int compareTo(Monitoring other) {
+		int result = 0;
+
+		if (this.getClientId() != null) {
+			result = this.getClientId().compareTo(other.getClientId());
+		}
+
+		if (result == 0 && this.getTrackId() != null) {
+			result = this.getTrackId().compareTo(other.getTrackId());
+		}
+
+		return result;
+	}
+
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + ((clientId == null) ? 0 : clientId.hashCode());
+		result = prime * result + ((trackId == null) ? 0 : trackId.hashCode());
+		return result;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj) {
+			return true;
+		}
+		if (obj == null) {
+			return false;
+		}
+		if (!(obj instanceof Monitoring)) {
+			return false;
+		}
+		Monitoring other = (Monitoring) obj;
+		if (clientId == null) {
+			if (other.clientId != null) {
+				return false;
+			}
+		} else if (!clientId.equals(other.clientId)) {
+			return false;
+		}
+		if (trackId == null) {
+			if (other.trackId != null) {
+				return false;
+			}
+		} else if (!trackId.equals(other.trackId)) {
+			return false;
+		}
+		return true;
+	}
+
+	@Override
+	public String toString() {
+		return Serializer.json(this);
 	}
 
 	@JsonIgnore

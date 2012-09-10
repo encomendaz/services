@@ -3,6 +3,7 @@ package net.encomendaz.services;
 import net.encomendaz.services.tracking.Trace;
 import net.encomendaz.services.tracking.TrackingResponse;
 
+import org.junit.Ignore;
 import org.junit.Test;
 
 public class EncomendaZTest {
@@ -11,6 +12,7 @@ public class EncomendaZTest {
 	 * Por enquanto, este teste ainda não é um teste, mas em breve será!
 	 */
 	@Test
+	@Ignore
 	public void trackingService() {
 		TrackingResponse response;
 

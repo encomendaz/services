@@ -20,8 +20,11 @@
  */
 package net.encomendaz.services.monitoring;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
+import java.util.TreeMap;
 
 import net.encomendaz.services.tracking.Tracking;
 import net.encomendaz.services.tracking.TrackingManager;
@@ -32,8 +35,33 @@ import com.googlecode.objectify.Query;
 
 public class MonitoringManager {
 
+	private static Map<String, Monitoring> cache;
+
 	static {
 		ObjectifyService.register(Monitoring.class);
+	}
+
+	private static Map<String, Monitoring> getCache() {
+		if (cache == null) {
+			loadCache();
+		}
+
+		return cache;
+	}
+
+	private static void loadCache() {
+		Objectify objectify = ObjectifyService.begin();
+		Query<Monitoring> query = objectify.query(Monitoring.class);
+
+		cache = new TreeMap<String, Monitoring>();
+
+		for (Monitoring monitoring : query.list()) {
+			cache.put(getKey(monitoring), monitoring);
+		}
+	}
+
+	private static String getKey(Monitoring monitoring) {
+		return monitoring.getClientId() + "-" + monitoring.getTrackId().toUpperCase();
 	}
 
 	public static void insert(Monitoring monitoring) {
@@ -44,48 +72,51 @@ public class MonitoringManager {
 
 		Objectify objectify = ObjectifyService.begin();
 		objectify.put(monitoring);
+
+		getCache().put(getKey(monitoring), monitoring);
 	}
 
 	public static void update(Monitoring monitoring) {
 		Objectify objectify = ObjectifyService.begin();
 		objectify.put(monitoring);
+
+		String key = getKey(monitoring);
+		getCache().remove(key);
+		getCache().put(key, monitoring);
 	}
 
 	public static void delete(Monitoring monitoring) {
 		Objectify objectify = ObjectifyService.begin();
 		objectify.delete(monitoring);
-	}
 
-	public static boolean exists(String clientId, String trackId) {
-		return load(clientId, trackId) != null;
+		String key = getKey(monitoring);
+		getCache().remove(key);
 	}
 
 	public static Monitoring load(String clientId, String trackId) {
-		Objectify objectify = ObjectifyService.begin();
-		Query<Monitoring> query = objectify.query(Monitoring.class).filter("clientId", clientId)
-				.filter("trackId", trackId);
+		String key = getKey(new Monitoring(clientId, trackId));
+		return getCache().get(key);
+	}
 
-		Monitoring result = null;
-		List<Monitoring> list = query.list();
+	public static List<Monitoring> findAll() {
+		List<Monitoring> result = new ArrayList<Monitoring>();
 
-		if (!list.isEmpty()) {
-			result = list.get(0);
+		for (Monitoring monitoring : getCache().values()) {
+			result.add((Monitoring) monitoring.clone());
 		}
 
 		return result;
 	}
 
-	public static List<Monitoring> findAll() {
-		Objectify objectify = ObjectifyService.begin();
-		Query<Monitoring> query = objectify.query(Monitoring.class).order("clientId").order("trackId");
-
-		return query.list();
-	}
-
 	public static List<Monitoring> find(String clientId) {
-		Objectify objectify = ObjectifyService.begin();
-		Query<Monitoring> query = objectify.query(Monitoring.class).filter("clientId", clientId).order("trackId");
+		List<Monitoring> result = new ArrayList<Monitoring>();
 
-		return query.list();
+		for (Monitoring monitoring : getCache().values()) {
+			if (monitoring.getClientId().equals(clientId)) {
+				result.add((Monitoring) monitoring.clone());
+			}
+		}
+
+		return result;
 	}
 }

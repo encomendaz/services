@@ -55,15 +55,14 @@ public class MonitoringCron {
 					monitoring.setHash(hash);
 					monitoring.setUpdated(date);
 
+					MonitoringManager.update(monitoring);
 					NotificationManager.send(monitoring, tracking);
 				}
 
 				if (tracking.isCompleted()) {
 					MonitoringManager.delete(monitoring);
-
 				} else {
 					monitoring.setMonitored(date);
-					MonitoringManager.update(monitoring);
 				}
 
 			} catch (Exception cause) {

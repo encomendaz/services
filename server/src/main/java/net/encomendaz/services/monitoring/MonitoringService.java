@@ -72,7 +72,7 @@ public class MonitoringService {
 		if ((i = clientId.indexOf(":")) > 0) {
 			deviceToken = clientId.substring(i + 1, clientId.length());
 			clientId = clientId.substring(0, i);
-			
+
 			NotificationManager.register(deviceToken, clientId);
 		}
 
@@ -83,7 +83,7 @@ public class MonitoringService {
 			monitoring = new Monitoring();
 			monitoring.setTrackId(trackId);
 			monitoring.setClientId(clientId);
-			monitoring.setLabel(label);
+			monitoring.setLabel("".equals(label) ? null : label);
 			MonitoringManager.insert(monitoring);
 
 			response.setStatus(OK);

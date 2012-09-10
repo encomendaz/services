@@ -34,7 +34,7 @@ import org.alfredlibrary.utilitarios.correios.RegistroRastreamento;
 public class CorreiosTrace extends Trace {
 
 	private static final Pattern descriptionPattern = Pattern.compile("^(.*?[A-Z]{2,3}) (.*) - (.*)/(\\w{2})$");
-	
+
 	private static final Pattern localePattern = Pattern.compile("(((.+)-)|(.+)) (.+)/(\\w{2})$");
 
 	private final RegistroRastreamento registro;
@@ -84,12 +84,12 @@ public class CorreiosTrace extends Trace {
 
 			} else {
 				description = "";
-				
-				if (!Strings.isEmpty(registro.getAcao()) && (getStatus() == UNKNOWN || getStatus() == AWAITING )) {
+
+				if (!Strings.isEmpty(registro.getAcao()) && (getStatus() == UNKNOWN || getStatus() == AWAITING)) {
 					description += registro.getAcao().trim() + ". ";
 				}
 
-				description += text+ ".";
+				description += text + ".";
 				description = description.replaceAll("[.][.]", ".").trim();
 			}
 
@@ -117,12 +117,15 @@ public class CorreiosTrace extends Trace {
 	public Status getStatus() {
 		if (status == null) {
 			final String acao = registro.getAcao().toLowerCase().trim();
-			
+
 			if ("postado".equals(acao)) {
 				status = Status.ACCEPTANCE;
-				
+
 			} else if (acao.indexOf("postagem") >= 0) {
-					status = Status.ACCEPTANCE;
+				status = Status.ACCEPTANCE;
+
+			} else if (acao.indexOf("coletado") >= 0) {
+				status = Status.ACCEPTANCE;
 
 			} else if ("encaminhado".equals(acao)) {
 				status = Status.ENROUTE;
@@ -141,7 +144,7 @@ public class CorreiosTrace extends Trace {
 
 			} else if (acao.indexOf("aguardando") >= 0) {
 				status = Status.AWAITING;
-				
+
 			} else {
 				status = Status.UNKNOWN;
 			}

@@ -24,7 +24,6 @@ import static org.codehaus.jackson.map.annotate.JsonSerialize.Inclusion.NON_NULL
 
 import java.util.Date;
 
-import javax.persistence.Id;
 import javax.persistence.Transient;
 
 import net.encomendaz.services.serializer.DateSerializer;
@@ -39,8 +38,7 @@ public class Monitoring implements Comparable<Monitoring>, Cloneable {
 
 	public static final String SERVICE_PATH = "/monitoring.json";
 
-	@Id
-	private Long id;
+	private String id;
 
 	private String clientId;
 
@@ -60,6 +58,21 @@ public class Monitoring implements Comparable<Monitoring>, Cloneable {
 	public Monitoring() {
 	}
 
+	@JsonIgnore
+	public String getId() {
+		if (this.id == null) {
+			this.id = this.generateId();
+		}
+
+		return this.id;
+	}
+
+	private String generateId() {
+		String result = null;
+
+		return result;
+	}
+
 	public Monitoring(String clientId, String trackId) {
 		this.setClientId(clientId);
 		this.setTrackId(trackId);
@@ -76,15 +89,6 @@ public class Monitoring implements Comparable<Monitoring>, Cloneable {
 		}
 
 		return clone;
-	}
-
-	@JsonIgnore
-	public Long getId() {
-		return id;
-	}
-
-	public void setId(Long id) {
-		this.id = id;
 	}
 
 	@JsonSerialize(include = NON_NULL)

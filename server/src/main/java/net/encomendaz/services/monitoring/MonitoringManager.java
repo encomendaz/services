@@ -23,98 +23,216 @@ package net.encomendaz.services.monitoring;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-import java.util.Map;
-import java.util.TreeMap;
 
 import net.encomendaz.services.tracking.Tracking;
 import net.encomendaz.services.tracking.TrackingManager;
 
-import com.googlecode.objectify.Objectify;
-import com.googlecode.objectify.ObjectifyService;
-import com.googlecode.objectify.Query;
+import com.google.appengine.api.datastore.DatastoreService;
+import com.google.appengine.api.datastore.DatastoreServiceFactory;
+import com.google.appengine.api.datastore.Entity;
+import com.google.appengine.api.datastore.PreparedQuery;
+import com.google.appengine.api.datastore.Query;
+import com.google.appengine.api.datastore.Query.CompositeFilterOperator;
+import com.google.appengine.api.datastore.Query.FilterPredicate;
+import com.google.appengine.api.memcache.MemcacheService;
+import com.google.appengine.api.memcache.MemcacheServiceFactory;
 
 public class MonitoringManager {
 
-	private static Map<String, Monitoring> cache;
-
-	static {
-		ObjectifyService.register(Monitoring.class);
+	private static DatastoreService getDatastoreService() {
+		return DatastoreServiceFactory.getDatastoreService();
 	}
 
-	private static Map<String, Monitoring> getCache() {
-		if (cache == null) {
-			loadCache();
-		}
-
-		return cache;
+	private static MemcacheService getMemcacheService() {
+		return MemcacheServiceFactory.getMemcacheService();
 	}
 
-	private static void loadCache() {
-		Objectify objectify = ObjectifyService.begin();
-		Query<Monitoring> query = objectify.query(Monitoring.class);
-
-		cache = new TreeMap<String, Monitoring>();
-
-		for (Monitoring monitoring : query.list()) {
-			cache.put(getKey(monitoring), monitoring);
-		}
-	}
-
-	private static String getKey(Monitoring monitoring) {
+	private static String getCacheKey(Monitoring monitoring) {
 		return monitoring.getClientId() + "-" + monitoring.getTrackId().toUpperCase();
 	}
 
 	public static void insert(Monitoring monitoring) {
 		Tracking tracking = TrackingManager.search(monitoring.getTrackId());
-
 		monitoring.setHash(tracking.getHash());
 		monitoring.setCreated(new Date());
 
-		Objectify objectify = ObjectifyService.begin();
-		objectify.put(monitoring);
+		Entity entity = new Entity("Monitoring");
+		entity.setProperty("clientId", monitoring.getClientId());
+		entity.setProperty("trackId", monitoring.getTrackId());
+		entity.setProperty("created", monitoring.getCreated());
+		entity.setProperty("hash", monitoring.getHash());
 
-		getCache().put(getKey(monitoring), monitoring);
+		if (monitoring.getLabel() != null) {
+			entity.setProperty("label", monitoring.getLabel());
+		}
+
+		DatastoreService datastore = getDatastoreService();
+		datastore.put(entity);
+
+		MemcacheService memcache = getMemcacheService();
+		String cacheKey = getCacheKey(monitoring);
+		memcache.put(cacheKey, entity);
 	}
 
 	public static void update(Monitoring monitoring) {
-		Objectify objectify = ObjectifyService.begin();
-		objectify.put(monitoring);
+		MemcacheService memcache = getMemcacheService();
+		String cacheKey = getCacheKey(monitoring);
 
-		String key = getKey(monitoring);
-		getCache().remove(key);
-		getCache().put(key, monitoring);
+		Entity entity;
+		if (memcache.contains(cacheKey)) {
+			entity = (Entity) memcache.get(cacheKey);
+
+		} else {
+			entity = loadFromDatastore(cacheKey, cacheKey);
+		}
+
+		boolean changed = false;
+
+		String label = (String) entity.getProperty("label");
+		if (label != null && !label.equals(monitoring.getLabel())) {
+			if (monitoring.getLabel() == null) {
+			} else {
+				entity.setProperty("label", monitoring.getLabel());
+			}
+
+			changed = true;
+		}
+
+		Date created = (Date) entity.getProperty("created");
+		if (created != null && !created.equals(monitoring.getCreated())) {
+			if (monitoring.getCreated() == null) {
+				entity.removeProperty("created");
+			} else {
+				entity.setProperty("created", monitoring.getCreated());
+			}
+
+			changed = true;
+		}
+
+		Date updated = (Date) entity.getProperty("updated");
+		if (updated != null && !updated.equals(monitoring.getUpdated())) {
+			if (monitoring.getUpdated() == null) {
+				entity.removeProperty("updated");
+			} else {
+				entity.setProperty("updated", monitoring.getUpdated());
+			}
+
+			changed = true;
+		}
+
+		String hash = (String) entity.getProperty("hash");
+		if (hash != null && !hash.equals(monitoring.getHash())) {
+			if (monitoring.getHash() == null) {
+				entity.removeProperty("hash");
+			} else {
+				entity.setProperty("hash", monitoring.getHash());
+			}
+
+			changed = true;
+		}
+
+		if (changed) {
+			DatastoreService datastore = getDatastoreService();
+			datastore.put(entity);
+
+			memcache.delete(cacheKey);
+			memcache.put(entity, cacheKey);
+		}
 	}
 
 	public static void delete(Monitoring monitoring) {
-		Objectify objectify = ObjectifyService.begin();
-		objectify.delete(monitoring);
+		MemcacheService memcache = getMemcacheService();
+		String cacheKey = getCacheKey(monitoring);
 
-		String key = getKey(monitoring);
-		getCache().remove(key);
+		Entity entity;
+		if (memcache.contains(cacheKey)) {
+			entity = (Entity) memcache.get(cacheKey);
+			memcache.delete(cacheKey);
+
+		} else {
+			entity = loadFromDatastore(cacheKey, cacheKey);
+		}
+
+		DatastoreService datastore = getDatastoreService();
+		datastore.delete(entity.getKey());
 	}
 
 	public static Monitoring load(String clientId, String trackId) {
-		String key = getKey(new Monitoring(clientId, trackId));
-		return getCache().get(key);
-	}
+		MemcacheService memcache = getMemcacheService();
+		String cacheKey = getCacheKey(new Monitoring(clientId, trackId));
+		boolean cached = memcache.contains(cacheKey);
 
-	public static List<Monitoring> findAll() {
-		List<Monitoring> result = new ArrayList<Monitoring>();
+		Entity entity;
+		if (cached) {
+			entity = (Entity) memcache.get(cacheKey);
 
-		for (Monitoring monitoring : getCache().values()) {
-			result.add((Monitoring) monitoring.clone());
+		} else {
+			entity = loadFromDatastore(clientId, trackId);
+		}
+
+		Monitoring result = null;
+
+		if (entity != null) {
+			result = parse(entity);
+
+			if (!cached) {
+				memcache.put(getCacheKey(result), entity);
+			}
 		}
 
 		return result;
 	}
 
+	public static Entity loadFromDatastore(String clientId, String trackId) {
+		Query query = new Query("Monitoring");
+		query.setFilter(CompositeFilterOperator.and(new FilterPredicate("clientId", Query.FilterOperator.EQUAL,
+				clientId), new FilterPredicate("trackId", Query.FilterOperator.EQUAL, trackId)));
+
+		DatastoreService datastore = getDatastoreService();
+		PreparedQuery preparedQuery = datastore.prepare(query);
+
+		return preparedQuery.asSingleEntity();
+	}
+
+	public static List<Monitoring> findAll() {
+		List<Monitoring> result = new ArrayList<Monitoring>();
+
+		Query query = new Query("Monitoring");
+
+		DatastoreService datastore = getDatastoreService();
+		PreparedQuery preparedQuery = datastore.prepare(query);
+
+		for (Entity entity : preparedQuery.asIterable()) {
+			result.add(parse(entity));
+		}
+
+		return result;
+	}
+
+	private static Monitoring parse(Entity entity) {
+		Monitoring monitoring = new Monitoring();
+
+		monitoring.setClientId((String) entity.getProperty("clientId"));
+		monitoring.setTrackId((String) entity.getProperty("trackId"));
+		monitoring.setLabel((String) entity.getProperty("label"));
+		monitoring.setCreated((Date) entity.getProperty("created"));
+		monitoring.setUpdated((Date) entity.getProperty("updated"));
+		monitoring.setHash((String) entity.getProperty("hash"));
+
+		return monitoring;
+	}
+
 	public static List<Monitoring> find(String clientId) {
 		List<Monitoring> result = new ArrayList<Monitoring>();
 
-		for (Monitoring monitoring : getCache().values()) {
-			if (monitoring.getClientId().equals(clientId)) {
-				result.add((Monitoring) monitoring.clone());
-			}
+		Query query = new Query("Monitoring");
+		query.setFilter(new FilterPredicate("clientId", Query.FilterOperator.EQUAL, clientId));
+
+		DatastoreService datastore = getDatastoreService();
+		PreparedQuery preparedQuery = datastore.prepare(query);
+
+		for (Entity entity : preparedQuery.asIterable()) {
+			result.add(parse(entity));
 		}
 
 		return result;

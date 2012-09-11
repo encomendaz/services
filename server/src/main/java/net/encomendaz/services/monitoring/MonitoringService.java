@@ -23,6 +23,7 @@ package net.encomendaz.services.monitoring;
 import static net.encomendaz.services.Response.MEDIA_TYPE;
 import static net.encomendaz.services.Response.Status.OK;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.ws.rs.DELETE;
@@ -38,9 +39,43 @@ import net.encomendaz.services.notification.NotificationManager;
 import net.encomendaz.services.util.Serializer;
 import net.encomendaz.services.util.Strings;
 
+import com.google.appengine.api.datastore.DatastoreService;
+import com.google.appengine.api.datastore.DatastoreServiceFactory;
+import com.google.appengine.api.datastore.Entity;
+import com.google.appengine.api.datastore.PreparedQuery;
+import com.google.appengine.api.datastore.Query;
+
 @Path("/monitoring.json")
 @Produces(MEDIA_TYPE)
 public class MonitoringService {
+
+	@GET
+	@Path("/test")
+	public String test() {
+		Query query = new Query("Monitoring");
+
+		List<Entity> entities = new ArrayList<Entity>();
+
+		DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
+		PreparedQuery preparedQuery = datastore.prepare(query);
+
+		for (Entity entity : preparedQuery.asIterable()) {
+			Monitoring monitoring = new Monitoring();
+
+			monitoring.setClientId((String) entity.getProperty("clientId"));
+			monitoring.setTrackId((String) entity.getProperty("trackId"));
+
+			entity.setProperty("old", true);
+			entity.setProperty("newKey", monitoring.hashCode());
+			entity.removeProperty("monitored");
+
+			entities.add(entity);
+		}
+
+		datastore.put(entities);
+
+		return "ok";
+	}
 
 	@GET
 	public String search(@QueryParam("clientId") String clientId, @QueryParam("trackId") String trackId,

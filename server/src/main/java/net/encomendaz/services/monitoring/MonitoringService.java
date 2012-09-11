@@ -60,10 +60,9 @@ public class MonitoringService {
 		PreparedQuery preparedQuery = datastore.prepare(query);
 
 		for (Entity entity : preparedQuery.asIterable()) {
-			Monitoring monitoring = new Monitoring();
-
-			monitoring.setClientId((String) entity.getProperty("clientId"));
-			monitoring.setTrackId((String) entity.getProperty("trackId"));
+			String clientId = (String) entity.getProperty("clientId");
+			String trackId = (String) entity.getProperty("trackId");
+			Monitoring monitoring = new Monitoring(clientId, trackId);
 
 			entity.setProperty("old", true);
 			entity.setProperty("newKey", monitoring.hashCode());
@@ -84,9 +83,6 @@ public class MonitoringService {
 		validateClientId(clientId);
 
 		List<Monitoring> list = MonitoringManager.find(clientId);
-		for (Monitoring monitoring : list) {
-			monitoring.setClientId(null);
-		}
 
 		Response<List<Monitoring>> response = new Response<List<Monitoring>>();
 		response.setStatus(OK);
@@ -115,9 +111,7 @@ public class MonitoringService {
 		Response<String> response = new Response<String>();
 
 		if (monitoring == null) {
-			monitoring = new Monitoring();
-			monitoring.setTrackId(trackId);
-			monitoring.setClientId(clientId);
+			monitoring = new Monitoring(clientId, trackId);
 			monitoring.setLabel("".equals(label) ? null : label);
 			MonitoringManager.insert(monitoring);
 

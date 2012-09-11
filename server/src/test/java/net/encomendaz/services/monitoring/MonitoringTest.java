@@ -34,56 +34,36 @@ public class MonitoringTest {
 
 		Map<String, Monitoring> monitorings = new TreeMap<String, Monitoring>();
 
-		monitoring = new Monitoring();
-		monitoring.setClientId("b");
-		monitoring.setTrackId("2");
+		monitoring = new Monitoring("b", "2");
 		monitorings.put(monitoring.getClientId() + "-" + monitoring.getTrackId(), monitoring);
 
-		monitoring = new Monitoring();
-		monitoring.setClientId("c");
-		monitoring.setTrackId("1");
+		monitoring = new Monitoring("c", "1");
 		monitorings.put(monitoring.getClientId() + "-" + monitoring.getTrackId(), monitoring);
 
-		monitoring = new Monitoring();
-		monitoring.setClientId("b");
-		monitoring.setTrackId("1");
+		monitoring = new Monitoring("b", "1");
 		monitorings.put(monitoring.getClientId() + "-" + monitoring.getTrackId(), monitoring);
 
-		monitoring = new Monitoring();
-		monitoring.setClientId("a");
-		monitoring.setTrackId("1");
+		monitoring = new Monitoring("a", "1");
 		monitorings.put(monitoring.getClientId() + "-" + monitoring.getTrackId(), monitoring);
 
-		monitoring = new Monitoring();
-		monitoring.setClientId("c");
-		monitoring.setTrackId("2");
+		monitoring = new Monitoring("c", "2");
 		monitorings.put(monitoring.getClientId() + "-" + monitoring.getTrackId(), monitoring);
 
 		List<Monitoring> expectedOrder = new ArrayList<Monitoring>();
 
-		monitoring = new Monitoring();
-		monitoring.setClientId("a");
-		monitoring.setTrackId("1");
+		monitoring = new Monitoring("a", "1");
 		expectedOrder.add(monitoring);
 
-		monitoring = new Monitoring();
-		monitoring.setClientId("b");
-		monitoring.setTrackId("1");
+		monitoring = new Monitoring("b", "1");
 		expectedOrder.add(monitoring);
 
-		monitoring = new Monitoring();
-		monitoring.setClientId("b");
-		monitoring.setTrackId("2");
+		monitoring = new Monitoring("b", "2");
 		expectedOrder.add(monitoring);
 
-		monitoring = new Monitoring();
-		monitoring.setClientId("c");
-		monitoring.setTrackId("1");
+		monitoring = new Monitoring("c", "1");
 		expectedOrder.add(monitoring);
 
-		monitoring = new Monitoring();
-		monitoring.setClientId("c");
-		monitoring.setTrackId("2");
+		monitoring = new Monitoring("c", "2");
 		expectedOrder.add(monitoring);
 
 		assertArrayEquals(expectedOrder.toArray(new Monitoring[0]), monitorings.values().toArray(new Monitoring[0]));
@@ -91,14 +71,9 @@ public class MonitoringTest {
 
 	@Test
 	public void clonable() throws CloneNotSupportedException {
-		Monitoring monitoring;
-
-		monitoring = new Monitoring();
-		monitoring.setClientId("b");
-		monitoring.setTrackId("2");
-
+		Monitoring monitoring = new Monitoring("b", "2");
 		Monitoring clone = (Monitoring) monitoring.clone();
-		
+
 		Assert.assertNotSame(clone, monitoring);
 	}
 }

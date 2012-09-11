@@ -30,9 +30,9 @@ import net.encomendaz.services.tracking.TrackingManager;
 import com.google.appengine.api.datastore.DatastoreService;
 import com.google.appengine.api.datastore.DatastoreServiceFactory;
 import com.google.appengine.api.datastore.Entity;
+import com.google.appengine.api.datastore.KeyFactory;
 import com.google.appengine.api.datastore.PreparedQuery;
 import com.google.appengine.api.datastore.Query;
-import com.google.appengine.api.datastore.Query.CompositeFilterOperator;
 import com.google.appengine.api.datastore.Query.FilterPredicate;
 import com.google.appengine.api.memcache.MemcacheService;
 import com.google.appengine.api.memcache.MemcacheServiceFactory;
@@ -47,8 +47,8 @@ public class MonitoringManager {
 		return MemcacheServiceFactory.getMemcacheService();
 	}
 
-	private static String getCacheKey(Monitoring monitoring) {
-		return monitoring.getClientId() + "-" + monitoring.getTrackId().toUpperCase();
+	private static String getKey(Monitoring monitoring) {
+		return monitoring.getId().toString();
 	}
 
 	public static void insert(Monitoring monitoring) {
@@ -56,101 +56,77 @@ public class MonitoringManager {
 		monitoring.setHash(tracking.getHash());
 		monitoring.setCreated(new Date());
 
-		Entity entity = new Entity("Monitoring");
-		entity.setProperty("clientId", monitoring.getClientId());
-		entity.setProperty("trackId", monitoring.getTrackId());
-		entity.setProperty("created", monitoring.getCreated());
-		entity.setProperty("hash", monitoring.getHash());
+		String key = getKey(monitoring);
 
-		if (monitoring.getLabel() != null) {
-			entity.setProperty("label", monitoring.getLabel());
-		}
+		Entity entity = new Entity("Monitoring", key);
+		setProperty(entity, "clientId", monitoring.getClientId());
+		setProperty(entity, "trackId", monitoring.getTrackId());
+		setProperty(entity, "created", monitoring.getCreated());
+		setProperty(entity, "hash", monitoring.getHash());
+		setProperty(entity, "label", monitoring.getLabel());
 
 		DatastoreService datastore = getDatastoreService();
 		datastore.put(entity);
 
 		MemcacheService memcache = getMemcacheService();
-		String cacheKey = getCacheKey(monitoring);
-		memcache.put(cacheKey, entity);
+		memcache.put(key, entity);
+	}
+
+	private static boolean setProperty(Entity entity, String property, Object value) {
+		boolean updated = false;
+
+		Object currentValue = entity.getProperty(property);
+
+		if (value == null && currentValue != null) {
+			entity.removeProperty(property);
+			updated = true;
+
+		} else if (value != null && !value.equals(currentValue)) {
+			entity.setProperty(property, value);
+			updated = true;
+		}
+
+		return updated;
 	}
 
 	public static void update(Monitoring monitoring) {
 		MemcacheService memcache = getMemcacheService();
-		String cacheKey = getCacheKey(monitoring);
+		String key = getKey(monitoring);
 
 		Entity entity;
-		if (memcache.contains(cacheKey)) {
-			entity = (Entity) memcache.get(cacheKey);
+		if (memcache.contains(key)) {
+			entity = (Entity) memcache.get(key);
 
 		} else {
-			entity = loadFromDatastore(cacheKey, cacheKey);
+			entity = loadFromDatastore(key);
 		}
 
-		boolean changed = false;
+		boolean updated = false;
+		updated |= setProperty(entity, "label", monitoring.getLabel());
+		updated |= setProperty(entity, "created", monitoring.getCreated());
+		updated |= setProperty(entity, "updated", monitoring.getUpdated());
+		updated |= setProperty(entity, "hash", monitoring.getHash());
 
-		String label = (String) entity.getProperty("label");
-		if (label != null && !label.equals(monitoring.getLabel())) {
-			if (monitoring.getLabel() == null) {
-			} else {
-				entity.setProperty("label", monitoring.getLabel());
-			}
-
-			changed = true;
-		}
-
-		Date created = (Date) entity.getProperty("created");
-		if (created != null && !created.equals(monitoring.getCreated())) {
-			if (monitoring.getCreated() == null) {
-				entity.removeProperty("created");
-			} else {
-				entity.setProperty("created", monitoring.getCreated());
-			}
-
-			changed = true;
-		}
-
-		Date updated = (Date) entity.getProperty("updated");
-		if (updated != null && !updated.equals(monitoring.getUpdated())) {
-			if (monitoring.getUpdated() == null) {
-				entity.removeProperty("updated");
-			} else {
-				entity.setProperty("updated", monitoring.getUpdated());
-			}
-
-			changed = true;
-		}
-
-		String hash = (String) entity.getProperty("hash");
-		if (hash != null && !hash.equals(monitoring.getHash())) {
-			if (monitoring.getHash() == null) {
-				entity.removeProperty("hash");
-			} else {
-				entity.setProperty("hash", monitoring.getHash());
-			}
-
-			changed = true;
-		}
-
-		if (changed) {
+		if (updated) {
 			DatastoreService datastore = getDatastoreService();
 			datastore.put(entity);
 
-			memcache.delete(cacheKey);
-			memcache.put(entity, cacheKey);
+			memcache.delete(key);
+			memcache.put(entity, key);
 		}
 	}
 
 	public static void delete(Monitoring monitoring) {
 		MemcacheService memcache = getMemcacheService();
-		String cacheKey = getCacheKey(monitoring);
+		String key = getKey(monitoring);
 
 		Entity entity;
-		if (memcache.contains(cacheKey)) {
-			entity = (Entity) memcache.get(cacheKey);
-			memcache.delete(cacheKey);
+		if (memcache.contains(key)) {
+			entity = (Entity) memcache.get(key);
+			memcache.delete(key);
 
 		} else {
-			entity = loadFromDatastore(cacheKey, cacheKey);
+			entity = loadFromDatastore(key);
 		}
 
 		DatastoreService datastore = getDatastoreService();
@@ -159,15 +135,14 @@ public class MonitoringManager {
 
 	public static Monitoring load(String clientId, String trackId) {
 		MemcacheService memcache = getMemcacheService();
-		String cacheKey = getCacheKey(new Monitoring(clientId, trackId));
-		boolean cached = memcache.contains(cacheKey);
+		String key = getKey(new Monitoring(clientId, trackId));
+		boolean cached = memcache.contains(key);
 
 		Entity entity;
 		if (cached) {
-			entity = (Entity) memcache.get(cacheKey);
-
+			entity = (Entity) memcache.get(key);
 		} else {
-			entity = loadFromDatastore(clientId, trackId);
+			entity = loadFromDatastore(key);
 		}
 
 		Monitoring result = null;
@@ -176,22 +151,25 @@ public class MonitoringManager {
 			result = parse(entity);
 
 			if (!cached) {
-				memcache.put(getCacheKey(result), entity);
+				memcache.put(getKey(result), entity);
 			}
 		}
 
 		return result;
 	}
 
-	public static Entity loadFromDatastore(String clientId, String trackId) {
-		Query query = new Query("Monitoring");
-		query.setFilter(CompositeFilterOperator.and(new FilterPredicate("clientId", Query.FilterOperator.EQUAL,
-				clientId), new FilterPredicate("trackId", Query.FilterOperator.EQUAL, trackId)));
+	public static Entity loadFromDatastore(String key) {
+		Entity result;
 
-		DatastoreService datastore = getDatastoreService();
-		PreparedQuery preparedQuery = datastore.prepare(query);
+		try {
+			DatastoreService datastore = getDatastoreService();
+			result = datastore.get(KeyFactory.stringToKey(key));
 
-		return preparedQuery.asSingleEntity();
+		} catch (Exception cause) {
+			result = null;
+		}
+
+		return result;
 	}
 
 	public static List<Monitoring> findAll() {
@@ -210,10 +188,10 @@ public class MonitoringManager {
 	}
 
 	private static Monitoring parse(Entity entity) {
-		Monitoring monitoring = new Monitoring();
+		String clientId = (String) entity.getProperty("clientId");
+		String trackId = (String) entity.getProperty("trackId");
+		Monitoring monitoring = new Monitoring(clientId, trackId);
 
-		monitoring.setClientId((String) entity.getProperty("clientId"));
-		monitoring.setTrackId((String) entity.getProperty("trackId"));
 		monitoring.setLabel((String) entity.getProperty("label"));
 		monitoring.setCreated((Date) entity.getProperty("created"));
 		monitoring.setUpdated((Date) entity.getProperty("updated"));

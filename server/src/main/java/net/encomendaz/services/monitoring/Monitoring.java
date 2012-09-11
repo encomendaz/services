@@ -38,7 +38,7 @@ public class Monitoring implements Comparable<Monitoring>, Cloneable {
 
 	public static final String SERVICE_PATH = "/monitoring.json";
 
-	private String id;
+	private Long id;
 
 	private String clientId;
 
@@ -55,27 +55,22 @@ public class Monitoring implements Comparable<Monitoring>, Cloneable {
 
 	private String hash;
 
-	public Monitoring() {
-	}
-
-	@JsonIgnore
-	public String getId() {
-		if (this.id == null) {
-			this.id = this.generateId();
-		}
-
-		return this.id;
-	}
-
-	private String generateId() {
-		String result = null;
-
-		return result;
+	public static long getId(String clientId, String trackId) {
+		Monitoring temp = new Monitoring(clientId, trackId);
+		return temp.getId();
 	}
 
 	public Monitoring(String clientId, String trackId) {
-		this.setClientId(clientId);
-		this.setTrackId(trackId);
+		if (clientId == null) {
+			throw new IllegalArgumentException("O clientId deve ser informado!");
+		}
+
+		if (trackId == null) {
+			throw new IllegalArgumentException("O trackId deve ser informado!");
+		}
+
+		this.clientId = clientId;
+		this.trackId = trackId.toUpperCase();
 	}
 
 	@Override
@@ -89,23 +84,6 @@ public class Monitoring implements Comparable<Monitoring>, Cloneable {
 		}
 
 		return clone;
-	}
-
-	@JsonSerialize(include = NON_NULL)
-	public String getClientId() {
-		return clientId;
-	}
-
-	public void setClientId(String clientId) {
-		this.clientId = clientId;
-	}
-
-	public String getTrackId() {
-		return trackId;
-	}
-
-	public void setTrackId(String trackId) {
-		this.trackId = trackId != null ? trackId.toUpperCase() : null;
 	}
 
 	@Override
@@ -164,6 +142,28 @@ public class Monitoring implements Comparable<Monitoring>, Cloneable {
 	@Override
 	public String toString() {
 		return Serializer.json(this);
+	}
+
+	@JsonIgnore
+	public Long getId() {
+		if (this.id == null) {
+			this.id = this.generateId();
+		}
+
+		return this.id;
+	}
+
+	private Long generateId() {
+		return (long) this.hashCode();
+	}
+
+	@JsonSerialize(include = NON_NULL)
+	public String getClientId() {
+		return clientId;
+	}
+
+	public String getTrackId() {
+		return trackId;
 	}
 
 	@JsonIgnore

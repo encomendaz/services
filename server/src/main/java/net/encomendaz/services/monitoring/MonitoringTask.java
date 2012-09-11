@@ -23,31 +23,43 @@ package net.encomendaz.services.monitoring;
 import static net.encomendaz.services.Response.MEDIA_TYPE;
 import static net.encomendaz.services.Response.Status.OK;
 
+import java.util.Date;
+
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
+import javax.ws.rs.QueryParam;
 
 import net.encomendaz.services.Response;
+import net.encomendaz.services.notification.NotificationManager;
+import net.encomendaz.services.tracking.Tracking;
+import net.encomendaz.services.tracking.TrackingManager;
 
-import com.google.appengine.api.taskqueue.Queue;
-import com.google.appengine.api.taskqueue.QueueFactory;
-import com.google.appengine.api.taskqueue.TaskOptions;
-
-@Path("/monitoring.cron")
+@Path("/monitoring.task")
 @Produces(MEDIA_TYPE)
-public class MonitoringCron {
+public class MonitoringTask {
 
 	@GET
-	public Response<String> execute() throws Exception {
-		TaskOptions taskOptions;
-		Queue queue = QueueFactory.getQueue("monitoring");
+	public Response<String> execute(@QueryParam("clientId") String clientId, @QueryParam("trackId") String trackId)
+			throws Exception {
+		Monitoring monitoring = MonitoringManager.load(clientId, trackId);
 
-		for (Monitoring monitoring : MonitoringManager.findAll()) {
-			taskOptions = TaskOptions.Builder.withUrl("/monitoring.task");
-			taskOptions = taskOptions.param("clientId", monitoring.getClientId());
-			taskOptions = taskOptions.param("trackId", monitoring.getTrackId());
+		Date date = new Date();
+		Tracking tracking = TrackingManager.search(monitoring.getTrackId());
+		String hash = tracking.getHash();
 
-			queue.add(taskOptions);
+		if (!monitoring.getHash().equals(hash)) {
+			monitoring.setHash(hash);
+			monitoring.setUpdated(date);
+
+			MonitoringManager.update(monitoring);
+			NotificationManager.send(monitoring, tracking);
+		}
+
+		if (tracking.isCompleted()) {
+			MonitoringManager.delete(monitoring);
+		} else {
+			monitoring.setMonitored(date);
 		}
 
 		Response<String> response = new Response<String>();

@@ -83,7 +83,7 @@ public class AirshipClientExecutor extends URLConnectionClientExecutor {
 		return execute(request, connection);
 	}
 
-	private void setupRequest(ClientRequest request, HttpURLConnection connection) throws ProtocolException {
+	protected void setupRequest(ClientRequest request, HttpURLConnection connection) throws ProtocolException {
 		boolean isGet = "GET".equals(request.getHttpMethod());
 		connection.setInstanceFollowRedirects(isGet && request.followRedirects());
 		connection.setDoOutput(request.getBody() != null || !request.getFormParameters().isEmpty());

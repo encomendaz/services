@@ -81,8 +81,13 @@ public class MonitoringService {
 			@QueryParam("callback") String callback) throws MonitoringException {
 
 		validateClientId(clientId);
+		List<Monitoring> list;
 
-		List<Monitoring> list = MonitoringManager.find(clientId);
+		if (clientId.equalsIgnoreCase("<all>")) {
+			list = MonitoringManager.findAll();
+		} else {
+			list = MonitoringManager.find(clientId);
+		}
 
 		Response<List<Monitoring>> response = new Response<List<Monitoring>>();
 		response.setStatus(OK);

@@ -24,13 +24,13 @@ import static org.codehaus.jackson.map.annotate.JsonSerialize.Inclusion.NON_NULL
 
 import java.util.Date;
 
-import javax.persistence.Transient;
-
+import net.encomendaz.services.serializer.DateDeserializer;
 import net.encomendaz.services.serializer.DateSerializer;
 import net.encomendaz.services.util.Serializer;
 
 import org.codehaus.jackson.annotate.JsonIgnore;
 import org.codehaus.jackson.annotate.JsonPropertyOrder;
+import org.codehaus.jackson.map.annotate.JsonDeserialize;
 import org.codehaus.jackson.map.annotate.JsonSerialize;
 
 @JsonPropertyOrder({ "clientId", "trackId", "label", "created", "monitored", "updated", "hash" })
@@ -48,7 +48,6 @@ public class Monitoring implements Comparable<Monitoring>, Cloneable {
 
 	private Date created;
 
-	@Transient
 	private Date monitored;
 
 	private Date updated;
@@ -58,6 +57,10 @@ public class Monitoring implements Comparable<Monitoring>, Cloneable {
 	public static long getId(String clientId, String trackId) {
 		Monitoring temp = new Monitoring(clientId, trackId);
 		return temp.getId();
+	}
+
+	@Deprecated
+	public Monitoring() {
 	}
 
 	public Monitoring(String clientId, String trackId) {
@@ -162,8 +165,18 @@ public class Monitoring implements Comparable<Monitoring>, Cloneable {
 		return clientId;
 	}
 
+	@Deprecated
+	public void setClientId(String clientId) {
+		this.clientId = clientId;
+	}
+
 	public String getTrackId() {
 		return trackId;
+	}
+
+	@Deprecated
+	public void setTrackId(String trackId) {
+		this.trackId = trackId;
 	}
 
 	@JsonIgnore
@@ -180,6 +193,7 @@ public class Monitoring implements Comparable<Monitoring>, Cloneable {
 		return updated;
 	}
 
+	@JsonDeserialize(using = DateDeserializer.class)
 	public void setUpdated(Date updated) {
 		this.updated = updated;
 	}
@@ -189,6 +203,7 @@ public class Monitoring implements Comparable<Monitoring>, Cloneable {
 		return created;
 	}
 
+	@JsonDeserialize(using = DateDeserializer.class)
 	public void setCreated(Date created) {
 		this.created = created;
 	}
@@ -198,6 +213,7 @@ public class Monitoring implements Comparable<Monitoring>, Cloneable {
 		return monitored;
 	}
 
+	@JsonDeserialize(using = DateDeserializer.class)
 	public void setMonitored(Date monitored) {
 		this.monitored = monitored;
 	}

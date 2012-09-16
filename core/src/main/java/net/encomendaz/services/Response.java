@@ -23,6 +23,7 @@ package net.encomendaz.services;
 import static org.codehaus.jackson.map.annotate.JsonSerialize.Inclusion.NON_NULL;
 import net.encomendaz.services.serializer.ResponseStatusDeserializer;
 import net.encomendaz.services.serializer.ResponseStatusSerializer;
+import net.encomendaz.services.util.Serializer;
 
 import org.codehaus.jackson.annotate.JsonPropertyOrder;
 import org.codehaus.jackson.map.annotate.JsonDeserialize;
@@ -42,6 +43,11 @@ public class Response<D> {
 	public enum Status {
 
 		OK, ERROR;
+	}
+
+	@Override
+	public String toString() {
+		return Serializer.json(this);
 	}
 
 	@JsonSerialize(using = ResponseStatusSerializer.class)

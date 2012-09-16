@@ -22,6 +22,7 @@ package net.encomendaz.services;
 
 import java.util.ResourceBundle;
 
+import net.encomendaz.services.monitoring.MonitoringService;
 import net.encomendaz.services.tracking.TrackingService;
 
 import org.codehaus.jackson.jaxrs.JacksonJsonProvider;
@@ -33,13 +34,30 @@ public class EncomendaZ {
 	/**
 	 * Serviço de rastreamento de encomendas.
 	 */
-	public static TrackingService tracking = initTrackingService();
+	public static TrackingService tracking;
+
+	/**
+	 * Serviço de monitoramento das encomendas.
+	 */
+	public static MonitoringService monitoring;
 
 	private static ResourceBundle bundle;
+
+	private static String baseURL;
 
 	private static boolean initialized = false;
 
 	private EncomendaZ() {
+	}
+
+	static {
+		initServices();
+	}
+
+	private static void initServices() {
+		initProviders();
+		tracking = ProxyFactory.create(TrackingService.class, getBaseURL());
+		monitoring = ProxyFactory.create(MonitoringService.class, getBaseURL());
 	}
 
 	private static void initProviders() {
@@ -51,11 +69,6 @@ public class EncomendaZ {
 		}
 	}
 
-	private static TrackingService initTrackingService() {
-		initProviders();
-		return ProxyFactory.create(TrackingService.class, getBaseURL());
-	}
-
 	private static ResourceBundle getBundle() {
 		if (bundle == null) {
 			bundle = ResourceBundle.getBundle("encomendaz");
@@ -64,7 +77,16 @@ public class EncomendaZ {
 		return bundle;
 	}
 
-	private static String getBaseURL() {
-		return getBundle().getString("base-url");
+	public static String getBaseURL() {
+		if (baseURL == null) {
+			baseURL = getBundle().getString("base-url");
+		}
+
+		return baseURL;
+	}
+
+	public static void setBaseURL(String baseURL) {
+		EncomendaZ.baseURL = baseURL;
+		initServices();
 	}
 }

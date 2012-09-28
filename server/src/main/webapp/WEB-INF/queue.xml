@@ -22,8 +22,8 @@
 	<queue>
 		<name>monitoring</name>
 
-		<max-concurrent-requests>80</max-concurrent-requests>
 		<rate>20/s</rate>
+		<max-concurrent-requests>1</max-concurrent-requests>
 
 		<!--
 		<bucket-size>40</bucket-size>

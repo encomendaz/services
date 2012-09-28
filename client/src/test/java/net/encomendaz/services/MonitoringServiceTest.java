@@ -22,6 +22,9 @@ package net.encomendaz.services;
 
 import net.encomendaz.services.monitoring.Monitoring;
 import net.encomendaz.services.monitoring.MonitoringResponse;
+import net.encomendaz.services.tracking.Trace;
+import net.encomendaz.services.tracking.TrackingResponse;
+import net.encomendaz.services.tracking.Trace.Status;
 
 import org.junit.Test;
 
@@ -44,21 +47,48 @@ public class MonitoringServiceTest {
 			System.out.println(response2);
 		}
 	}
-	
-//	@Test
+
+	@Test
+	public void clean() {
+//		EncomendaZ.setBaseURL("http://services.encomendaz.net");
+		EncomendaZ.setBaseURL("http://services.sandbox.encomendaz.net");
+		MonitoringResponse mResponse = EncomendaZ.monitoring.search("<all>");
+
+		Trace t;
+		TrackingResponse tResponse;
+		int size;
+
+		for (Monitoring m : mResponse.getData()) {
+			tResponse = EncomendaZ.tracking.search(m.getTrackId());
+			size = tResponse.getData().size();
+
+			if (size > 0) {
+				t = tResponse.getData().get(size - 1);
+			} else {
+				t = null;
+			}
+
+			if (t != null && t.getStatus() == Status.DELIVERED) {
+				System.out.println(m.getClientId() + " - " + m.getTrackId());
+				EncomendaZ.monitoring.delete(m.getClientId(), m.getTrackId());
+			}
+		}
+	}
+
+	// @Test
 	public void loadX() {
 		EncomendaZ.setBaseURL("http://services.sandbox.encomendaz.net");
 		String clientId = "91448300404063076307502904506675:018F14CE029B3AFA3135BDB2DA37286C77EE467AA9A72F779AB2A04B8921E448";
-		
-		MonitoringResponse response= EncomendaZ.monitoring.register(clientId, "XX000000000XX", "cole");
+
+		MonitoringResponse response = EncomendaZ.monitoring.register(clientId, "XX000000000XX", "cole");
 		System.out.println(response);
 	}
-	
+
 	@Test
 	public void remove() {
 		EncomendaZ.setBaseURL("http://services.sandbox.encomendaz.net");
 		MonitoringResponse response = EncomendaZ.monitoring.search("<all>");
-		
+
 		MonitoringResponse response2;
 		for (Monitoring m : response.getData()) {
 			response2 = EncomendaZ.monitoring.delete(m.getClientId(), m.getTrackId());

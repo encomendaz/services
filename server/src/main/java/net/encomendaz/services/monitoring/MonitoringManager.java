@@ -20,6 +20,8 @@
  */
 package net.encomendaz.services.monitoring;
 
+import static com.google.appengine.api.datastore.FetchOptions.Builder.withChunkSize;
+
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
@@ -86,7 +88,7 @@ public class MonitoringManager {
 		return monitoring.getClientId() + "-" + monitoring.getTrackId().toUpperCase();
 	}
 
-	public static void insert(Monitoring monitoring) {
+	public synchronized static void insert(Monitoring monitoring) {
 		Tracking tracking = TrackingManager.search(monitoring.getTrackId());
 		monitoring.setHash(tracking.getHash());
 		monitoring.setCreated(new Date());
@@ -130,7 +132,7 @@ public class MonitoringManager {
 		return updated;
 	}
 
-	public static void update(Monitoring monitoring) {
+	public synchronized static void update(Monitoring monitoring) {
 		Map<String, Entity> cache = getCache();
 
 		synchronized (cache) {
@@ -157,7 +159,7 @@ public class MonitoringManager {
 		}
 	}
 
-	public static void delete(Monitoring monitoring) {
+	public synchronized static void delete(Monitoring monitoring) {
 		Map<String, Entity> cache = getCache();
 
 		synchronized (cache) {
@@ -182,7 +184,7 @@ public class MonitoringManager {
 		return entity == null ? null : parse(entity);
 	}
 
-	public static List<Monitoring> findAll() {
+	public synchronized static List<Monitoring> findAll() {
 		List<Monitoring> result = new ArrayList<Monitoring>();
 
 		for (Entity entity : getCache().values()) {
@@ -200,7 +202,7 @@ public class MonitoringManager {
 		DatastoreService datastore = getDatastoreService();
 		PreparedQuery preparedQuery = datastore.prepare(query);
 
-		for (Entity entity : preparedQuery.asIterable()) {
+		for (Entity entity : preparedQuery.asIterable(withChunkSize(500))) {
 			result.add(entity);
 		}
 
@@ -220,7 +222,7 @@ public class MonitoringManager {
 		return monitoring;
 	}
 
-	public static List<Monitoring> find(String clientId) {
+	public synchronized static List<Monitoring> find(String clientId) {
 		List<Monitoring> result = new ArrayList<Monitoring>();
 
 		for (Monitoring monitoring : findAll()) {

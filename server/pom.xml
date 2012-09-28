@@ -201,6 +201,6 @@
 	</profiles>
 
 	<properties>
-		<gae.version>1.7.1</gae.version>
+		<gae.version>1.7.2</gae.version>
 	</properties>
 </project>

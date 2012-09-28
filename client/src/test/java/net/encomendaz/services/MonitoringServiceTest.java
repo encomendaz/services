@@ -45,13 +45,24 @@ public class MonitoringServiceTest {
 		}
 	}
 	
-	
-	@Test
+//	@Test
 	public void loadX() {
 		EncomendaZ.setBaseURL("http://services.sandbox.encomendaz.net");
 		String clientId = "91448300404063076307502904506675:018F14CE029B3AFA3135BDB2DA37286C77EE467AA9A72F779AB2A04B8921E448";
 		
 		MonitoringResponse response= EncomendaZ.monitoring.register(clientId, "XX000000000XX", "cole");
 		System.out.println(response);
+	}
+	
+	@Test
+	public void remove() {
+		EncomendaZ.setBaseURL("http://services.sandbox.encomendaz.net");
+		MonitoringResponse response = EncomendaZ.monitoring.search("<all>");
+		
+		MonitoringResponse response2;
+		for (Monitoring m : response.getData()) {
+			response2 = EncomendaZ.monitoring.delete(m.getClientId(), m.getTrackId());
+			System.out.println(response2);
+		}
 	}
 }

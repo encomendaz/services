@@ -27,15 +27,13 @@ public class Tracking {
 		return this.hash;
 	}
 
+	@JsonIgnore
 	public boolean isCompleted() {
 		boolean result = false;
+		Trace lastTrace = getLastTrace();
 
-		if (traces != null && !traces.isEmpty()) {
-			Trace trace = traces.get(traces.size() - 1);
-
-			if (trace.getStatus() == Status.DELIVERED) {
-				result = true;
-			}
+		if (lastTrace != null && lastTrace.getStatus() == Status.DELIVERED) {
+			result = true;
 		}
 
 		return result;
@@ -59,6 +57,6 @@ public class Tracking {
 
 	@JsonIgnore
 	public Trace getLastTrace() {
-		return this.traces.isEmpty() ? null : this.traces.get(this.traces.size() - 1); 
+		return this.traces.isEmpty() ? null : this.traces.get(this.traces.size() - 1);
 	}
 }

@@ -23,22 +23,22 @@ package net.encomendaz.services;
 import net.encomendaz.services.tracking.Trace;
 import net.encomendaz.services.tracking.TrackingResponse;
 
-import org.junit.Ignore;
 import org.junit.Test;
 
-public class TranckingServiceTest {
+public class TrackingServiceTest {
 
 	/**
 	 * Por enquanto, este teste ainda não é um teste, mas em breve será!
 	 */
 	@Test
-	@Ignore
+	// @Ignore
 	public void trackingService() {
+		EncomendaZ.setBaseURL("http://services.sandbox.encomendaz.net");
 		TrackingResponse response;
 
-		response = EncomendaZ.tracking.search("PB882615209BR", null, null);
+		response = EncomendaZ.tracking.search("PB261442824BR");
 		for (Trace t : response.getData()) {
-			System.out.println(t.getStatus() + " : " + t.getDate());
+			System.out.println(t.getStatus() + " : " + t.getDate() + " : ");
 		}
 
 		System.out.println();

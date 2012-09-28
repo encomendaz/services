@@ -40,7 +40,7 @@ import net.encomendaz.services.tracking.TrackingManager;
 public class MonitoringTask {
 
 	@GET
-	public Response<String> execute(@QueryParam("clientId") String clientId, @QueryParam("trackId") String trackId)
+	public synchronized Response<String> execute(@QueryParam("clientId") String clientId, @QueryParam("trackId") String trackId)
 			throws Exception {
 		Monitoring monitoring = MonitoringManager.load(clientId, trackId);
 

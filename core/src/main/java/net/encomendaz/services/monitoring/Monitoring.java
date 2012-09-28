@@ -38,8 +38,6 @@ public class Monitoring implements Comparable<Monitoring>, Cloneable {
 
 	public static final String SERVICE_PATH = "/monitoring.json";
 
-	private Long id;
-
 	private String clientId;
 
 	private String trackId;
@@ -54,26 +52,20 @@ public class Monitoring implements Comparable<Monitoring>, Cloneable {
 
 	private String hash;
 
-	public static long getId(String clientId, String trackId) {
-		Monitoring temp = new Monitoring(clientId, trackId);
-		return temp.getId();
-	}
-
 	@Deprecated
 	public Monitoring() {
 	}
 
 	public Monitoring(String clientId, String trackId) {
-		if (clientId == null) {
-			throw new IllegalArgumentException("O clientId deve ser informado!");
-		}
-
-		if (trackId == null) {
-			throw new IllegalArgumentException("O trackId deve ser informado!");
-		}
-
+		// if (clientId == null) {
+		// throw new IllegalArgumentException("O clientId deve ser informado!");
+		// }
+		//
+		// if (trackId == null) {
+		// throw new IllegalArgumentException("O trackId deve ser informado!");
+		// }
 		this.clientId = clientId;
-		this.trackId = trackId.toUpperCase();
+		this.trackId = trackId;
 	}
 
 	@Override
@@ -145,19 +137,6 @@ public class Monitoring implements Comparable<Monitoring>, Cloneable {
 	@Override
 	public String toString() {
 		return Serializer.json(this);
-	}
-
-	@JsonIgnore
-	public Long getId() {
-		if (this.id == null) {
-			this.id = this.generateId();
-		}
-
-		return this.id;
-	}
-
-	private Long generateId() {
-		return (long) this.hashCode();
 	}
 
 	@JsonSerialize(include = NON_NULL)

@@ -88,30 +88,36 @@ public class MonitoringManager {
 		return monitoring.getClientId() + "-" + monitoring.getTrackId().toUpperCase();
 	}
 
-	public synchronized static void insert(Monitoring monitoring) {
+	public synchronized static void insert(Monitoring monitoring) throws MonitoringException {
 		Tracking tracking = TrackingManager.search(monitoring.getTrackId());
-		monitoring.setHash(tracking.getHash());
-		monitoring.setCreated(new Date());
 
-		Entity entity = new Entity("Monitoring");
-		setProperty(entity, "clientId", monitoring.getClientId());
-		setProperty(entity, "trackId", monitoring.getTrackId());
-		setProperty(entity, "created", monitoring.getCreated());
-		setProperty(entity, "hash", monitoring.getHash());
-		setProperty(entity, "label", monitoring.getLabel());
+		if (tracking.isCompleted()) {
+			throw new MonitoringException("O rastreamento " + tracking.getId() + " já foi finalizado");
 
-		Map<String, Entity> cache = getCache();
+		} else {
+			monitoring.setHash(tracking.getHash());
+			monitoring.setCreated(new Date());
 
-		synchronized (cache) {
-			DatastoreService datastore = getDatastoreService();
-			datastore.put(entity);
+			Entity entity = new Entity("Monitoring");
+			setProperty(entity, "clientId", monitoring.getClientId());
+			setProperty(entity, "trackId", monitoring.getTrackId());
+			setProperty(entity, "created", monitoring.getCreated());
+			setProperty(entity, "hash", monitoring.getHash());
+			setProperty(entity, "label", monitoring.getLabel());
 
-			String key = getKey(monitoring);
-			cache.put(key, entity);
+			Map<String, Entity> cache = getCache();
 
-			MemcacheService memcache = getMemcacheService();
-			memcache.delete(MonitoringManager.class);
-			memcache.put(MonitoringManager.class, cache);
+			synchronized (cache) {
+				DatastoreService datastore = getDatastoreService();
+				datastore.put(entity);
+
+				String key = getKey(monitoring);
+				cache.put(key, entity);
+
+				MemcacheService memcache = getMemcacheService();
+				memcache.delete(MonitoringManager.class);
+				memcache.put(MonitoringManager.class, cache);
+			}
 		}
 	}
 
@@ -194,7 +200,7 @@ public class MonitoringManager {
 		return result;
 	}
 
-	private static List<Entity> findAllEntities() {
+	public static List<Entity> findAllEntities() {
 		List<Entity> result = Collections.synchronizedList(new ArrayList<Entity>());
 
 		Query query = new Query("Monitoring");

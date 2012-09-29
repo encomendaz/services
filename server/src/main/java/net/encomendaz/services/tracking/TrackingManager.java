@@ -60,11 +60,11 @@ public class TrackingManager {
 			cause.printStackTrace();
 		}
 
-		Tracking response = new Tracking();
-		response.setId(id);
-		response.setTraces(traces);
+		Tracking result = new Tracking();
+		result.setId(id);
+		result.setTraces(traces);
 
-		return response;
+		return result;
 	}
 
 	private static Trace parse(RegistroRastreamento registro) {

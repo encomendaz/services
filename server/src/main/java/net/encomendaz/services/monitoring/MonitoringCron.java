@@ -20,9 +20,14 @@
  */
 package net.encomendaz.services.monitoring;
 
+import static com.google.appengine.api.datastore.FetchOptions.Builder.withChunkSize;
 import static com.google.appengine.api.taskqueue.TaskOptions.Method.GET;
 import static net.encomendaz.services.Response.MEDIA_TYPE;
 import static net.encomendaz.services.Response.Status.OK;
+
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
@@ -30,6 +35,11 @@ import javax.ws.rs.Produces;
 
 import net.encomendaz.services.Response;
 
+import com.google.appengine.api.datastore.DatastoreService;
+import com.google.appengine.api.datastore.DatastoreServiceFactory;
+import com.google.appengine.api.datastore.Entity;
+import com.google.appengine.api.datastore.PreparedQuery;
+import com.google.appengine.api.datastore.Query;
 import com.google.appengine.api.taskqueue.Queue;
 import com.google.appengine.api.taskqueue.QueueFactory;
 import com.google.appengine.api.taskqueue.TaskOptions;
@@ -38,6 +48,27 @@ import com.google.appengine.api.taskqueue.TaskOptions.Builder;
 @Path("/monitoring.cron")
 @Produces(MEDIA_TYPE)
 public class MonitoringCron {
+
+	@GET
+	@Path("/test")
+	public Response<List<Entity>> test() throws Exception {
+		List<Entity> result = Collections.synchronizedList(new ArrayList<Entity>());
+
+		Query query = new Query("Monitoring").setKeysOnly();
+
+		DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
+		PreparedQuery preparedQuery = datastore.prepare(query);
+
+		for (Entity entity : preparedQuery.asIterable(withChunkSize(20000))) {
+			result.add(entity);
+		}
+		
+		Response<List<Entity>> response = new Response<List<Entity>>();
+		response.setData(result);
+		response.setStatus(OK);
+
+		return response;
+	}
 
 	@GET
 	public Response<String> execute() throws Exception {

@@ -38,6 +38,8 @@ public class Monitoring implements Comparable<Monitoring>, Cloneable {
 
 	public static final String SERVICE_PATH = "/monitoring.json";
 
+	private String id;
+
 	private String clientId;
 
 	private String trackId;
@@ -137,6 +139,15 @@ public class Monitoring implements Comparable<Monitoring>, Cloneable {
 	@Override
 	public String toString() {
 		return Serializer.json(this);
+	}
+
+	@JsonIgnore
+	public String getId() {
+		return id;
+	}
+
+	public void setId(String id) {
+		this.id = id;
 	}
 
 	@JsonSerialize(include = NON_NULL)

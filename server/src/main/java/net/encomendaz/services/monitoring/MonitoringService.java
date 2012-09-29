@@ -39,42 +39,41 @@ import net.encomendaz.services.notification.NotificationManager;
 import net.encomendaz.services.util.Serializer;
 import net.encomendaz.services.util.Strings;
 
-import com.google.appengine.api.datastore.DatastoreService;
-import com.google.appengine.api.datastore.DatastoreServiceFactory;
-import com.google.appengine.api.datastore.Entity;
-import com.google.appengine.api.datastore.PreparedQuery;
-import com.google.appengine.api.datastore.Query;
-
 @Path("/monitoring.json")
 @Produces(MEDIA_TYPE)
 public class MonitoringService {
 
-	@GET
-	@Path("/test")
-	public String test() {
-		Query query = new Query("Monitoring");
-
-		List<Entity> entities = new ArrayList<Entity>();
-
-		DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
-		PreparedQuery preparedQuery = datastore.prepare(query);
-
-		for (Entity entity : preparedQuery.asIterable()) {
-			String clientId = (String) entity.getProperty("clientId");
-			String trackId = (String) entity.getProperty("trackId");
-			Monitoring monitoring = new Monitoring(clientId, trackId);
-
-			entity.setProperty("old", true);
-			entity.setProperty("newKey", monitoring.hashCode());
-			entity.removeProperty("monitored");
-
-			entities.add(entity);
-		}
-
-		datastore.put(entities);
-
-		return "ok";
-	}
+	// @GET
+	// @Path("/test")
+	// public String test() {
+	// Query query = new Query("Monitoring");
+	//
+	// List<Entity> entities = new ArrayList<Entity>();
+	//
+	// DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
+	// PreparedQuery preparedQuery = datastore.prepare(query);
+	//
+	// for (Entity entity : preparedQuery.asIterable()) {
+	// String clientId = (String) entity.getProperty("clientId");
+	// String trackId = (String) entity.getProperty("trackId");
+	//
+	// Long id = Monitoring.generateId(clientId, trackId);
+	//
+	// Monitoring monitoring = new Monitoring(id);
+	// monitoring.setClientId(clientId);
+	// monitoring.setTrackId(trackId);
+	//
+	// entity.setProperty("old", true);
+	// entity.setProperty("newKey", monitoring.hashCode());
+	// entity.removeProperty("monitored");
+	//
+	// entities.add(entity);
+	// }
+	//
+	// datastore.put(entities);
+	//
+	// return "ok";
+	// }
 
 	@GET
 	public String search(@QueryParam("clientId") String clientId, @QueryParam("trackId") String trackId,
@@ -84,9 +83,16 @@ public class MonitoringService {
 		List<Monitoring> list;
 
 		if (clientId.equalsIgnoreCase("<all>")) {
-			list = MonitoringManager.findAll();
+			list = new ArrayList<Monitoring>();
+			Monitoring monitoring;
+
+			for (String id : MonitoringManager.findIds()) {
+				monitoring = MonitoringManager.load(id);
+				list.add(monitoring);
+			}
+
 		} else {
-			list = MonitoringManager.find(clientId);
+			list = new ArrayList<Monitoring>();
 		}
 
 		Response<List<Monitoring>> response = new Response<List<Monitoring>>();

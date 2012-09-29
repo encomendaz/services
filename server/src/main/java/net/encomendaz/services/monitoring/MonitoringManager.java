@@ -25,9 +25,7 @@ import static com.google.appengine.api.datastore.FetchOptions.Builder.withChunkS
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import net.encomendaz.services.tracking.Tracking;
 import net.encomendaz.services.tracking.TrackingManager;
@@ -35,6 +33,9 @@ import net.encomendaz.services.tracking.TrackingManager;
 import com.google.appengine.api.datastore.DatastoreService;
 import com.google.appengine.api.datastore.DatastoreServiceFactory;
 import com.google.appengine.api.datastore.Entity;
+import com.google.appengine.api.datastore.EntityNotFoundException;
+import com.google.appengine.api.datastore.Key;
+import com.google.appengine.api.datastore.KeyFactory;
 import com.google.appengine.api.datastore.PreparedQuery;
 import com.google.appengine.api.datastore.Query;
 import com.google.appengine.api.memcache.MemcacheService;
@@ -50,33 +51,33 @@ public class MonitoringManager {
 		return MemcacheServiceFactory.getMemcacheService();
 	}
 
-	@SuppressWarnings("unchecked")
-	private synchronized static Map<String, Entity> getCache() {
-		Map<String, Entity> cache;
-		MemcacheService memcache = getMemcacheService();
+	// @SuppressWarnings("unchecked")
+	// private synchronized static Map<Long, Monitoring> getCache() {
+	// Map<Long, Monitoring> cache;
+	// MemcacheService memcache = getMemcacheService();
+	//
+	// if (memcache.contains(MonitoringManager.class)) {
+	// cache = (Map<Long, Monitoring>) memcache.get(MonitoringManager.class);
+	//
+	// } else {
+	// cache = Collections.synchronizedMap(new HashMap<Long, Monitoring>());
+	// memcache.put(MonitoringManager.class, cache);
+	// }
+	//
+	// return cache;
+	// }
 
-		if (memcache.contains(MonitoringManager.class)) {
-			cache = (Map<String, Entity>) memcache.get(MonitoringManager.class);
-
-		} else {
-			cache = createCache();
-			memcache.put(MonitoringManager.class, cache);
-		}
-
-		return cache;
-	}
-
-	private static Map<String, Entity> createCache() {
-		Map<String, Entity> cache = Collections.synchronizedMap(new HashMap<String, Entity>());
-		Monitoring monitoring;
-
-		for (Entity entity : findAllEntities()) {
-			monitoring = parse(entity);
-			cache.put(getKey(monitoring), entity);
-		}
-
-		return cache;
-	}
+	// private static Map<Long, Monitoring> createCache() {
+	// Map<Long, Monitoring> cache = Collections.synchronizedMap(new HashMap<Long, Monitoring>());
+	// Monitoring monitoring;
+	//
+	// for (Entity entity : findAllEntities()) {
+	// monitoring = parse(entity);
+	// cache.put(generateId(monitoring), entity);
+	// }
+	//
+	// return cache;
+	// }
 
 	// private static void refreshCache() {
 	// MemcacheService memcache = getMemcacheService();
@@ -84,8 +85,20 @@ public class MonitoringManager {
 	// memcache.put(MonitoringManager.class, getCache());
 	// }
 
-	private static String getKey(Monitoring monitoring) {
-		return monitoring.getClientId() + "-" + monitoring.getTrackId().toUpperCase();
+	// private static Long createId(Monitoring monitoring) {
+	// return createId(monitoring.getClientId(), monitoring.getTrackId());
+	// }
+
+	private static String createId(String clientId, String trackId) {
+		return Monitoring.generateId(clientId, trackId);
+	}
+
+	private static Key createKey(String id) {
+		return KeyFactory.createKey(getKind(), id);
+	}
+
+	private static String getKind() {
+		return Monitoring.class.getSimpleName();
 	}
 
 	public synchronized static void insert(Monitoring monitoring) throws MonitoringException {
@@ -98,26 +111,21 @@ public class MonitoringManager {
 			monitoring.setHash(tracking.getHash());
 			monitoring.setCreated(new Date());
 
-			Entity entity = new Entity("Monitoring");
-			setProperty(entity, "clientId", monitoring.getClientId());
-			setProperty(entity, "trackId", monitoring.getTrackId());
+			String clientId = monitoring.getClientId();
+			String trackId = monitoring.getTrackId();
+
+			String id = createId(clientId, trackId);
+			Key key = createKey(id);
+
+			Entity entity = new Entity(key);
+			setProperty(entity, "clientId", clientId);
+			setProperty(entity, "trackId", trackId);
 			setProperty(entity, "created", monitoring.getCreated());
 			setProperty(entity, "hash", monitoring.getHash());
 			setProperty(entity, "label", monitoring.getLabel());
 
-			Map<String, Entity> cache = getCache();
-
-			synchronized (cache) {
-				DatastoreService datastore = getDatastoreService();
-				datastore.put(entity);
-
-				String key = getKey(monitoring);
-				cache.put(key, entity);
-
-				MemcacheService memcache = getMemcacheService();
-				memcache.delete(MonitoringManager.class);
-				memcache.put(MonitoringManager.class, cache);
-			}
+			getDatastoreService().put(entity);
+			getMemcacheService().put(id, monitoring);
 		}
 	}
 
@@ -139,104 +147,127 @@ public class MonitoringManager {
 	}
 
 	public synchronized static void update(Monitoring monitoring) {
-		Map<String, Entity> cache = getCache();
+		String clientId = monitoring.getClientId();
+		String trackId = monitoring.getTrackId();
+		String id = createId(clientId, trackId);
 
-		synchronized (cache) {
-			String key = getKey(monitoring);
-			Entity entity = cache.get(key);
+		Entity entity = loadFromDatastore(id);
 
-			boolean updated = false;
-			updated |= setProperty(entity, "label", monitoring.getLabel());
-			updated |= setProperty(entity, "created", monitoring.getCreated());
-			updated |= setProperty(entity, "updated", monitoring.getUpdated());
-			updated |= setProperty(entity, "hash", monitoring.getHash());
+		boolean updated = false;
+		updated |= setProperty(entity, "label", monitoring.getLabel());
+		updated |= setProperty(entity, "created", monitoring.getCreated());
+		updated |= setProperty(entity, "updated", monitoring.getUpdated());
+		updated |= setProperty(entity, "hash", monitoring.getHash());
 
-			if (updated) {
-				DatastoreService datastore = getDatastoreService();
-				datastore.put(entity);
+		if (updated) {
+			getDatastoreService().put(entity);
 
-				cache.remove(key);
-				cache.put(key, entity);
-
-				MemcacheService memcache = getMemcacheService();
-				memcache.delete(MonitoringManager.class);
-				memcache.put(MonitoringManager.class, cache);
-			}
+			getMemcacheService().delete(id);
+			getMemcacheService().put(id, monitoring);
 		}
 	}
 
 	public synchronized static void delete(Monitoring monitoring) {
-		Map<String, Entity> cache = getCache();
+		String id = createId(monitoring.getClientId(), monitoring.getTrackId());
+		Key key = createKey(id);
 
-		synchronized (cache) {
-			String key = getKey(monitoring);
-			Entity entity = cache.get(key);
+		getDatastoreService().delete(key);
+		getMemcacheService().delete(id);
+	}
 
-			DatastoreService datastore = getDatastoreService();
-			datastore.delete(entity.getKey());
+	private static Entity loadFromDatastore(String id) {
+		Entity entity;
 
-			cache.remove(key);
+		try {
+			Key key = createKey(id);
+			entity = getDatastoreService().get(key);
 
-			MemcacheService memcache = getMemcacheService();
-			memcache.delete(MonitoringManager.class);
-			memcache.put(MonitoringManager.class, cache);
+		} catch (EntityNotFoundException cause) {
+			entity = null;
 		}
+
+		return entity;
 	}
 
 	public static Monitoring load(String clientId, String trackId) {
-		String key = getKey(new Monitoring(clientId, trackId));
-		Entity entity = getCache().get(key);
-
-		return entity == null ? null : parse(entity);
+		return load(Monitoring.generateId(clientId, trackId));
 	}
 
-	public synchronized static List<Monitoring> findAll() {
-		List<Monitoring> result = new ArrayList<Monitoring>();
+	public static Monitoring load(String id) {
+		Monitoring monitoring = (Monitoring) getMemcacheService().get(id);
 
-		for (Entity entity : getCache().values()) {
-			result.add(parse(entity));
+		if (monitoring == null) {
+			Entity entity = loadFromDatastore(id);
+
+			if (entity != null) {
+				monitoring = parse(entity);
+				getMemcacheService().put(id, monitoring);
+			}
 		}
 
-		return result;
+		return monitoring;
 	}
 
-	public static List<Entity> findAllEntities() {
-		List<Entity> result = Collections.synchronizedList(new ArrayList<Entity>());
+	// public static Monitoring load(String clientId, String trackId) {
+	// Long id = createId(clientId, trackId);
+	// Monitoring monitoring = (Monitoring) getMemcacheService().get(id);
+	//
+	// if (monitoring == null) {
+	// Entity entity = loadFromDatastore(clientId, trackId);
+	//
+	// if (entity != null) {
+	// monitoring = parse(entity);
+	// getMemcacheService().put(id, monitoring);
+	// }
+	// }
+	//
+	// return monitoring;
+	// }
 
-		Query query = new Query("Monitoring");
+	public synchronized static List<String> findIds() {
+		List<String> result = Collections.synchronizedList(new ArrayList<String>());
+		DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
 
-		DatastoreService datastore = getDatastoreService();
+		Query query = new Query("Monitoring").setKeysOnly();
 		PreparedQuery preparedQuery = datastore.prepare(query);
+		Key key;
 
-		for (Entity entity : preparedQuery.asIterable(withChunkSize(500))) {
-			result.add(entity);
+		for (Entity entity : preparedQuery.asIterable(withChunkSize(20000))) {
+			key = entity.getKey();
+			result.add(KeyFactory.keyToString(key));
 		}
 
 		return result;
 	}
 
 	private static Monitoring parse(Entity entity) {
-		String clientId = (String) entity.getProperty("clientId");
-		String trackId = (String) entity.getProperty("trackId");
-		Monitoring monitoring = new Monitoring(clientId, trackId);
+		Monitoring monitoring = null;
 
-		monitoring.setLabel((String) entity.getProperty("label"));
-		monitoring.setCreated((Date) entity.getProperty("created"));
-		monitoring.setUpdated((Date) entity.getProperty("updated"));
-		monitoring.setHash((String) entity.getProperty("hash"));
+		if (entity != null) {
+			String clientId = (String) entity.getProperty("clientId");
+			String trackId = (String) entity.getProperty("trackId");
+			monitoring = new Monitoring(clientId, trackId);
+
+			monitoring.setClientId((String) entity.getProperty("clientId"));
+			monitoring.setTrackId((String) entity.getProperty("trackId"));
+			monitoring.setLabel((String) entity.getProperty("label"));
+			monitoring.setCreated((Date) entity.getProperty("created"));
+			monitoring.setUpdated((Date) entity.getProperty("updated"));
+			monitoring.setHash((String) entity.getProperty("hash"));
+		}
 
 		return monitoring;
 	}
 
-	public synchronized static List<Monitoring> find(String clientId) {
-		List<Monitoring> result = new ArrayList<Monitoring>();
-
-		for (Monitoring monitoring : findAll()) {
-			if (clientId != null && clientId.equals(monitoring.getClientId())) {
-				result.add(monitoring);
-			}
-		}
-
-		return result;
-	}
+	// public synchronized static List<Monitoring> find(String clientId) {
+	// List<Monitoring> result = new ArrayList<Monitoring>();
+	//
+	// for (Monitoring monitoring : findAll()) {
+	// if (clientId != null && clientId.equals(monitoring.getClientId())) {
+	// result.add(monitoring);
+	// }
+	// }
+	//
+	// return result;
+	// }
 }

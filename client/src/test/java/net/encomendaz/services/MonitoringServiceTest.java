@@ -97,6 +97,7 @@ public class MonitoringServiceTest {
 		int i = 1;
 		MonitoringResponse response2;
 		for (Monitoring m : response.getData()) {
+			System.out.println(i + ": " + m);
 			response2 = EncomendaZ.monitoring.delete(m.getClientId(), m.getTrackId());
 			System.out.println(i + ": " + response2);
 			i++;

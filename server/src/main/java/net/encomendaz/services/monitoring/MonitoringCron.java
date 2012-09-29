@@ -62,7 +62,7 @@ public class MonitoringCron {
 		for (Entity entity : preparedQuery.asIterable(withChunkSize(20000))) {
 			result.add(entity);
 		}
-		
+
 		Response<List<Entity>> response = new Response<List<Entity>>();
 		response.setData(result);
 		response.setStatus(OK);
@@ -75,12 +75,10 @@ public class MonitoringCron {
 		TaskOptions taskOptions;
 		Queue queue = QueueFactory.getQueue("monitoring");
 
-		for (Monitoring monitoring : MonitoringManager.findAll()) {
+		for (String id : MonitoringManager.findIds()) {
 			taskOptions = Builder.withUrl("/monitoring.task");
 			taskOptions.method(GET);
-
-			taskOptions = taskOptions.param("clientId", monitoring.getClientId());
-			taskOptions = taskOptions.param("trackId", monitoring.getTrackId());
+			taskOptions = taskOptions.param("id", id);
 
 			queue.add(taskOptions);
 		}

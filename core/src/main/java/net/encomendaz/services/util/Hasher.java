@@ -48,6 +48,10 @@ public class Hasher {
 	public static String sha1(final String message) {
 		return hash(message, "SHA-1");
 	}
+	
+	public static String md5(final String message) {
+		return hash(message, "MD5");
+	}
 
 	private static String hex(final byte[] array) {
 		String parsed = null;

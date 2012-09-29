@@ -22,10 +22,12 @@ package net.encomendaz.services.monitoring;
 
 import static org.codehaus.jackson.map.annotate.JsonSerialize.Inclusion.NON_NULL;
 
+import java.io.Serializable;
 import java.util.Date;
 
 import net.encomendaz.services.serializer.DateDeserializer;
 import net.encomendaz.services.serializer.DateSerializer;
+import net.encomendaz.services.util.Hasher;
 import net.encomendaz.services.util.Serializer;
 
 import org.codehaus.jackson.annotate.JsonIgnore;
@@ -34,11 +36,13 @@ import org.codehaus.jackson.map.annotate.JsonDeserialize;
 import org.codehaus.jackson.map.annotate.JsonSerialize;
 
 @JsonPropertyOrder({ "clientId", "trackId", "label", "created", "monitored", "updated", "hash" })
-public class Monitoring implements Comparable<Monitoring>, Cloneable {
+public class Monitoring implements Comparable<Monitoring>, Cloneable, Serializable {
+
+	private static final long serialVersionUID = 1L;
 
 	public static final String SERVICE_PATH = "/monitoring.json";
 
-	private String id;
+	// private Long id;
 
 	private String clientId;
 
@@ -54,18 +58,27 @@ public class Monitoring implements Comparable<Monitoring>, Cloneable {
 
 	private String hash;
 
+	public static String generateId(String clientId, String trackId) {
+		return Hasher.md5(clientId + ":" + trackId);
+	}
+
 	@Deprecated
 	public Monitoring() {
 	}
 
+	// public Monitoring(Long id) {
+	// this.id = id;
+	// }
+
 	public Monitoring(String clientId, String trackId) {
-		// if (clientId == null) {
-		// throw new IllegalArgumentException("O clientId deve ser informado!");
-		// }
-		//
-		// if (trackId == null) {
-		// throw new IllegalArgumentException("O trackId deve ser informado!");
-		// }
+		if (clientId == null) {
+			throw new IllegalArgumentException("O clientId deve ser informado!");
+		}
+
+		if (trackId == null) {
+			throw new IllegalArgumentException("O trackId deve ser informado!");
+		}
+
 		this.clientId = clientId;
 		this.trackId = trackId;
 	}
@@ -141,21 +154,20 @@ public class Monitoring implements Comparable<Monitoring>, Cloneable {
 		return Serializer.json(this);
 	}
 
-	@JsonIgnore
-	public String getId() {
-		return id;
-	}
+	// @JsonIgnore
+	// public Long getId() {
+	// return id;
+	// }
 
-	public void setId(String id) {
-		this.id = id;
-	}
+	// public void setId(Long id) {
+	// this.id = id;
+	// }
 
 	@JsonSerialize(include = NON_NULL)
 	public String getClientId() {
 		return clientId;
 	}
 
-	@Deprecated
 	public void setClientId(String clientId) {
 		this.clientId = clientId;
 	}
@@ -164,7 +176,6 @@ public class Monitoring implements Comparable<Monitoring>, Cloneable {
 		return trackId;
 	}
 
-	@Deprecated
 	public void setTrackId(String trackId) {
 		this.trackId = trackId;
 	}

@@ -22,24 +22,18 @@
 	<cron>
 		<url>/monitoring.cron</url>
 		<description>Busca por modificacoes no status das encomendas</description>
-		<schedule>every 30 minutes</schedule>
-	</cron>
-
-	<cron>
-		<url>/monitoring.cron/test</url>
-		<description>Experimento...</description>
 		<schedule>every 60 minutes from 0:00 to 4:59</schedule>
 		<timezone>America/Recife</timezone>
 	</cron>
 	<cron>
-		<url>/monitoring.cron/test</url>
-		<description>Experimento...</description>
+		<url>/monitoring.cron</url>
+		<description>Busca por modificacoes no status das encomendas</description>
 		<schedule>every 30 minutes from 5:00 to 21:59</schedule>
 		<timezone>America/Recife</timezone>
 	</cron>
 	<cron>
-		<url>/monitoring.cron/test</url>
-		<description>Experimento...</description>
+		<url>/monitoring.cron</url>
+		<description>Busca por modificacoes no status das encomendas</description>
 		<schedule>every 60 minutes from 22:00 to 23:59</schedule>
 		<timezone>America/Recife</timezone>
 	</cron>

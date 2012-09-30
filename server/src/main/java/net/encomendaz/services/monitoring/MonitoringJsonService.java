@@ -41,58 +41,23 @@ import net.encomendaz.services.util.Strings;
 
 @Path("/monitoring.json")
 @Produces(MEDIA_TYPE)
-public class MonitoringService {
-
-	// @GET
-	// @Path("/test")
-	// public String test() {
-	// Query query = new Query("Monitoring");
-	//
-	// List<Entity> entities = new ArrayList<Entity>();
-	//
-	// DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
-	// PreparedQuery preparedQuery = datastore.prepare(query);
-	//
-	// for (Entity entity : preparedQuery.asIterable()) {
-	// String clientId = (String) entity.getProperty("clientId");
-	// String trackId = (String) entity.getProperty("trackId");
-	//
-	// Long id = Monitoring.generateId(clientId, trackId);
-	//
-	// Monitoring monitoring = new Monitoring(id);
-	// monitoring.setClientId(clientId);
-	// monitoring.setTrackId(trackId);
-	//
-	// entity.setProperty("old", true);
-	// entity.setProperty("newKey", monitoring.hashCode());
-	// entity.removeProperty("monitored");
-	//
-	// entities.add(entity);
-	// }
-	//
-	// datastore.put(entities);
-	//
-	// return "ok";
-	// }
+public class MonitoringJsonService {
 
 	@GET
 	public String search(@QueryParam("clientId") String clientId, @QueryParam("trackId") String trackId,
 			@QueryParam("callback") String callback) throws MonitoringException {
 
 		validateClientId(clientId);
-		List<Monitoring> list;
+		List<Monitoring> list = new ArrayList<Monitoring>();
 
 		if (clientId.equalsIgnoreCase("<all>")) {
-			list = new ArrayList<Monitoring>();
-			Monitoring monitoring;
+			list = MonitoringManager.findAll();
 
-			for (String id : MonitoringManager.findIds()) {
-				monitoring = MonitoringManager.load(id);
-				list.add(monitoring);
-			}
+		} else if (!Strings.isEmpty(trackId)) {
+			list.add(MonitoringManager.load(clientId, trackId));
 
 		} else {
-			list = new ArrayList<Monitoring>();
+			list = MonitoringManager.find(clientId);
 		}
 
 		Response<List<Monitoring>> response = new Response<List<Monitoring>>();

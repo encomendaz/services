@@ -42,8 +42,6 @@ public class Monitoring implements Comparable<Monitoring>, Cloneable, Serializab
 
 	public static final String SERVICE_PATH = "/monitoring.json";
 
-	// private Long id;
-
 	private String clientId;
 
 	private String trackId;
@@ -65,10 +63,6 @@ public class Monitoring implements Comparable<Monitoring>, Cloneable, Serializab
 	@Deprecated
 	public Monitoring() {
 	}
-
-	// public Monitoring(Long id) {
-	// this.id = id;
-	// }
 
 	public Monitoring(String clientId, String trackId) {
 		if (clientId == null) {

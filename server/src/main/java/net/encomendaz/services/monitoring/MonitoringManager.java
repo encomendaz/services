@@ -38,6 +38,8 @@ import com.google.appengine.api.datastore.Key;
 import com.google.appengine.api.datastore.KeyFactory;
 import com.google.appengine.api.datastore.PreparedQuery;
 import com.google.appengine.api.datastore.Query;
+import com.google.appengine.api.datastore.Query.CompositeFilterOperator;
+import com.google.appengine.api.datastore.Query.FilterPredicate;
 import com.google.appengine.api.memcache.MemcacheService;
 import com.google.appengine.api.memcache.MemcacheServiceFactory;
 
@@ -52,7 +54,7 @@ public class MonitoringManager {
 	}
 
 	// @SuppressWarnings("unchecked")
-	// private synchronized static Map<Long, Monitoring> getCache() {
+	// private static Map<Long, Monitoring> getCache() {
 	// Map<Long, Monitoring> cache;
 	// MemcacheService memcache = getMemcacheService();
 	//
@@ -101,7 +103,7 @@ public class MonitoringManager {
 		return Monitoring.class.getSimpleName();
 	}
 
-	public synchronized static void insert(Monitoring monitoring) throws MonitoringException {
+	public static void insert(Monitoring monitoring) throws MonitoringException {
 		Tracking tracking = TrackingManager.search(monitoring.getTrackId());
 
 		if (tracking.isCompleted()) {
@@ -146,12 +148,12 @@ public class MonitoringManager {
 		return updated;
 	}
 
-	public synchronized static void update(Monitoring monitoring) {
+	public static void update(Monitoring monitoring) {
 		String clientId = monitoring.getClientId();
 		String trackId = monitoring.getTrackId();
 		String id = createId(clientId, trackId);
 
-		Entity entity = loadFromDatastore(id);
+		Entity entity = loadFromDatastore(clientId, trackId);
 
 		boolean updated = false;
 		updated |= setProperty(entity, "label", monitoring.getLabel());
@@ -167,12 +169,42 @@ public class MonitoringManager {
 		}
 	}
 
-	public synchronized static void delete(Monitoring monitoring) {
+	public static void delete(Monitoring monitoring) {
 		String id = createId(monitoring.getClientId(), monitoring.getTrackId());
 		Key key = createKey(id);
 
 		getDatastoreService().delete(key);
 		getMemcacheService().delete(id);
+	}
+
+	private static Entity loadFromDatastore(String clientId, String trackId) {
+		Query query = new Query(getKind());
+		query.setFilter(CompositeFilterOperator.and(new FilterPredicate("clientId", Query.FilterOperator.EQUAL,
+				clientId), new FilterPredicate("trackId", Query.FilterOperator.EQUAL, trackId)));
+
+		DatastoreService datastore = getDatastoreService();
+		PreparedQuery preparedQuery = datastore.prepare(query);
+
+		return preparedQuery.asSingleEntity();
+	}
+
+	public static Monitoring load(String clientId, String trackId) {
+		return load(createId(clientId, trackId));
+	}
+
+	private static Monitoring load(String id) {
+		Monitoring monitoring = (Monitoring) getMemcacheService().get(id);
+
+		if (monitoring == null) {
+			Entity entity = loadFromDatastore(id);
+
+			if (entity != null) {
+				monitoring = parse(entity);
+				getMemcacheService().put(id, monitoring);
+			}
+		}
+
+		return monitoring;
 	}
 
 	private static Entity loadFromDatastore(String id) {
@@ -189,52 +221,31 @@ public class MonitoringManager {
 		return entity;
 	}
 
-	public static Monitoring load(String clientId, String trackId) {
-		return load(Monitoring.generateId(clientId, trackId));
-	}
+	private static List<String> getIds() {
+		@SuppressWarnings("unchecked")
+		List<String> ids = (List<String>) getMemcacheService().get(getKind());
 
-	public static Monitoring load(String id) {
-		Monitoring monitoring = (Monitoring) getMemcacheService().get(id);
+		if (ids == null) {
+			Query query = new Query("Monitoring").setKeysOnly();
+			PreparedQuery preparedQuery = getDatastoreService().prepare(query);
 
-		if (monitoring == null) {
-			Entity entity = loadFromDatastore(id);
+			ids = Collections.synchronizedList(new ArrayList<String>());
 
-			if (entity != null) {
-				monitoring = parse(entity);
-				getMemcacheService().put(id, monitoring);
+			for (Entity entity : preparedQuery.asIterable(withChunkSize(20000))) {
+				ids.add(entity.getKey().getName());
 			}
+
+			getMemcacheService().put(getKind(), ids);
 		}
 
-		return monitoring;
+		return ids;
 	}
 
-	// public static Monitoring load(String clientId, String trackId) {
-	// Long id = createId(clientId, trackId);
-	// Monitoring monitoring = (Monitoring) getMemcacheService().get(id);
-	//
-	// if (monitoring == null) {
-	// Entity entity = loadFromDatastore(clientId, trackId);
-	//
-	// if (entity != null) {
-	// monitoring = parse(entity);
-	// getMemcacheService().put(id, monitoring);
-	// }
-	// }
-	//
-	// return monitoring;
-	// }
+	public static List<Monitoring> findAll() {
+		List<Monitoring> result = Collections.synchronizedList(new ArrayList<Monitoring>());
 
-	public synchronized static List<String> findIds() {
-		List<String> result = Collections.synchronizedList(new ArrayList<String>());
-		DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
-
-		Query query = new Query("Monitoring").setKeysOnly();
-		PreparedQuery preparedQuery = datastore.prepare(query);
-		Key key;
-
-		for (Entity entity : preparedQuery.asIterable(withChunkSize(20000))) {
-			key = entity.getKey();
-			result.add(KeyFactory.keyToString(key));
+		for (String id : getIds()) {
+			result.add(load(id));
 		}
 
 		return result;
@@ -259,15 +270,20 @@ public class MonitoringManager {
 		return monitoring;
 	}
 
-	// public synchronized static List<Monitoring> find(String clientId) {
-	// List<Monitoring> result = new ArrayList<Monitoring>();
-	//
-	// for (Monitoring monitoring : findAll()) {
-	// if (clientId != null && clientId.equals(monitoring.getClientId())) {
-	// result.add(monitoring);
-	// }
-	// }
-	//
-	// return result;
-	// }
+	public static void refresh() {
+		getMemcacheService().delete(getKind());
+		getIds();
+	}
+
+	public static List<Monitoring> find(String clientId) {
+		List<Monitoring> result = Collections.synchronizedList(new ArrayList<Monitoring>());
+
+		for (Monitoring monitoring : findAll()) {
+			if (clientId != null && clientId.equals(monitoring.getClientId())) {
+				result.add(monitoring);
+			}
+		}
+
+		return result;
+	}
 }

@@ -20,28 +20,23 @@
  */
 package net.encomendaz.services.monitoring;
 
-import static net.encomendaz.services.Response.MEDIA_TYPE;
-import static net.encomendaz.services.Response.Status.OK;
-
 import java.util.Date;
 
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
-import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
 
-import net.encomendaz.services.Response;
 import net.encomendaz.services.notification.NotificationManager;
 import net.encomendaz.services.tracking.Tracking;
 import net.encomendaz.services.tracking.TrackingManager;
 
 @Path("/monitoring.task")
-@Produces(MEDIA_TYPE)
-public class MonitoringTask {
+public class MonitoringTaskService {
 
 	@GET
-	public synchronized Response<String> execute(@QueryParam("id") String id) throws Exception {
-		Monitoring monitoring = MonitoringManager.load(id);
+	public void execute(@QueryParam("clientId") String clientId, @QueryParam("trackId") String trackId)
+			throws Exception {
+		Monitoring monitoring = MonitoringManager.load(clientId, trackId);
 
 		Date date = new Date();
 		Tracking tracking = TrackingManager.search(monitoring.getTrackId());
@@ -60,10 +55,5 @@ public class MonitoringTask {
 		} else {
 			monitoring.setMonitored(date);
 		}
-
-		Response<String> response = new Response<String>();
-		response.setStatus(OK);
-
-		return response;
 	}
 }

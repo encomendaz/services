@@ -22,13 +22,25 @@
 	<cron>
 		<url>/monitoring.cron</url>
 		<description>Busca por modificacoes no status das encomendas</description>
-		<schedule>every 10 minutes</schedule>
+		<schedule>every 59 minutes from 0:00 to 4:59</schedule>
+		<timezone>America/Recife</timezone>
+	</cron>
+	<cron>
+		<url>/monitoring.cron</url>
+		<description>Busca por modificacoes no status das encomendas</description>
+		<schedule>every 15 minutes from 5:00 to 21:59</schedule>
+		<timezone>America/Recife</timezone>
+	</cron>
+	<cron>
+		<url>/monitoring.cron</url>
+		<description>Busca por modificacoes no status das encomendas</description>
+		<schedule>every 59 minutes from 22:00 to 23:59</schedule>
 		<timezone>America/Recife</timezone>
 	</cron>
 	<cron>
 		<url>/monitoring.refresh</url>
 		<description>Atualiza o cache de monitoramentos</description>
-		<schedule>every 60 minutes from 0:00 to 4:59</schedule>
+		<schedule>every 58 minutes from 0:00 to 4:59</schedule>
 		<timezone>America/Recife</timezone>
 	</cron>
 	<cron>
@@ -40,7 +52,7 @@
 	<cron>
 		<url>/monitoring.refresh</url>
 		<description>Atualiza o cache de monitoramentos</description>
-		<schedule>every 60 minutes from 22:00 to 23:59</schedule>
+		<schedule>every 58 minutes from 22:00 to 23:59</schedule>
 		<timezone>America/Recife</timezone>
 	</cron>
 </cronentries>

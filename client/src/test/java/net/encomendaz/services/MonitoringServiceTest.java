@@ -52,8 +52,8 @@ public class MonitoringServiceTest {
 
 	@Test
 	public void clean() {
-		// EncomendaZ.setBaseURL("http://services.encomendaz.net");
-		EncomendaZ.setBaseURL("http://services.sandbox.encomendaz.net");
+		 EncomendaZ.setBaseURL("http://services.encomendaz.net");
+//		EncomendaZ.setBaseURL("http://services.sandbox.encomendaz.net");
 		MonitoringResponse mResponse = EncomendaZ.monitoring.search("<all>");
 
 		Trace t;

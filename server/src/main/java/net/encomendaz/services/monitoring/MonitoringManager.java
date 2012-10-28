@@ -53,44 +53,6 @@ public class MonitoringManager {
 		return MemcacheServiceFactory.getMemcacheService();
 	}
 
-	// @SuppressWarnings("unchecked")
-	// private static Map<Long, Monitoring> getCache() {
-	// Map<Long, Monitoring> cache;
-	// MemcacheService memcache = getMemcacheService();
-	//
-	// if (memcache.contains(MonitoringManager.class)) {
-	// cache = (Map<Long, Monitoring>) memcache.get(MonitoringManager.class);
-	//
-	// } else {
-	// cache = Collections.synchronizedMap(new HashMap<Long, Monitoring>());
-	// memcache.put(MonitoringManager.class, cache);
-	// }
-	//
-	// return cache;
-	// }
-
-	// private static Map<Long, Monitoring> createCache() {
-	// Map<Long, Monitoring> cache = Collections.synchronizedMap(new HashMap<Long, Monitoring>());
-	// Monitoring monitoring;
-	//
-	// for (Entity entity : findAllEntities()) {
-	// monitoring = parse(entity);
-	// cache.put(generateId(monitoring), entity);
-	// }
-	//
-	// return cache;
-	// }
-
-	// private static void refreshCache() {
-	// MemcacheService memcache = getMemcacheService();
-	// memcache.delete(MonitoringManager.class);
-	// memcache.put(MonitoringManager.class, getCache());
-	// }
-
-	// private static Long createId(Monitoring monitoring) {
-	// return createId(monitoring.getClientId(), monitoring.getTrackId());
-	// }
-
 	private static String createId(String clientId, String trackId) {
 		return Monitoring.generateId(clientId, trackId);
 	}
@@ -100,7 +62,7 @@ public class MonitoringManager {
 	}
 
 	private static String getKind() {
-		return Monitoring.class.getSimpleName();
+		return Monitoring.class.getSimpleName() + "_New";
 	}
 
 	public static void insert(Monitoring monitoring) throws MonitoringException {
@@ -148,6 +110,53 @@ public class MonitoringManager {
 		return updated;
 	}
 
+	// public static List<Monitoring> yyyyy() throws MonitoringException {
+	// List<Monitoring> result = new ArrayList<Monitoring>();
+	//
+	// Query query = new Query("Monitoring");
+	// query.setFilter(new FilterPredicate("old", Query.FilterOperator.EQUAL, true));
+	// PreparedQuery preparedQuery = getDatastoreService().prepare(query);
+	//
+	// for (Entity entity : preparedQuery.asIterable()) {
+	// result.add(parse(entity));
+	// }
+	//
+	// return result;
+	// }
+
+	// public static void eeeee() throws MonitoringException {
+	// Query query = new Query("Monitoring");
+	// // query.setFilter(new FilterPredicate("old", Query.FilterOperator.EQUAL, true));
+	// PreparedQuery preparedQuery = getDatastoreService().prepare(query);
+	//
+	// TaskOptions taskOptions;
+	// Queue queue = QueueFactory.getQueue("xt");
+	//
+	// for (Entity entity : preparedQuery.asIterable()) {
+	// taskOptions = Builder.withUrl("/monitoring.json/2");
+	// taskOptions.method(GET);
+	// taskOptions = taskOptions.param("clientId", (String) entity.getProperty("clientId"));
+	// taskOptions = taskOptions.param("trackId", (String) entity.getProperty("trackId"));
+	//
+	// if (entity.hasProperty("label") && entity.getProperty("label") != null) {
+	// taskOptions = taskOptions.param("label", (String) entity.getProperty("label"));
+	// }
+	//
+	// queue.add(taskOptions);
+	// }
+	// }
+
+	// public static void xxxxx() throws MonitoringException {
+	// Query query = new Query("Monitoring");
+	// // query.setFilter(new FilterPredicate("novo", Query.FilterOperator.NOT_EQUAL, "X"));
+	// PreparedQuery preparedQuery = getDatastoreService().prepare(query);
+	//
+	// for (Entity entity : preparedQuery.asIterable()) {
+	// entity.setProperty("old", true);
+	// getDatastoreService().put(entity);
+	// }
+	// }
+
 	public static void update(Monitoring monitoring) {
 		String clientId = monitoring.getClientId();
 		String trackId = monitoring.getTrackId();
@@ -182,9 +191,7 @@ public class MonitoringManager {
 		query.setFilter(CompositeFilterOperator.and(new FilterPredicate("clientId", Query.FilterOperator.EQUAL,
 				clientId), new FilterPredicate("trackId", Query.FilterOperator.EQUAL, trackId)));
 
-		DatastoreService datastore = getDatastoreService();
-		PreparedQuery preparedQuery = datastore.prepare(query);
-
+		PreparedQuery preparedQuery = getDatastoreService().prepare(query);
 		return preparedQuery.asSingleEntity();
 	}
 
@@ -226,7 +233,7 @@ public class MonitoringManager {
 		List<String> ids = (List<String>) getMemcacheService().get(getKind());
 
 		if (ids == null) {
-			Query query = new Query("Monitoring").setKeysOnly();
+			Query query = new Query(getKind()).setKeysOnly();
 			PreparedQuery preparedQuery = getDatastoreService().prepare(query);
 
 			ids = Collections.synchronizedList(new ArrayList<String>());

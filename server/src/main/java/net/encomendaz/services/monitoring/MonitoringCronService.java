@@ -40,9 +40,9 @@ public class MonitoringCronService {
 
 		for (Monitoring monitoring : MonitoringManager.findAll()) {
 			taskOptions = Builder.withUrl("/monitoring.task");
-			taskOptions.method(GET);
 			taskOptions = taskOptions.param("clientId", monitoring.getClientId());
 			taskOptions = taskOptions.param("trackId", monitoring.getTrackId());
+			taskOptions.method(GET);
 
 			queue.add(taskOptions);
 		}

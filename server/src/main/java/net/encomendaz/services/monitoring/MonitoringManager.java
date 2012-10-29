@@ -110,53 +110,6 @@ public class MonitoringManager {
 		return updated;
 	}
 
-	// public static List<Monitoring> yyyyy() throws MonitoringException {
-	// List<Monitoring> result = new ArrayList<Monitoring>();
-	//
-	// Query query = new Query("Monitoring");
-	// query.setFilter(new FilterPredicate("old", Query.FilterOperator.EQUAL, true));
-	// PreparedQuery preparedQuery = getDatastoreService().prepare(query);
-	//
-	// for (Entity entity : preparedQuery.asIterable()) {
-	// result.add(parse(entity));
-	// }
-	//
-	// return result;
-	// }
-
-	// public static void eeeee() throws MonitoringException {
-	// Query query = new Query("Monitoring");
-	// // query.setFilter(new FilterPredicate("old", Query.FilterOperator.EQUAL, true));
-	// PreparedQuery preparedQuery = getDatastoreService().prepare(query);
-	//
-	// TaskOptions taskOptions;
-	// Queue queue = QueueFactory.getQueue("xt");
-	//
-	// for (Entity entity : preparedQuery.asIterable()) {
-	// taskOptions = Builder.withUrl("/monitoring.json/2");
-	// taskOptions.method(GET);
-	// taskOptions = taskOptions.param("clientId", (String) entity.getProperty("clientId"));
-	// taskOptions = taskOptions.param("trackId", (String) entity.getProperty("trackId"));
-	//
-	// if (entity.hasProperty("label") && entity.getProperty("label") != null) {
-	// taskOptions = taskOptions.param("label", (String) entity.getProperty("label"));
-	// }
-	//
-	// queue.add(taskOptions);
-	// }
-	// }
-
-	// public static void xxxxx() throws MonitoringException {
-	// Query query = new Query("Monitoring");
-	// // query.setFilter(new FilterPredicate("novo", Query.FilterOperator.NOT_EQUAL, "X"));
-	// PreparedQuery preparedQuery = getDatastoreService().prepare(query);
-	//
-	// for (Entity entity : preparedQuery.asIterable()) {
-	// entity.setProperty("old", true);
-	// getDatastoreService().put(entity);
-	// }
-	// }
-
 	public static void update(Monitoring monitoring) {
 		String clientId = monitoring.getClientId();
 		String trackId = monitoring.getTrackId();

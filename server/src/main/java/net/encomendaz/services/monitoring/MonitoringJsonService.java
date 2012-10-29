@@ -43,42 +43,6 @@ import net.encomendaz.services.util.Strings;
 @Produces(MEDIA_TYPE)
 public class MonitoringJsonService {
 
-	// @GET
-	// @Path("/xxx")
-	// public void xxx() throws MonitoringException {
-	// Queue queue = QueueFactory.getQueue("xt");
-	//
-	// TaskOptions taskOptions;
-	// taskOptions = Builder.withUrl("/monitoring.json/xxx/e");
-	// taskOptions.method(GET);
-	//
-	// queue.add(taskOptions);
-	// }
-	//
-	// @GET
-	// @Path("/xxx/t")
-	// public void xt() throws MonitoringException {
-	// MonitoringManager.xxxxx();
-	// }
-	//
-	// @GET
-	// @Path("/xxx/e")
-	// public void xe() throws MonitoringException {
-	// MonitoringManager.eeeee();
-	// }
-	//
-	// @GET
-	// @Path("/yyy")
-	// public String yyy() throws MonitoringException {
-	// List<Monitoring> list = MonitoringManager.yyyyy();
-	//
-	// Response<List<Monitoring>> response = new Response<List<Monitoring>>();
-	// response.setStatus(OK);
-	// response.setData(list);
-	//
-	// return Serializer.json(response);
-	// }
-
 	@GET
 	public String search(@QueryParam("clientId") String clientId, @QueryParam("trackId") String trackId,
 			@QueryParam("callback") String callback) throws MonitoringException {
@@ -102,37 +66,6 @@ public class MonitoringJsonService {
 
 		return Serializer.json(response, callback);
 	}
-
-	// @GET
-	// @Path("/2")
-	// public String register2(@QueryParam("clientId") String clientId, @QueryParam("trackId") String trackId,
-	// @QueryParam("label") String label) throws MonitoringException {
-	//
-	// validateClientId(clientId);
-	// validateTrackId(trackId);
-	//
-	// Monitoring monitoring = MonitoringManager.load(clientId, trackId);
-	// Response<String> response = new Response<String>();
-	//
-	// if (monitoring == null) {
-	// monitoring = new Monitoring(clientId, trackId);
-	// monitoring.setLabel("".equals(label) ? null : label);
-	// MonitoringManager.insert(monitoring);
-	//
-	// response.setStatus(OK);
-	//
-	// } else if (!(monitoring.getLabel() == null ? "" : monitoring.getLabel()).equals(label == null ? "" : label)) {
-	// monitoring.setLabel(label);
-	// MonitoringManager.update(monitoring);
-	//
-	// response.setStatus(OK);
-	//
-	// } else {
-	// throw new MonitoringException("Duplicado");
-	// }
-	//
-	// return Serializer.json(response);
-	// }
 
 	@PUT
 	public String register(@FormParam("clientId") String clientId, @FormParam("trackId") String trackId,

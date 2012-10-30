@@ -20,23 +20,40 @@
  */
 package net.encomendaz.services.monitoring;
 
-import static net.encomendaz.services.Constants.CSV_MEDIA_TYPE;
-
-import java.util.List;
+import java.util.Date;
 
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
-import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
 
-@Path("/monitoring.csv")
-@Produces(CSV_MEDIA_TYPE)
-public class MonitoringCSVService {
+import net.encomendaz.services.notification.NotificationManager;
+import net.encomendaz.services.tracking.Tracking;
+import net.encomendaz.services.tracking.TrackingManager;
+
+@Path("/monitoring/task/check-for-update")
+public class MonitoringCheckForUpdateService {
 
 	@GET
-	public List<Monitoring> search(@QueryParam("clientId") String clientId, @QueryParam("trackId") String trackId)
-			throws MonitoringException {
+	public void execute(@QueryParam("clientId") String clientId, @QueryParam("trackId") String trackId)
+			throws Exception {
+		Monitoring monitoring = MonitoringPersistence.load(clientId, trackId);
 
-		return MonitoringManager.search(clientId, trackId);
+		Date date = new Date();
+		Tracking tracking = TrackingManager.search(monitoring.getTrackId());
+		String hash = tracking.getHash();
+
+		if (!monitoring.getHash().equals(hash)) {
+			monitoring.setHash(hash);
+			monitoring.setUpdated(date);
+
+			MonitoringPersistence.update(monitoring);
+			NotificationManager.send(monitoring, tracking);
+		}
+
+		if (tracking.isCompleted()) {
+			MonitoringPersistence.delete(monitoring);
+		} else {
+			monitoring.setMonitored(date);
+		}
 	}
 }

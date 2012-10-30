@@ -20,37 +20,37 @@
 -->
 <cronentries>
 	<cron>
-		<url>/monitoring.cron</url>
+		<url>/monitoring/job/check-for-update</url>
 		<description>Busca por modificacoes no status das encomendas</description>
 		<schedule>every 59 minutes from 0:00 to 4:59</schedule>
 		<timezone>America/Recife</timezone>
 	</cron>
 	<cron>
-		<url>/monitoring.cron</url>
+		<url>/monitoring/job/check-for-update</url>
 		<description>Busca por modificacoes no status das encomendas</description>
 		<schedule>every 15 minutes from 5:00 to 21:59</schedule>
 		<timezone>America/Recife</timezone>
 	</cron>
 	<cron>
-		<url>/monitoring.cron</url>
+		<url>/monitoring/job/check-for-update</url>
 		<description>Busca por modificacoes no status das encomendas</description>
 		<schedule>every 59 minutes from 22:00 to 23:59</schedule>
 		<timezone>America/Recife</timezone>
 	</cron>
 	<cron>
-		<url>/monitoring.refresh</url>
+		<url>/monitoring/job/clean-cache</url>
 		<description>Atualiza o cache de monitoramentos</description>
 		<schedule>every 58 minutes from 0:00 to 4:59</schedule>
 		<timezone>America/Recife</timezone>
 	</cron>
 	<cron>
-		<url>/monitoring.refresh</url>
+		<url>/monitoring/job/clean-cache</url>
 		<description>Atualiza o cache de monitoramentos</description>
 		<schedule>every 30 minutes from 5:00 to 21:59</schedule>
 		<timezone>America/Recife</timezone>
 	</cron>
 	<cron>
-		<url>/monitoring.refresh</url>
+		<url>/monitoring/job/clean-cache</url>
 		<description>Atualiza o cache de monitoramentos</description>
 		<schedule>every 58 minutes from 22:00 to 23:59</schedule>
 		<timezone>America/Recife</timezone>

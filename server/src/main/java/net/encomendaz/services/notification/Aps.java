@@ -59,5 +59,4 @@ public class Aps {
 	public void setBadge(String badge) {
 		this.badge = badge;
 	}
-
 }

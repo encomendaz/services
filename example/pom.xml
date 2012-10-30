@@ -27,7 +27,7 @@
 	<version>1.0.3-SNAPSHOT</version>
 	<packaging>jar</packaging>
 
-	<name>Example</name>
+	<name>EncomendaZ Services Example</name>
 
 	<build>
 		<plugins>

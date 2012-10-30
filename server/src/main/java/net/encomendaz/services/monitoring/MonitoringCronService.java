@@ -30,7 +30,7 @@ import com.google.appengine.api.taskqueue.QueueFactory;
 import com.google.appengine.api.taskqueue.TaskOptions;
 import com.google.appengine.api.taskqueue.TaskOptions.Builder;
 
-@Path("/monitoring.cron")
+@Path("/monitoring/job/check-for-update")
 public class MonitoringCronService {
 
 	@GET
@@ -38,8 +38,8 @@ public class MonitoringCronService {
 		TaskOptions taskOptions;
 		Queue queue = QueueFactory.getQueue("monitoring");
 
-		for (Monitoring monitoring : MonitoringManager.findAll()) {
-			taskOptions = Builder.withUrl("/monitoring.task");
+		for (Monitoring monitoring : MonitoringPersistence.findAll()) {
+			taskOptions = Builder.withUrl("/monitoring/task/check-for-update");
 			taskOptions = taskOptions.param("clientId", monitoring.getClientId());
 			taskOptions = taskOptions.param("trackId", monitoring.getTrackId());
 			taskOptions.method(GET);

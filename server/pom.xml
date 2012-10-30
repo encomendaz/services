@@ -32,7 +32,7 @@
 		<relativePath>../parent</relativePath>
 	</parent>
 
-	<name>Server</name>
+	<name>EncomendaZ Services Server</name>
 
 	<build>
 		<finalName>encomendaz-services</finalName>
@@ -201,6 +201,6 @@
 	</profiles>
 
 	<properties>
-		<gae.version>1.7.2</gae.version>
+		<gae.version>1.7.3</gae.version>
 	</properties>
 </project>

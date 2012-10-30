@@ -63,7 +63,6 @@
 			</resource>
 		</resources>
 		<!--
-		-->
 		<plugins>
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
@@ -79,6 +78,7 @@
 				</executions>
 			</plugin>
 		</plugins>
+		-->
 		<pluginManagement>
 			<plugins>
 				<plugin>
@@ -220,10 +220,7 @@
 		<java.version>1.6</java.version>
 		<lifecycle.mapping.plugin.version>1.0.0</lifecycle.mapping.plugin.version>
 
-		<!--
-		<resteasy.version>2.3.1.GA</resteasy.version>
-		-->
-		<resteasy.version>2.3.4.Final</resteasy.version>
+		<resteasy.version>2.3.5.Final</resteasy.version>
 		<junit.version>4.8.1</junit.version>
 		<easymock.version>3.0</easymock.version>
 		<powermock.version>1.4.6</powermock.version>

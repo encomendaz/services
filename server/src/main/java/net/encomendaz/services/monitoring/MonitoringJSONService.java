@@ -44,7 +44,7 @@ public class MonitoringJSONService {
 	public String search(@QueryParam("clientId") String clientId, @QueryParam("trackId") String trackId,
 			@QueryParam("callback") String callback) throws MonitoringException {
 
-		List<Monitoring> list = MonitoringService.search(clientId, trackId);
+		List<Monitoring> list = MonitoringManager.search(clientId, trackId);
 
 		Response<List<Monitoring>> response = new Response<List<Monitoring>>();
 		response.setStatus(OK);
@@ -57,7 +57,7 @@ public class MonitoringJSONService {
 	public String register(@FormParam("clientId") String clientId, @FormParam("trackId") String trackId,
 			@FormParam("label") String label, @FormParam("callback") String callback) throws MonitoringException {
 
-		MonitoringService.register(clientId, trackId, label);
+		MonitoringManager.register(clientId, trackId, label);
 
 		Response<String> response = new Response<String>();
 		response.setStatus(OK);
@@ -69,7 +69,7 @@ public class MonitoringJSONService {
 	public String delete(@QueryParam("clientId") String clientId, @QueryParam("trackId") String trackId,
 			@QueryParam("callback") String callback) throws MonitoringException {
 
-		MonitoringService.delete(clientId, trackId);
+		MonitoringManager.delete(clientId, trackId);
 
 		Response<String> response = new Response<String>();
 		response.setStatus(OK);

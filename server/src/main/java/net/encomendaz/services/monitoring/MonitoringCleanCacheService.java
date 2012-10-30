@@ -20,40 +20,14 @@
  */
 package net.encomendaz.services.monitoring;
 
-import java.util.Date;
-
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
-import javax.ws.rs.QueryParam;
 
-import net.encomendaz.services.notification.NotificationManager;
-import net.encomendaz.services.tracking.Tracking;
-import net.encomendaz.services.tracking.TrackingManager;
-
-@Path("/monitoring.task")
-public class MonitoringTaskService {
+@Path("/monitoring/job/clean-cache")
+public class MonitoringCleanCacheService {
 
 	@GET
-	public void execute(@QueryParam("clientId") String clientId, @QueryParam("trackId") String trackId)
-			throws Exception {
-		Monitoring monitoring = MonitoringManager.load(clientId, trackId);
-
-		Date date = new Date();
-		Tracking tracking = TrackingManager.search(monitoring.getTrackId());
-		String hash = tracking.getHash();
-
-		if (!monitoring.getHash().equals(hash)) {
-			monitoring.setHash(hash);
-			monitoring.setUpdated(date);
-
-			MonitoringManager.update(monitoring);
-			NotificationManager.send(monitoring, tracking);
-		}
-
-		if (tracking.isCompleted()) {
-			MonitoringManager.delete(monitoring);
-		} else {
-			monitoring.setMonitored(date);
-		}
+	public void refresh() {
+		MonitoringPersistence.refresh();
 	}
 }

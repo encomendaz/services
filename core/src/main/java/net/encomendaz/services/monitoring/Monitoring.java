@@ -40,8 +40,6 @@ public class Monitoring implements Comparable<Monitoring>, Cloneable, Serializab
 
 	private static final long serialVersionUID = 1L;
 
-	public static final String SERVICE_PATH = "/monitoring.json";
-
 	private String clientId;
 
 	private String trackId;

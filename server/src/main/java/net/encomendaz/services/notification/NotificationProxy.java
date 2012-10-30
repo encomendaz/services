@@ -20,14 +20,14 @@
  */
 package net.encomendaz.services.notification;
 
-import static net.encomendaz.services.Response.MEDIA_TYPE;
+import static net.encomendaz.services.Constants.JSON_MEDIA_TYPE;
 
 import javax.ws.rs.Consumes;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 
 @Path("/api/push/")
-@Consumes(MEDIA_TYPE)
+@Consumes(JSON_MEDIA_TYPE)
 public interface NotificationProxy {
 
 	@POST

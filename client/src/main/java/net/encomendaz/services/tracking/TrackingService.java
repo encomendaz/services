@@ -20,16 +20,15 @@
  */
 package net.encomendaz.services.tracking;
 
-import static net.encomendaz.services.Response.MEDIA_TYPE;
-import static net.encomendaz.services.tracking.Trace.SERVICE_PATH;
+import static net.encomendaz.services.Constants.JSON_MEDIA_TYPE;
 
 import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.QueryParam;
 
-@Path(SERVICE_PATH)
-@Consumes(MEDIA_TYPE)
+@Path("/tracking.json")
+@Consumes(JSON_MEDIA_TYPE)
 public interface TrackingService {
 
 	@GET

@@ -18,21 +18,25 @@
  * or write to the Free Software Foundation, Inc., 51 Franklin Street,
  * Fifth Floor, Boston, MA  02110-1301, USA.
  */
-package net.encomendaz.services.notification;
+package net.encomendaz.services.monitoring;
 
-import static net.encomendaz.services.Constants.JSON_MEDIA_TYPE;
+import static net.encomendaz.services.Constants.CSV_MEDIA_TYPE;
 
-import javax.ws.rs.Consumes;
-import javax.ws.rs.PUT;
+import java.util.List;
+
+import javax.ws.rs.GET;
 import javax.ws.rs.Path;
-import javax.ws.rs.PathParam;
+import javax.ws.rs.Produces;
+import javax.ws.rs.QueryParam;
 
-@Path("/api/device_tokens")
-@Consumes(JSON_MEDIA_TYPE)
-public interface RegistrationProxy {
+@Path("/monitoring.csv")
+@Produces(CSV_MEDIA_TYPE)
+public class MonitoringCSVService {
 
-	@PUT
-	@Path("/{deviceToken}")
-	public void register(@PathParam("deviceToken") String deviceToken, Registration registration);
+	@GET
+	public List<Monitoring> search(@QueryParam("clientId") String clientId, @QueryParam("trackId") String trackId)
+			throws MonitoringException {
 
+		return MonitoringService.search(clientId, trackId);
+	}
 }

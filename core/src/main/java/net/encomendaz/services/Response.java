@@ -32,8 +32,6 @@ import org.codehaus.jackson.map.annotate.JsonSerialize;
 @JsonPropertyOrder({ "status", "message", "data" })
 public class Response<D> {
 
-	public static final String MEDIA_TYPE = "application/json;charset=UTF-8";
-
 	private Status status;
 
 	private String message;

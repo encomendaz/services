@@ -20,10 +20,9 @@
  */
 package net.encomendaz.services.monitoring;
 
-import static net.encomendaz.services.Response.MEDIA_TYPE;
+import static net.encomendaz.services.Constants.JSON_MEDIA_TYPE;
 import static net.encomendaz.services.Response.Status.OK;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import javax.ws.rs.DELETE;
@@ -35,30 +34,17 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
 
 import net.encomendaz.services.Response;
-import net.encomendaz.services.notification.NotificationManager;
 import net.encomendaz.services.util.Serializer;
-import net.encomendaz.services.util.Strings;
 
 @Path("/monitoring.json")
-@Produces(MEDIA_TYPE)
-public class MonitoringJsonService {
+@Produces(JSON_MEDIA_TYPE)
+public class MonitoringJSONService {
 
 	@GET
 	public String search(@QueryParam("clientId") String clientId, @QueryParam("trackId") String trackId,
 			@QueryParam("callback") String callback) throws MonitoringException {
 
-		validateClientId(clientId);
-		List<Monitoring> list = new ArrayList<Monitoring>();
-
-		if (clientId.equalsIgnoreCase("<all>")) {
-			list = MonitoringManager.findAll();
-
-		} else if (!Strings.isEmpty(trackId)) {
-			list.add(MonitoringManager.load(clientId, trackId));
-
-		} else {
-			list = MonitoringManager.find(clientId);
-		}
+		List<Monitoring> list = MonitoringService.search(clientId, trackId);
 
 		Response<List<Monitoring>> response = new Response<List<Monitoring>>();
 		response.setStatus(OK);
@@ -71,37 +57,10 @@ public class MonitoringJsonService {
 	public String register(@FormParam("clientId") String clientId, @FormParam("trackId") String trackId,
 			@FormParam("label") String label, @FormParam("callback") String callback) throws MonitoringException {
 
-		validateClientId(clientId);
-		validateTrackId(trackId);
+		MonitoringService.register(clientId, trackId, label);
 
-		String deviceToken = null;
-		int i;
-		if ((i = clientId.indexOf(":")) > 0) {
-			deviceToken = clientId.substring(i + 1, clientId.length());
-			clientId = clientId.substring(0, i);
-
-			NotificationManager.register(deviceToken, clientId);
-		}
-
-		Monitoring monitoring = MonitoringManager.load(clientId, trackId);
 		Response<String> response = new Response<String>();
-
-		if (monitoring == null) {
-			monitoring = new Monitoring(clientId, trackId);
-			monitoring.setLabel("".equals(label) ? null : label);
-			MonitoringManager.insert(monitoring);
-
-			response.setStatus(OK);
-
-		} else if (!(monitoring.getLabel() == null ? "" : monitoring.getLabel()).equals(label == null ? "" : label)) {
-			monitoring.setLabel(label);
-			MonitoringManager.update(monitoring);
-
-			response.setStatus(OK);
-
-		} else {
-			throw new MonitoringException("Duplicado");
-		}
+		response.setStatus(OK);
 
 		return Serializer.json(response, callback);
 	}
@@ -110,34 +69,11 @@ public class MonitoringJsonService {
 	public String delete(@QueryParam("clientId") String clientId, @QueryParam("trackId") String trackId,
 			@QueryParam("callback") String callback) throws MonitoringException {
 
-		validateClientId(clientId);
-		validateTrackId(trackId);
-
-		Monitoring monitoring = MonitoringManager.load(clientId, trackId);
-
-		if (monitoring == null) {
-			throw new MonitoringException("Não existe monitoramento para o clientId=" + clientId + " e trackId="
-					+ trackId);
-
-		} else {
-			MonitoringManager.delete(monitoring);
-		}
+		MonitoringService.delete(clientId, trackId);
 
 		Response<String> response = new Response<String>();
 		response.setStatus(OK);
 
 		return Serializer.json(response, callback);
-	}
-
-	private void validateClientId(String clientId) throws MonitoringException {
-		if (Strings.isEmpty(clientId)) {
-			throw new MonitoringException("O parâmetro clientId é obrigatório");
-		}
-	}
-
-	private void validateTrackId(String trackId) throws MonitoringException {
-		if (Strings.isEmpty(trackId)) {
-			throw new MonitoringException("O parâmetro trackId é obrigatório");
-		}
 	}
 }

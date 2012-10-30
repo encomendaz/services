@@ -18,21 +18,34 @@
  * or write to the Free Software Foundation, Inc., 51 Franklin Street,
  * Fifth Floor, Boston, MA  02110-1301, USA.
  */
-package net.encomendaz.services.notification;
+package net.encomendaz.services.tracking;
 
 import static net.encomendaz.services.Constants.JSON_MEDIA_TYPE;
+import static net.encomendaz.services.Response.Status.OK;
 
-import javax.ws.rs.Consumes;
-import javax.ws.rs.PUT;
+import java.util.List;
+
+import javax.ws.rs.GET;
 import javax.ws.rs.Path;
-import javax.ws.rs.PathParam;
+import javax.ws.rs.Produces;
+import javax.ws.rs.QueryParam;
 
-@Path("/api/device_tokens")
-@Consumes(JSON_MEDIA_TYPE)
-public interface RegistrationProxy {
+import net.encomendaz.services.Response;
+import net.encomendaz.services.util.Serializer;
 
-	@PUT
-	@Path("/{deviceToken}")
-	public void register(@PathParam("deviceToken") String deviceToken, Registration registration);
+@Path("/tracking.json")
+@Produces(JSON_MEDIA_TYPE)
+public class TrackingJSONService {
 
+	@GET
+	public String search(@QueryParam("id") String id, @QueryParam("start") Integer start,
+			@QueryParam("end") Integer end, @QueryParam("callback") String callback) {
+		Response<List<Trace>> response = new Response<List<Trace>>();
+
+		Tracking tracking = TrackingService.search(id, start, end);
+		response.setStatus(OK);
+		response.setData(tracking.getTraces());
+
+		return Serializer.json(response, callback);
+	}
 }

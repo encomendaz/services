@@ -22,6 +22,10 @@ package net.encomendaz.services;
 
 import static net.encomendaz.services.Response.Status.ERROR;
 
+import java.io.PrintWriter;
+import java.io.StringWriter;
+import java.io.Writer;
+
 import javax.ws.rs.core.Response;
 import javax.ws.rs.ext.Provider;
 
@@ -30,17 +34,15 @@ public class ExceptionMapper implements javax.ws.rs.ext.ExceptionMapper<Exceptio
 
 	@Override
 	public Response toResponse(Exception exception) {
-		exception.printStackTrace();
-
 		net.encomendaz.services.Response<Object> response = new net.encomendaz.services.Response<Object>();
 		response.setStatus(ERROR);
-		response.setMessage(exception.getMessage());
+		// response.setMessage(exception.getMessage());
 
-		// Writer writer = new StringWriter();
-		// PrintWriter printWriter = new PrintWriter(writer);
-		// exception.printStackTrace(printWriter);
-		//
-		// response.setMessage("teste: " + writer.toString());
+		Writer writer = new StringWriter();
+		PrintWriter printWriter = new PrintWriter(writer);
+		exception.printStackTrace(printWriter);
+
+		response.setMessage(writer.toString());
 
 		return Response.ok(response).build();
 	}

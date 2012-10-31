@@ -24,7 +24,7 @@ import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 
 @Path("/monitoring/job/clean-cache")
-public class MonitoringCleanCacheService {
+public class MonitoringCleanCacheJob {
 
 	@GET
 	public void refresh() {

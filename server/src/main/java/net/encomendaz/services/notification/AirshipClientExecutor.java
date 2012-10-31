@@ -40,6 +40,7 @@ public class AirshipClientExecutor extends URLConnectionClientExecutor {
 		authStringBase64 = authStringBase64.trim();
 
 		HttpURLConnection connection = super.createConnection(request);
+		connection.setDoOutput(true);
 		connection.addRequestProperty("Authorization", "Basic " + authStringBase64);
 
 		return connection;

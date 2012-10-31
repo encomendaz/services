@@ -31,7 +31,7 @@ import net.encomendaz.services.tracking.Tracking;
 import net.encomendaz.services.tracking.TrackingManager;
 
 @Path("/monitoring/task/check-for-update")
-public class MonitoringCheckForUpdateService {
+public class MonitoringCheckForUpdateTask {
 
 	@GET
 	public void execute(@QueryParam("clientId") String clientId, @QueryParam("trackId") String trackId)

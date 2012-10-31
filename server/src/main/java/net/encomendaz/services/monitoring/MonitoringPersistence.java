@@ -20,8 +20,6 @@
  */
 package net.encomendaz.services.monitoring;
 
-import static com.google.appengine.api.datastore.FetchOptions.Builder.withChunkSize;
-
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
@@ -191,7 +189,7 @@ public class MonitoringPersistence {
 
 			ids = Collections.synchronizedList(new ArrayList<String>());
 
-			for (Entity entity : preparedQuery.asIterable(withChunkSize(20000))) {
+			for (Entity entity : preparedQuery.asIterable()) {
 				ids.add(entity.getKey().getName());
 			}
 
@@ -202,10 +200,15 @@ public class MonitoringPersistence {
 	}
 
 	public static List<Monitoring> findAll() {
-		List<Monitoring> result = Collections.synchronizedList(new ArrayList<Monitoring>());
+		List<Monitoring> result = new ArrayList<Monitoring>();
+		Monitoring monitoring;
 
 		for (String id : getIds()) {
-			result.add(load(id));
+			monitoring = load(id);
+
+			if (monitoring != null) {
+				result.add(monitoring);
+			}
 		}
 
 		return result;

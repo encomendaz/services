@@ -40,6 +40,18 @@ import net.encomendaz.services.util.Serializer;
 @Produces(JSON_MEDIA_TYPE)
 public class MonitoringJSONService {
 
+	@PUT
+	public String register(@FormParam("clientId") String clientId, @FormParam("trackId") String trackId,
+			@FormParam("label") String label, @FormParam("callback") String callback) throws MonitoringException {
+
+		MonitoringManager.register(clientId, trackId, label);
+
+		Response<String> response = new Response<String>();
+		response.setStatus(OK);
+
+		return Serializer.json(response, callback);
+	}
+
 	@GET
 	public String search(@QueryParam("clientId") String clientId, @QueryParam("trackId") String trackId,
 			@QueryParam("callback") String callback) throws MonitoringException {
@@ -49,18 +61,6 @@ public class MonitoringJSONService {
 		Response<List<Monitoring>> response = new Response<List<Monitoring>>();
 		response.setStatus(OK);
 		response.setData(list);
-
-		return Serializer.json(response, callback);
-	}
-
-	@PUT
-	public String register(@FormParam("clientId") String clientId, @FormParam("trackId") String trackId,
-			@FormParam("label") String label, @FormParam("callback") String callback) throws MonitoringException {
-
-		MonitoringManager.register(clientId, trackId, label);
-
-		Response<String> response = new Response<String>();
-		response.setStatus(OK);
 
 		return Serializer.json(response, callback);
 	}

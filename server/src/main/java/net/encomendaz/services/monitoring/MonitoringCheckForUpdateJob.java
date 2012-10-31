@@ -31,7 +31,7 @@ import com.google.appengine.api.taskqueue.TaskOptions;
 import com.google.appengine.api.taskqueue.TaskOptions.Builder;
 
 @Path("/monitoring/job/check-for-update")
-public class MonitoringCronService {
+public class MonitoringCheckForUpdateJob {
 
 	@GET
 	public void execute() throws Exception {
@@ -39,12 +39,14 @@ public class MonitoringCronService {
 		Queue queue = QueueFactory.getQueue("monitoring");
 
 		for (Monitoring monitoring : MonitoringPersistence.findAll()) {
+			// if (monitoring.getClientId() != null && monitoring.getTrackId() != null) {
 			taskOptions = Builder.withUrl("/monitoring/task/check-for-update");
 			taskOptions = taskOptions.param("clientId", monitoring.getClientId());
 			taskOptions = taskOptions.param("trackId", monitoring.getTrackId());
 			taskOptions.method(GET);
 
 			queue.add(taskOptions);
+			// }
 		}
 	}
 }

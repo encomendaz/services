@@ -24,5 +24,10 @@
 		<property name="clientId" direction="asc" />
 		<property name="trackId" direction="asc" />
 	</datastore-index>
+	
+	<datastore-index kind="Monitoring_New" ancestor="false" source="manual">
+		<property name="clientId" direction="asc" />
+		<property name="trackId" direction="asc" />
+	</datastore-index>
 
 </datastore-indexes>

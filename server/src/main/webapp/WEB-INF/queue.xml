@@ -29,4 +29,15 @@
 		<bucket-size>40</bucket-size>
 		-->
 	</queue>
+	
+	<queue>
+		<name>monitoring-cache</name>
+
+		<rate>20/s</rate>
+		<max-concurrent-requests>1</max-concurrent-requests>
+
+		<!--
+		<bucket-size>40</bucket-size>
+		-->
+	</queue>
 </queue-entries>

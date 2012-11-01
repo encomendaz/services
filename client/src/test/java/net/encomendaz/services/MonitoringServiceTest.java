@@ -45,15 +45,15 @@ public class MonitoringServiceTest {
 		MonitoringResponse response2;
 		for (Monitoring m : response.getData()) {
 			response2 = EncomendaZ.monitoring.register(clientId, m.getTrackId(), m.getLabel());
-			System.out.println(i + ": " + response2);
+			System.out.println(i + " : " + m.getTrackId() + " : " + response2);
 			i++;
 		}
 	}
 
 	@Test
 	public void clean() {
-		 EncomendaZ.setBaseURL("http://services.encomendaz.net");
-//		EncomendaZ.setBaseURL("http://services.sandbox.encomendaz.net");
+		EncomendaZ.setBaseURL("http://services.encomendaz.net");
+		// EncomendaZ.setBaseURL("http://services.sandbox.encomendaz.net");
 		MonitoringResponse mResponse = EncomendaZ.monitoring.search("<all>");
 
 		Trace t;

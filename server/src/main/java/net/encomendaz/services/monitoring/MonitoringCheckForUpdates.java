@@ -20,22 +20,44 @@
  */
 package net.encomendaz.services.monitoring;
 
+import static com.google.appengine.api.taskqueue.TaskOptions.Method.POST;
+
 import java.util.Date;
 
+import javax.ws.rs.FormParam;
 import javax.ws.rs.GET;
+import javax.ws.rs.POST;
 import javax.ws.rs.Path;
-import javax.ws.rs.QueryParam;
 
 import net.encomendaz.services.notification.NotificationManager;
 import net.encomendaz.services.tracking.Tracking;
 import net.encomendaz.services.tracking.TrackingManager;
 
-@Path("/monitoring/task/check-for-update")
-public class MonitoringCheckForUpdateTask {
+import com.google.appengine.api.taskqueue.Queue;
+import com.google.appengine.api.taskqueue.QueueFactory;
+import com.google.appengine.api.taskqueue.TaskOptions;
+import com.google.appengine.api.taskqueue.TaskOptions.Builder;
+
+@Path("/monitoring/check-for-updates")
+public class MonitoringCheckForUpdates {
 
 	@GET
-	public void execute(@QueryParam("clientId") String clientId, @QueryParam("trackId") String trackId)
-			throws Exception {
+	public void execute() throws Exception {
+		TaskOptions taskOptions;
+		Queue queue = QueueFactory.getQueue("monitoring");
+
+		for (Monitoring monitoring : MonitoringPersistence.findAll()) {
+			taskOptions = Builder.withUrl("/monitoring/check-for-updates");
+			taskOptions = taskOptions.param("clientId", monitoring.getClientId());
+			taskOptions = taskOptions.param("trackId", monitoring.getTrackId());
+			taskOptions.method(POST);
+
+			queue.add(taskOptions);
+		}
+	}
+
+	@POST
+	public void execute(@FormParam("clientId") String clientId, @FormParam("trackId") String trackId) throws Exception {
 		Monitoring monitoring = MonitoringPersistence.load(clientId, trackId);
 
 		Date date = new Date();

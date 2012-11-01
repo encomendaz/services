@@ -35,24 +35,21 @@ import net.encomendaz.services.tracking.Trace;
 import net.encomendaz.services.tracking.Tracking;
 import net.encomendaz.services.util.Strings;
 
-import org.codehaus.jackson.jaxrs.JacksonJsonProvider;
-import org.jboss.resteasy.client.ClientRequest;
 import org.jboss.resteasy.client.ProxyFactory;
-import org.jboss.resteasy.spi.ResteasyProviderFactory;
 
 public class NotificationManager {
 
-	static {
-		ResteasyProviderFactory.setRegisterBuiltinByDefault(false);
-		ResteasyProviderFactory.getInstance().registerProvider(JacksonJsonProvider.class);
-		ClientRequest.setDefaultExecutorClass(AirshipClientExecutor.class.getCanonicalName());
-	}
+	// static {
+	// ResteasyProviderFactory.setRegisterBuiltinByDefault(false);
+	// ResteasyProviderFactory.getInstance().registerProvider(JacksonJsonProvider.class);
+	// ClientRequest.setDefaultExecutorClass(AirshipClientExecutor.class.getCanonicalName());
+	// }
 
 	public static void register(String deviceToken, String clientId) {
 		Registration registration = new Registration();
 		registration.setAlias(clientId);
 
-		RegistrationProxy proxy = ProxyFactory.create(RegistrationProxy.class, "https://go.urbanairship.com");
+		RegistrationProxy proxy = createProxy(RegistrationProxy.class);
 		proxy.register(deviceToken, registration);
 	}
 
@@ -89,8 +86,12 @@ public class NotificationManager {
 		push.addAlias(monitoring.getClientId());
 		push.setAps(aps);
 
-		NotificationProxy proxy = ProxyFactory.create(NotificationProxy.class, "https://go.urbanairship.com");
+		NotificationProxy proxy = createProxy(NotificationProxy.class);
 		proxy.notify(push);
+	}
+
+	private static <T> T createProxy(Class<T> proxyClass) {
+		return ProxyFactory.create(proxyClass, "https://go.urbanairship.com", new AirshipClientExecutor());
 	}
 
 	private static String buildMessage(Monitoring monitoring, Tracking tracking) {

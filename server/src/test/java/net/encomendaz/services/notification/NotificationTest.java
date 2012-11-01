@@ -20,7 +20,8 @@ public class NotificationTest {
 		// aps.setBadge("+1");
 
 		Push push = new Push();
-		push.addAlias("86543654199261380431726829184927");
+		// push.addAlias("86543654199261380431726829184927");
+		push.addAlias("91448300404063076307502904506675");
 		push.setAps(aps);
 
 		NotificationProxy proxy = ProxyFactory.create(NotificationProxy.class, "https://go.urbanairship.com");

@@ -20,10 +20,19 @@
  */
 package net.encomendaz.services.monitoring;
 
+import static com.google.appengine.api.taskqueue.TaskOptions.Method.DELETE;
+import static com.google.appengine.api.taskqueue.TaskOptions.Method.POST;
+
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
 import java.util.List;
+
+import javax.ws.rs.DELETE;
+import javax.ws.rs.FormParam;
+import javax.ws.rs.POST;
+import javax.ws.rs.Path;
+import javax.ws.rs.QueryParam;
 
 import net.encomendaz.services.tracking.Tracking;
 import net.encomendaz.services.tracking.TrackingManager;
@@ -40,7 +49,12 @@ import com.google.appengine.api.datastore.Query.CompositeFilterOperator;
 import com.google.appengine.api.datastore.Query.FilterPredicate;
 import com.google.appengine.api.memcache.MemcacheService;
 import com.google.appengine.api.memcache.MemcacheServiceFactory;
+import com.google.appengine.api.taskqueue.Queue;
+import com.google.appengine.api.taskqueue.QueueFactory;
+import com.google.appengine.api.taskqueue.TaskOptions;
+import com.google.appengine.api.taskqueue.TaskOptions.Builder;
 
+@Path("/monitoring/cache")
 public class MonitoringPersistence {
 
 	private static DatastoreService getDatastoreService() {
@@ -88,6 +102,14 @@ public class MonitoringPersistence {
 
 			getDatastoreService().put(entity);
 			getMemcacheService().put(id, monitoring);
+
+			TaskOptions taskOptions;
+			taskOptions = Builder.withUrl("/monitoring/cache");
+			taskOptions = taskOptions.param("id", id);
+			taskOptions.method(POST);
+
+			Queue queue = QueueFactory.getQueue("monitoring-cache");
+			queue.add(taskOptions);
 		}
 	}
 
@@ -135,6 +157,14 @@ public class MonitoringPersistence {
 
 		getDatastoreService().delete(key);
 		getMemcacheService().delete(id);
+
+		TaskOptions taskOptions;
+		taskOptions = Builder.withUrl("/monitoring/cache");
+		taskOptions = taskOptions.param("id", id);
+		taskOptions.method(DELETE);
+
+		Queue queue = QueueFactory.getQueue("monitoring-cache");
+		queue.add(taskOptions);
 	}
 
 	private static Entity loadFromDatastore(String clientId, String trackId) {
@@ -188,6 +218,7 @@ public class MonitoringPersistence {
 			PreparedQuery preparedQuery = getDatastoreService().prepare(query);
 
 			ids = Collections.synchronizedList(new ArrayList<String>());
+			// ids = new ArrayList<String>();
 
 			for (Entity entity : preparedQuery.asIterable()) {
 				ids.add(entity.getKey().getName());
@@ -197,6 +228,22 @@ public class MonitoringPersistence {
 		}
 
 		return ids;
+	}
+
+	@POST
+	public static void addToCache(@FormParam("id") String id) {
+		List<String> ids = getIds();
+		ids.add(id);
+
+		getMemcacheService().put(getKind(), ids);
+	}
+
+	@DELETE
+	public static void removeFromCache(@QueryParam("id") String id) {
+		List<String> ids = getIds();
+		ids.remove(id);
+
+		getMemcacheService().put(getKind(), ids);
 	}
 
 	public static List<Monitoring> findAll() {
@@ -220,8 +267,8 @@ public class MonitoringPersistence {
 		if (entity != null) {
 			String clientId = (String) entity.getProperty("clientId");
 			String trackId = (String) entity.getProperty("trackId");
-			monitoring = new Monitoring(clientId, trackId);
 
+			monitoring = new Monitoring(clientId, trackId);
 			monitoring.setClientId((String) entity.getProperty("clientId"));
 			monitoring.setTrackId((String) entity.getProperty("trackId"));
 			monitoring.setLabel((String) entity.getProperty("label"));
@@ -231,11 +278,6 @@ public class MonitoringPersistence {
 		}
 
 		return monitoring;
-	}
-
-	public static void refresh() {
-		getMemcacheService().delete(getKind());
-		getIds();
 	}
 
 	public static List<Monitoring> find(String clientId) {

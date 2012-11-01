@@ -28,6 +28,7 @@
 		<filter-name>Resteasy</filter-name>
 		<filter-class>org.jboss.resteasy.plugins.server.servlet.FilterDispatcher</filter-class>
 	</filter>
+
 	<filter-mapping>
 		<filter-name>Resteasy</filter-name>
 		<url-pattern>/*</url-pattern>
@@ -37,19 +38,20 @@
 		<param-name>resteasy.scan</param-name>
 		<param-value>true</param-value>
 	</context-param>
-	
+
 	<mime-mapping>
 		<extension>ipa</extension>
 		<mime-type>application/octet-stream</mime-type>
 	</mime-mapping>
-<!--
+
 	<security-constraint>
 		<web-resource-collection>
-			<url-pattern>*.cron</url-pattern>
+			<web-resource-name>Serviços internos</web-resource-name>
+			<url-pattern>/monitoring/check-for-updates</url-pattern>
+			<url-pattern>/monitoring/cache</url-pattern>
 		</web-resource-collection>
 		<auth-constraint>
 			<role-name>admin</role-name>
 		</auth-constraint>
 	</security-constraint>
--->
 </web-app>

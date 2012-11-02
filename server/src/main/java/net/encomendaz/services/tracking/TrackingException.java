@@ -20,32 +20,15 @@
  */
 package net.encomendaz.services.tracking;
 
-import static net.encomendaz.services.Constants.JSON_MEDIA_TYPE;
-import static net.encomendaz.services.Response.Status.OK;
+public class TrackingException extends Exception {
 
-import java.util.List;
+	private static final long serialVersionUID = 1L;
 
-import javax.ws.rs.GET;
-import javax.ws.rs.Path;
-import javax.ws.rs.Produces;
-import javax.ws.rs.QueryParam;
-
-import net.encomendaz.services.Response;
-import net.encomendaz.services.util.Serializer;
-
-@Path("/tracking.json")
-@Produces(JSON_MEDIA_TYPE)
-public class TrackingJSONService {
-
-	@GET
-	public String search(@QueryParam("id") String id, @QueryParam("start") Integer start,
-			@QueryParam("end") Integer end, @QueryParam("callback") String callback) {
-		Response<List<Trace>> response = new Response<List<Trace>>();
-
-		Tracking tracking = TrackingManager.search(id, start, end);
-		response.setStatus(OK);
-		response.setData(tracking.getTraces());
-
-		return Serializer.json(response, callback);
+	public TrackingException(String message) {
+		super(message);
+	}
+	
+	public TrackingException(Throwable cause) {
+		super(cause);
 	}
 }

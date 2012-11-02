@@ -27,4 +27,8 @@ public class MonitoringException extends Exception {
 	public MonitoringException(String message) {
 		super(message);
 	}
+	
+	public MonitoringException(Throwable cause) {
+		super(cause);
+	}
 }

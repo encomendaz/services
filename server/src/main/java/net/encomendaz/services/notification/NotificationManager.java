@@ -31,6 +31,7 @@ import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeMessage;
 
 import net.encomendaz.services.monitoring.Monitoring;
+import net.encomendaz.services.monitoring.MonitoringManager;
 import net.encomendaz.services.tracking.Trace;
 import net.encomendaz.services.tracking.Tracking;
 import net.encomendaz.services.util.Strings;
@@ -38,12 +39,6 @@ import net.encomendaz.services.util.Strings;
 import org.jboss.resteasy.client.ProxyFactory;
 
 public class NotificationManager {
-
-	// static {
-	// ResteasyProviderFactory.setRegisterBuiltinByDefault(false);
-	// ResteasyProviderFactory.getInstance().registerProvider(JacksonJsonProvider.class);
-	// ClientRequest.setDefaultExecutorClass(AirshipClientExecutor.class.getCanonicalName());
-	// }
 
 	public static void register(String deviceToken, String clientId) {
 		Registration registration = new Registration();
@@ -80,7 +75,7 @@ public class NotificationManager {
 		Aps aps = new Aps();
 		aps.setAlert(buildMessage(monitoring, tracking));
 		aps.setSound("default");
-		// aps.setBadge("+1");
+		aps.setBadge(MonitoringManager.countUnread(monitoring.getClientId()).toString());
 
 		Push push = new Push();
 		push.addAlias(monitoring.getClientId());

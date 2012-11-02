@@ -18,20 +18,26 @@
  * or write to the Free Software Foundation, Inc., 51 Franklin Street,
  * Fifth Floor, Boston, MA  02110-1301, USA.
  */
-package net.encomendaz.services;
+package net.encomendaz.services.util;
 
-import net.encomendaz.services.util.Hasher;
+import static java.lang.Boolean.FALSE;
+import static java.lang.Boolean.TRUE;
 
-import org.junit.Test;
+import java.util.UnknownFormatConversionException;
 
-public class HasherTest {
+public class Booleans {
 
-	@Test
-	public void md5() {
-		String hash1;
+	public static Boolean valueOf(final String string) throws UnknownFormatConversionException {
+		Boolean result = null;
 
-		hash1 = Hasher.md5("91448300404063076307502904506675" + "DF061940228BR");
+		if (string != null) {
+			if (string.equalsIgnoreCase("yes") || string.equalsIgnoreCase(TRUE.toString())) {
+				result = TRUE;
+			} else if (string.equalsIgnoreCase("no") || string.equalsIgnoreCase(FALSE.toString())) {
+				result = FALSE;
+			}
+		}
 
-		System.out.println(hash1);
+		return result;
 	}
 }

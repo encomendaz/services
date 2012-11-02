@@ -24,6 +24,10 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+import net.encomendaz.services.monitoring.MonitoringException;
+import net.encomendaz.services.monitoring.MonitoringManager;
+import net.encomendaz.services.util.Strings;
+
 import org.alfredlibrary.AlfredException;
 import org.alfredlibrary.utilitarios.correios.Rastreamento;
 import org.alfredlibrary.utilitarios.correios.RegistroRastreamento;
@@ -36,11 +40,11 @@ public class TrackingManager {
 		}
 	}
 
-	public static Tracking search(String id) {
-		return search(id, null, null);
+	public static Tracking search(String id) throws TrackingException {
+		return search(id, null, null, null);
 	}
 
-	public static Tracking search(String id, Integer start, Integer end) {
+	public static Tracking search(String id, Integer start, Integer end, String clientId) throws TrackingException {
 		validateParameters(id);
 
 		List<Trace> traces = new ArrayList<Trace>();
@@ -63,6 +67,15 @@ public class TrackingManager {
 		Tracking result = new Tracking();
 		result.setId(id);
 		result.setTraces(traces);
+
+		if (!Strings.isEmpty(clientId)) {
+			try {
+				MonitoringManager.markAsRead(clientId, id);
+
+			} catch (MonitoringException cause) {
+				throw new TrackingException(cause);
+			}
+		}
 
 		return result;
 	}

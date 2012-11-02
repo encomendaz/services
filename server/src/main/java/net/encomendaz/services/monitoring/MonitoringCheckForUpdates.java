@@ -46,7 +46,7 @@ public class MonitoringCheckForUpdates {
 		TaskOptions taskOptions;
 		Queue queue = QueueFactory.getQueue("monitoring");
 
-		for (Monitoring monitoring : MonitoringPersistence.findAll()) {
+		for (Monitoring monitoring : MonitoringManager.findAll()) {
 			taskOptions = Builder.withUrl("/monitoring/check-for-updates");
 			taskOptions = taskOptions.param("clientId", monitoring.getClientId());
 			taskOptions = taskOptions.param("trackId", monitoring.getTrackId());
@@ -58,7 +58,7 @@ public class MonitoringCheckForUpdates {
 
 	@POST
 	public void execute(@FormParam("clientId") String clientId, @FormParam("trackId") String trackId) throws Exception {
-		Monitoring monitoring = MonitoringPersistence.load(clientId, trackId);
+		Monitoring monitoring = MonitoringManager.load(clientId, trackId);
 
 		Date date = new Date();
 		Tracking tracking = TrackingManager.search(monitoring.getTrackId());
@@ -67,6 +67,7 @@ public class MonitoringCheckForUpdates {
 		if (!monitoring.getHash().equals(hash)) {
 			monitoring.setHash(hash);
 			monitoring.setUpdated(date);
+			monitoring.setUnread(true);
 
 			MonitoringPersistence.update(monitoring);
 			NotificationManager.send(monitoring, tracking);

@@ -20,18 +20,33 @@
  */
 package net.encomendaz.services;
 
-import net.encomendaz.services.util.Hasher;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
+import net.encomendaz.services.util.Booleans;
 
 import org.junit.Test;
 
-public class HasherTest {
+public class BooleansTest {
 
 	@Test
-	public void md5() {
-		String hash1;
+	public void valueOf() {
+		assertTrue(Booleans.valueOf("True"));
+		assertTrue(Booleans.valueOf("true"));
+		assertTrue(Booleans.valueOf("TRUE"));
+		assertTrue(Booleans.valueOf("Yes"));
+		assertTrue(Booleans.valueOf("yes"));
+		assertTrue(Booleans.valueOf("YES"));
 
-		hash1 = Hasher.md5("91448300404063076307502904506675" + "DF061940228BR");
+		assertFalse(Booleans.valueOf("False"));
+		assertFalse(Booleans.valueOf("false"));
+		assertFalse(Booleans.valueOf("FALSE"));
+		assertFalse(Booleans.valueOf("No"));
+		assertFalse(Booleans.valueOf("no"));
+		assertFalse(Booleans.valueOf("NO"));
 
-		System.out.println(hash1);
+		assertNull(Booleans.valueOf(null));
+		assertNull(Booleans.valueOf(""));
+		assertNull(Booleans.valueOf("x"));
 	}
 }

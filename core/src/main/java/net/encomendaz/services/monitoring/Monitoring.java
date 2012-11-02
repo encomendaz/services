@@ -26,7 +26,6 @@ import java.io.Serializable;
 import java.util.Date;
 
 import net.encomendaz.services.serializer.DateDeserializer;
-import net.encomendaz.services.serializer.DateSerializer;
 import net.encomendaz.services.util.Hasher;
 import net.encomendaz.services.util.Serializer;
 
@@ -45,6 +44,8 @@ public class Monitoring implements Comparable<Monitoring>, Cloneable, Serializab
 	private String trackId;
 
 	private String label;
+
+	private Boolean unread;
 
 	private Date created;
 
@@ -146,15 +147,6 @@ public class Monitoring implements Comparable<Monitoring>, Cloneable, Serializab
 		return Serializer.json(this);
 	}
 
-	// @JsonIgnore
-	// public Long getId() {
-	// return id;
-	// }
-
-	// public void setId(Long id) {
-	// this.id = id;
-	// }
-
 	@JsonSerialize(include = NON_NULL)
 	public String getClientId() {
 		return clientId;
@@ -181,7 +173,7 @@ public class Monitoring implements Comparable<Monitoring>, Cloneable, Serializab
 		this.hash = hash;
 	}
 
-	@JsonSerialize(using = DateSerializer.class, include = NON_NULL)
+	@JsonIgnore
 	public Date getUpdated() {
 		return updated;
 	}
@@ -191,7 +183,7 @@ public class Monitoring implements Comparable<Monitoring>, Cloneable, Serializab
 		this.updated = updated;
 	}
 
-	@JsonSerialize(using = DateSerializer.class, include = NON_NULL)
+	@JsonIgnore
 	public Date getCreated() {
 		return created;
 	}
@@ -201,7 +193,7 @@ public class Monitoring implements Comparable<Monitoring>, Cloneable, Serializab
 		this.created = created;
 	}
 
-	@JsonSerialize(using = DateSerializer.class, include = NON_NULL)
+	@JsonIgnore
 	public Date getMonitored() {
 		return monitored;
 	}
@@ -218,5 +210,14 @@ public class Monitoring implements Comparable<Monitoring>, Cloneable, Serializab
 
 	public void setLabel(String label) {
 		this.label = label;
+	}
+
+	@JsonIgnore
+	public Boolean getUnread() {
+		return unread;
+	}
+
+	public void setUnread(Boolean unread) {
+		this.unread = unread;
 	}
 }

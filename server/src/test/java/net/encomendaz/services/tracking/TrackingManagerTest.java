@@ -7,9 +7,8 @@ import org.junit.Test;
 public class TrackingManagerTest {
 
 	@Test
-	public void isCompleted() {
+	public void isCompleted() throws TrackingException {
 		Tracking tracking = TrackingManager.search("PB261442824BR");
-
 		assertTrue(tracking.isCompleted());
 	}
 }

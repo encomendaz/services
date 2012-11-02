@@ -21,6 +21,7 @@
 package net.encomendaz.services.monitoring;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
 import net.encomendaz.services.notification.NotificationManager;
@@ -41,11 +42,13 @@ public class MonitoringManager {
 			NotificationManager.register(deviceToken, clientId);
 		}
 
-		Monitoring monitoring = MonitoringPersistence.load(clientId, trackId);
+		Monitoring monitoring = load(clientId, trackId);
 
 		if (monitoring == null) {
 			monitoring = new Monitoring(clientId, trackId);
 			monitoring.setLabel("".equals(label) ? null : label);
+			monitoring.setUnread(false);
+
 			MonitoringPersistence.insert(monitoring);
 
 		} else if (!(monitoring.getLabel() == null ? "" : monitoring.getLabel()).equals(label == null ? "" : label)) {
@@ -57,18 +60,66 @@ public class MonitoringManager {
 		}
 	}
 
-	public static List<Monitoring> search(String clientId, String trackId) throws MonitoringException {
+	public static void markAsRead(String clientId, String trackId) throws MonitoringException {
+		Monitoring monitoring = load(clientId, trackId);
+
+		if (monitoring != null) {
+			monitoring.setUnread(false);
+			MonitoringPersistence.update(monitoring);
+		}
+	}
+
+	public static Monitoring load(String clientId, String trackId) throws MonitoringException {
 		validateClientId(clientId);
-		List<Monitoring> result = new ArrayList<Monitoring>();
+		validateTrackId(trackId);
 
-		if (clientId.equalsIgnoreCase("<all>")) {
-			result = MonitoringPersistence.findAll();
+		return MonitoringPersistence.load(clientId, trackId);
+	}
 
-		} else if (!Strings.isEmpty(trackId)) {
-			result.add(MonitoringPersistence.load(clientId, trackId));
+	public static List<Monitoring> findAll() {
+		return MonitoringPersistence.findAll();
+	}
+
+	public static Integer countUnread(String clientId) {
+		int count = 0;
+
+		if (!Strings.isEmpty(clientId)) {
+			List<Monitoring> list;
+
+			try {
+				list = search(clientId, null, true);
+			} catch (MonitoringException cause) {
+				list = new ArrayList<Monitoring>();
+			}
+
+			count = list.size();
+		}
+
+		return count;
+	}
+
+	public static List<Monitoring> search(String clientId, String trackId, Boolean unread) throws MonitoringException {
+		validateClientId(clientId);
+		List<Monitoring> result;
+
+		if (!Strings.isEmpty(trackId)) {
+			result = new ArrayList<Monitoring>();
+			result.add(load(clientId, trackId));
 
 		} else {
 			result = MonitoringPersistence.find(clientId);
+		}
+
+		if (unread != null) {
+			Monitoring monitoring;
+
+			for (Iterator<Monitoring> iter = result.iterator(); iter.hasNext();) {
+				monitoring = iter.next();
+
+				if (!unread.equals(monitoring.getUnread() == null ? false : monitoring.getUnread())) {
+					iter.remove();
+				}
+			}
 		}
 
 		return result;

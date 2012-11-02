@@ -34,11 +34,12 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
 
 import net.encomendaz.services.Response;
+import net.encomendaz.services.util.Booleans;
 import net.encomendaz.services.util.Serializer;
 
 @Path("/monitoring.json")
 @Produces(JSON_MEDIA_TYPE)
-public class MonitoringJSONService {
+public class MonitoringService {
 
 	@PUT
 	public String register(@FormParam("clientId") String clientId, @FormParam("trackId") String trackId,
@@ -54,9 +55,13 @@ public class MonitoringJSONService {
 
 	@GET
 	public String search(@QueryParam("clientId") String clientId, @QueryParam("trackId") String trackId,
-			@QueryParam("callback") String callback) throws MonitoringException {
+			@QueryParam("unread") String unread, @QueryParam("callback") String callback) throws MonitoringException {
 
-		List<Monitoring> list = MonitoringManager.search(clientId, trackId);
+		List<Monitoring> list = MonitoringManager.search(clientId, trackId, Booleans.valueOf(unread));
+
+		for (Monitoring monitoring : list) {
+			monitoring.setClientId(null);
+		}
 
 		Response<List<Monitoring>> response = new Response<List<Monitoring>>();
 		response.setStatus(OK);

@@ -55,7 +55,7 @@ import com.google.appengine.api.taskqueue.QueueFactory;
 import com.google.appengine.api.taskqueue.TaskOptions;
 import com.google.appengine.api.taskqueue.TaskOptions.Builder;
 
-@Path("/monitoring/cache")
+@Path("/admin/monitoring/cache")
 public class MonitoringPersistence {
 
 	private static DatastoreService getDatastoreService() {
@@ -105,7 +105,7 @@ public class MonitoringPersistence {
 			getMemcacheService().put(id, monitoring);
 
 			TaskOptions taskOptions;
-			taskOptions = Builder.withUrl("/monitoring/cache");
+			taskOptions = Builder.withUrl("/admin/monitoring/cache");
 			taskOptions = taskOptions.param("id", id);
 			taskOptions.method(POST);
 
@@ -163,7 +163,7 @@ public class MonitoringPersistence {
 		getMemcacheService().delete(id);
 
 		TaskOptions taskOptions;
-		taskOptions = Builder.withUrl("/monitoring/cache");
+		taskOptions = Builder.withUrl("/admin/monitoring/cache");
 		taskOptions = taskOptions.param("id", id);
 		taskOptions.method(DELETE);
 

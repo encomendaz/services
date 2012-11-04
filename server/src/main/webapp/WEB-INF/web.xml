@@ -46,9 +46,8 @@
 
 	<security-constraint>
 		<web-resource-collection>
-			<web-resource-name>Serviços internos</web-resource-name>
-			<url-pattern>/monitoring/check-for-updates</url-pattern>
-			<url-pattern>/monitoring/cache</url-pattern>
+			<web-resource-name>Serviços privados</web-resource-name>
+			<url-pattern>/admin/*</url-pattern>
 		</web-resource-collection>
 		<auth-constraint>
 			<role-name>admin</role-name>

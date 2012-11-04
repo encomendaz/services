@@ -24,7 +24,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-import net.encomendaz.services.monitoring.MonitoringException;
+import net.encomendaz.services.EncomendaZException;
 import net.encomendaz.services.monitoring.MonitoringManager;
 import net.encomendaz.services.util.Strings;
 
@@ -40,17 +40,18 @@ public class TrackingManager {
 		}
 	}
 
-	public static Tracking search(String id) throws TrackingException {
+	public static Tracking search(String id) throws EncomendaZException {
 		return search(id, null, null, null);
 	}
 
-	public static Tracking search(String id, Integer start, Integer end, String clientId) throws TrackingException {
-		validateParameters(id);
+	public static Tracking search(String trackId, Integer start, Integer end, String clientId)
+			throws EncomendaZException {
+		validateParameters(trackId);
 
 		List<Trace> traces = new ArrayList<Trace>();
 
 		try {
-			List<RegistroRastreamento> list = Rastreamento.rastrear(id);
+			List<RegistroRastreamento> list = Rastreamento.rastrear(trackId);
 			Collections.reverse(list);
 
 			int _start = (start == null || start < 1 ? 1 : start);
@@ -64,20 +65,15 @@ public class TrackingManager {
 			cause.printStackTrace();
 		}
 
-		Tracking result = new Tracking();
-		result.setId(id);
-		result.setTraces(traces);
+		Tracking tracking = new Tracking();
+		tracking.setId(trackId);
+		tracking.setTraces(traces);
 
 		if (!Strings.isEmpty(clientId)) {
-			try {
-				MonitoringManager.markAsRead(clientId, id);
-
-			} catch (MonitoringException cause) {
-				throw new TrackingException(cause);
-			}
+			MonitoringManager.markAsRead(clientId, trackId);
 		}
 
-		return result;
+		return tracking;
 	}
 
 	private static Trace parse(RegistroRastreamento registro) {

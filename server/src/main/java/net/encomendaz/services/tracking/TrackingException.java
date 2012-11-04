@@ -20,7 +20,9 @@
  */
 package net.encomendaz.services.tracking;
 
-public class TrackingException extends Exception {
+import net.encomendaz.services.EncomendaZException;
+
+public class TrackingException extends EncomendaZException {
 
 	private static final long serialVersionUID = 1L;
 

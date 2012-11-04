@@ -18,19 +18,28 @@
  * or write to the Free Software Foundation, Inc., 51 Franklin Street,
  * Fifth Floor, Boston, MA  02110-1301, USA.
  */
-package net.encomendaz.services.monitoring;
+package net.encomendaz.services;
 
-import net.encomendaz.services.EncomendaZException;
+import static net.encomendaz.services.Response.Status.ERROR;
 
-public class MonitoringException extends EncomendaZException {
+import javax.ws.rs.core.Response;
+import javax.ws.rs.ext.ExceptionMapper;
+import javax.ws.rs.ext.Provider;
 
-	private static final long serialVersionUID = 1L;
+@Provider
+public class EncomendaZExceptionMapper implements ExceptionMapper<EncomendaZException> {
 
-	public MonitoringException(String message) {
-		super(message);
-	}
-	
-	public MonitoringException(Throwable cause) {
-		super(cause);
+	@Override
+	public Response toResponse(EncomendaZException exception) {
+		net.encomendaz.services.Response<Object> response = new net.encomendaz.services.Response<Object>();
+		response.setMessage(exception.getMessage());
+		response.setStatus(ERROR);
+
+		// Writer writer = new StringWriter();
+		// PrintWriter printWriter = new PrintWriter(writer);
+		// exception.printStackTrace(printWriter);
+		// response.setMessage(writer.toString());
+
+		return Response.ok(response).build();
 	}
 }

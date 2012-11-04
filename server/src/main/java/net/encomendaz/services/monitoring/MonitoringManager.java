@@ -24,12 +24,13 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
+import net.encomendaz.services.EncomendaZException;
 import net.encomendaz.services.notification.NotificationManager;
 import net.encomendaz.services.util.Strings;
 
 public class MonitoringManager {
 
-	public static void register(String clientId, String trackId, String label) throws MonitoringException {
+	public static void register(String clientId, String trackId, String label) throws EncomendaZException {
 		validateClientId(clientId);
 		validateTrackId(trackId);
 

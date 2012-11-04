@@ -33,6 +33,7 @@ import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
 
+import net.encomendaz.services.EncomendaZException;
 import net.encomendaz.services.Response;
 import net.encomendaz.services.util.Booleans;
 import net.encomendaz.services.util.Serializer;
@@ -43,7 +44,7 @@ public class MonitoringService {
 
 	@PUT
 	public String register(@FormParam("clientId") String clientId, @FormParam("trackId") String trackId,
-			@FormParam("label") String label, @FormParam("callback") String callback) throws MonitoringException {
+			@FormParam("label") String label, @FormParam("callback") String callback) throws EncomendaZException {
 
 		MonitoringManager.register(clientId, trackId, label);
 

@@ -34,7 +34,7 @@ import org.codehaus.jackson.annotate.JsonPropertyOrder;
 import org.codehaus.jackson.map.annotate.JsonDeserialize;
 import org.codehaus.jackson.map.annotate.JsonSerialize;
 
-@JsonPropertyOrder({ "clientId", "trackId", "label", "created", "monitored", "updated", "hash" })
+@JsonPropertyOrder({ "clientId", "trackId", "label" })
 public class Monitoring implements Comparable<Monitoring>, Cloneable, Serializable {
 
 	private static final long serialVersionUID = 1L;
@@ -49,9 +49,11 @@ public class Monitoring implements Comparable<Monitoring>, Cloneable, Serializab
 
 	private Date created;
 
-	private Date monitored;
+	// private Date monitored;
 
 	private Date updated;
+
+	private Date completed;
 
 	private String hash;
 
@@ -193,15 +195,15 @@ public class Monitoring implements Comparable<Monitoring>, Cloneable, Serializab
 		this.created = created;
 	}
 
-	@JsonIgnore
-	public Date getMonitored() {
-		return monitored;
-	}
+	// @JsonIgnore
+	// public Date getMonitored() {
+	// return monitored;
+	// }
 
-	@JsonDeserialize(using = DateDeserializer.class)
-	public void setMonitored(Date monitored) {
-		this.monitored = monitored;
-	}
+	// @JsonDeserialize(using = DateDeserializer.class)
+	// public void setMonitored(Date monitored) {
+	// this.monitored = monitored;
+	// }
 
 	@JsonSerialize(include = NON_NULL)
 	public String getLabel() {
@@ -214,14 +216,28 @@ public class Monitoring implements Comparable<Monitoring>, Cloneable, Serializab
 
 	@JsonIgnore
 	public boolean isUnread() {
-		if(this.unread == null) {
+		if (this.unread == null) {
 			this.unread = false;
 		}
-		
+
 		return this.unread;
 	}
 
 	public void setUnread(Boolean unread) {
 		this.unread = unread;
+	}
+
+	@JsonIgnore
+	public Date getCompleted() {
+		return completed;
+	}
+
+	@JsonIgnore
+	public boolean isCompleted() {
+		return this.completed != null;
+	}
+
+	public void setCompleted(Date completed) {
+		this.completed = completed;
 	}
 }

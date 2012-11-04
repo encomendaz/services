@@ -30,6 +30,7 @@ import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
 
+import net.encomendaz.services.EncomendaZException;
 import net.encomendaz.services.Response;
 import net.encomendaz.services.util.Serializer;
 
@@ -40,7 +41,7 @@ public class TrackingService {
 	@GET
 	public String search(@QueryParam("id") String id, @QueryParam("start") Integer start,
 			@QueryParam("end") Integer end, @QueryParam("clientId") String clientId,
-			@QueryParam("callback") String callback) throws TrackingException {
+			@QueryParam("callback") String callback) throws EncomendaZException {
 		Response<List<Trace>> response = new Response<List<Trace>>();
 
 		Tracking tracking = TrackingManager.search(id, start, end, clientId);

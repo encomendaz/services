@@ -20,25 +20,15 @@
  */
 package net.encomendaz.services;
 
-import static net.encomendaz.services.Response.Status.ERROR;
+public class EncomendaZException extends Exception {
 
-import javax.ws.rs.core.Response;
-import javax.ws.rs.ext.Provider;
+	private static final long serialVersionUID = 1L;
 
-@Provider
-public class ExceptionMapper implements javax.ws.rs.ext.ExceptionMapper<Exception> {
-
-	@Override
-	public Response toResponse(Exception exception) {
-		net.encomendaz.services.Response<Object> response = new net.encomendaz.services.Response<Object>();
-		response.setMessage(exception.getMessage());
-		response.setStatus(ERROR);
-
-		// Writer writer = new StringWriter();
-		// PrintWriter printWriter = new PrintWriter(writer);
-		// exception.printStackTrace(printWriter);
-		// response.setMessage(writer.toString());
-
-		return Response.ok(response).build();
+	public EncomendaZException(String message) {
+		super(message);
+	}
+	
+	public EncomendaZException(Throwable cause) {
+		super(cause);
 	}
 }

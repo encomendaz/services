@@ -47,12 +47,14 @@ public class MonitoringCheckForUpdates {
 		Queue queue = QueueFactory.getQueue("monitoring");
 
 		for (Monitoring monitoring : MonitoringManager.findAll()) {
-			taskOptions = Builder.withUrl("/monitoring/check-for-updates");
-			taskOptions = taskOptions.param("clientId", monitoring.getClientId());
-			taskOptions = taskOptions.param("trackId", monitoring.getTrackId());
-			taskOptions.method(POST);
+			if (!monitoring.isCompleted()) {
+				taskOptions = Builder.withUrl("/monitoring/check-for-updates");
+				taskOptions = taskOptions.param("clientId", monitoring.getClientId());
+				taskOptions = taskOptions.param("trackId", monitoring.getTrackId());
+				taskOptions.method(POST);
 
-			queue.add(taskOptions);
+				queue.add(taskOptions);
+			}
 		}
 	}
 
@@ -69,14 +71,14 @@ public class MonitoringCheckForUpdates {
 			monitoring.setUpdated(date);
 			monitoring.setUnread(true);
 
+			if (tracking.isCompleted()) {
+				monitoring.setCompleted(date);
+			}
+
 			MonitoringPersistence.update(monitoring);
 			NotificationManager.send(monitoring, tracking);
 		}
 
-		if (tracking.isCompleted()) {
-			MonitoringPersistence.delete(monitoring);
-		} else {
-			monitoring.setMonitored(date);
-		}
+		// monitoring.setMonitored(date);
 	}
 }

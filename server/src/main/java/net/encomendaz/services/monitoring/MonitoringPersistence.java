@@ -34,8 +34,8 @@ import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.QueryParam;
 
+import net.encomendaz.services.EncomendaZException;
 import net.encomendaz.services.tracking.Tracking;
-import net.encomendaz.services.tracking.TrackingException;
 import net.encomendaz.services.tracking.TrackingManager;
 
 import com.google.appengine.api.datastore.DatastoreService;
@@ -78,45 +78,40 @@ public class MonitoringPersistence {
 		return Monitoring.class.getSimpleName() + "_New";
 	}
 
-	public static void insert(Monitoring monitoring) throws MonitoringException {
-		try {
-			Tracking tracking = TrackingManager.search(monitoring.getTrackId());
+	public static void insert(Monitoring monitoring) throws EncomendaZException {
+		Tracking tracking = TrackingManager.search(monitoring.getTrackId());
 
-			if (tracking.isCompleted()) {
-				throw new MonitoringException("O rastreamento " + tracking.getId() + " já foi finalizado");
+		if (tracking.isCompleted()) {
+			throw new MonitoringException("O rastreamento " + tracking.getId() + " já foi finalizado");
 
-			} else {
-				monitoring.setHash(tracking.getHash());
-				monitoring.setCreated(new Date());
+		} else {
+			monitoring.setHash(tracking.getHash());
+			monitoring.setCreated(new Date());
 
-				String clientId = monitoring.getClientId();
-				String trackId = monitoring.getTrackId();
+			String clientId = monitoring.getClientId();
+			String trackId = monitoring.getTrackId();
 
-				String id = createId(clientId, trackId);
-				Key key = createKey(id);
+			String id = createId(clientId, trackId);
+			Key key = createKey(id);
 
-				Entity entity = new Entity(key);
-				setProperty(entity, "clientId", clientId);
-				setProperty(entity, "trackId", trackId);
-				setProperty(entity, "created", monitoring.getCreated());
-				setProperty(entity, "hash", monitoring.getHash());
-				setProperty(entity, "label", monitoring.getLabel());
+			Entity entity = new Entity(key);
+			setProperty(entity, "clientId", clientId);
+			setProperty(entity, "trackId", trackId);
+			setProperty(entity, "created", monitoring.getCreated());
+			setProperty(entity, "hash", monitoring.getHash());
+			setProperty(entity, "label", monitoring.getLabel());
 
-				getDatastoreService().put(entity);
-				getMemcacheService().put(id, monitoring);
+			getDatastoreService().put(entity);
+			getMemcacheService().put(id, monitoring);
 
-				TaskOptions taskOptions;
-				taskOptions = Builder.withUrl("/monitoring/cache");
-				taskOptions = taskOptions.param("id", id);
-				taskOptions.method(POST);
+			TaskOptions taskOptions;
+			taskOptions = Builder.withUrl("/monitoring/cache");
+			taskOptions = taskOptions.param("id", id);
+			taskOptions.method(POST);
 
-				Queue queue = QueueFactory.getQueue("monitoring-cache");
-				queue.add(taskOptions);
+			Queue queue = QueueFactory.getQueue("monitoring-cache");
+			queue.add(taskOptions);
 
-			}
-
-		} catch (TrackingException cause) {
-			throw new MonitoringException(cause);
 		}
 	}
 
@@ -149,6 +144,7 @@ public class MonitoringPersistence {
 		updated |= setProperty(entity, "unread", monitoring.isUnread());
 		updated |= setProperty(entity, "created", monitoring.getCreated());
 		updated |= setProperty(entity, "updated", monitoring.getUpdated());
+		updated |= setProperty(entity, "completed", monitoring.getCompleted());
 		updated |= setProperty(entity, "hash", monitoring.getHash());
 
 		if (updated) {
@@ -283,6 +279,7 @@ public class MonitoringPersistence {
 			monitoring.setUnread((Boolean) entity.getProperty("unread"));
 			monitoring.setCreated((Date) entity.getProperty("created"));
 			monitoring.setUpdated((Date) entity.getProperty("updated"));
+			monitoring.setCompleted((Date) entity.getProperty("completed"));
 			monitoring.setHash((String) entity.getProperty("hash"));
 		}
 

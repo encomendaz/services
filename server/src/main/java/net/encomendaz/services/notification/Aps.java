@@ -32,7 +32,7 @@ public class Aps {
 
 	private String sound;
 
-	private String badge;
+	private Integer badge;
 
 	public String getAlert() {
 		return alert;
@@ -52,11 +52,11 @@ public class Aps {
 	}
 
 	@JsonSerialize(include = NON_NULL)
-	public String getBadge() {
+	public Integer getBadge() {
 		return badge;
 	}
 
-	public void setBadge(String badge) {
+	public void setBadge(Integer badge) {
 		this.badge = badge;
 	}
 }

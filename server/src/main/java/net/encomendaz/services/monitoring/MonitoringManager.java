@@ -102,12 +102,12 @@ public class MonitoringManager {
 		validateClientId(clientId);
 		List<Monitoring> result;
 
-		if (!Strings.isEmpty(trackId)) {
-			result = new ArrayList<Monitoring>();
-			result.add(load(clientId, trackId));
+		if (Strings.isEmpty(trackId)) {
+			result = MonitoringPersistence.find(clientId);
 
 		} else {
-			result = MonitoringPersistence.find(clientId);
+			result = new ArrayList<Monitoring>();
+			result.add(load(clientId, trackId));
 		}
 
 		if (unread != null) {
@@ -116,7 +116,7 @@ public class MonitoringManager {
 			for (Iterator<Monitoring> iter = result.iterator(); iter.hasNext();) {
 				monitoring = iter.next();
 
-				if (!unread.equals(monitoring.getUnread() == null ? false : monitoring.getUnread())) {
+				if (!unread.equals(monitoring.isUnread())) {
 					iter.remove();
 				}
 			}

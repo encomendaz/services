@@ -75,7 +75,7 @@ public class NotificationManager {
 		Aps aps = new Aps();
 		aps.setAlert(buildMessage(monitoring, tracking));
 		aps.setSound("default");
-		aps.setBadge(MonitoringManager.countUnread(monitoring.getClientId()).toString());
+		aps.setBadge(MonitoringManager.countUnread(monitoring.getClientId()));
 
 		Push push = new Push();
 		push.addAlias(monitoring.getClientId());

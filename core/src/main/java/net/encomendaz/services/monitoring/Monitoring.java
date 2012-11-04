@@ -213,8 +213,12 @@ public class Monitoring implements Comparable<Monitoring>, Cloneable, Serializab
 	}
 
 	@JsonIgnore
-	public Boolean getUnread() {
-		return unread;
+	public boolean isUnread() {
+		if(this.unread == null) {
+			this.unread = false;
+		}
+		
+		return this.unread;
 	}
 
 	public void setUnread(Boolean unread) {

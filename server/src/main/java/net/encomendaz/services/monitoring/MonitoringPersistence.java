@@ -146,7 +146,7 @@ public class MonitoringPersistence {
 
 		boolean updated = false;
 		updated |= setProperty(entity, "label", monitoring.getLabel());
-		updated |= setProperty(entity, "unread", monitoring.getUnread());
+		updated |= setProperty(entity, "unread", monitoring.isUnread());
 		updated |= setProperty(entity, "created", monitoring.getCreated());
 		updated |= setProperty(entity, "updated", monitoring.getUpdated());
 		updated |= setProperty(entity, "hash", monitoring.getHash());

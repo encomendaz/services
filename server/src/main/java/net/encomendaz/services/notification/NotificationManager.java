@@ -108,7 +108,8 @@ public class NotificationManager {
 
 				break;
 			case ENROUTE:
-				message.append("foi encaminhada para o próximo destino");
+				message.append("foi encaminhada para");
+				message.append(buildNextStop(tracking.getLastTrace()));
 
 				break;
 			case CHECKED:
@@ -156,5 +157,14 @@ public class NotificationManager {
 		}
 
 		return city.toString();
+	}
+
+	private static String buildNextStop(Trace trace) {
+		String nextStop = " o próximo destino";
+
+		// Em trânsito para
+		// Encaminhado para
+
+		return nextStop;
 	}
 }

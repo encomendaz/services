@@ -36,7 +36,7 @@ public class MonitoringServiceTest {
 	@Test
 	public void load() {
 		EncomendaZ.setBaseURL("http://services.encomendaz.net");
-		MonitoringResponse response = EncomendaZ.monitoring.search("<all>");
+		MonitoringResponse response = EncomendaZ.monitoring.search("");
 
 		EncomendaZ.setBaseURL("http://services.sandbox.encomendaz.net");
 		String clientId = "91448300404063076307502904506675:018F14CE029B3AFA3135BDB2DA37286C77EE467AA9A72F779AB2A04B8921E448";

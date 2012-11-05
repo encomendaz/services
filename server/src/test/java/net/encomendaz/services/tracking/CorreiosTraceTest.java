@@ -105,17 +105,25 @@ public class CorreiosTraceTest {
 		assertEquals("BA", trace.getState());
 	}
 
-	// @Test
+	 @Test
 	public void getDescription() {
 		String detalhe;
 		Trace trace;
 
-		detalhe = "Em trânsito para AFRICA DO SUL";
-		trace = getInstanceByDetalhe(detalhe);
-		assertEquals("Em trânsito para Africa do Sul", trace.getDescription());
+//		detalhe = "Em trânsito para AFRICA DO SUL";
+//		trace = getInstanceByDetalhe(detalhe);
+//		assertEquals("Em trânsito para Africa do Sul", trace.getDescription());
 
 		detalhe = "Em trânsito para UNIDADE DE TRATAMENTO INTERNACIONAL - BRASIL";
 		trace = getInstanceByDetalhe(detalhe);
 		assertEquals("Em trânsito para Unidade de Tratamento Internacional - Brasil", trace.getDescription());
+		
+		detalhe = "Em trânsito para FISCALIZACAO ADUANEIRA";
+		trace = getInstanceByDetalhe(detalhe);
+		assertEquals("Em trânsito para Fiscalização Aduaneira", trace.getDescription());
+		
+		detalhe = "Em trânsito para RFB - TRIBUTADO-EMISSÃO NOTA TRIBUTACAO/BR";
+		trace = getInstanceByDetalhe(detalhe);
+		assertEquals("Em trânsito para RFB - Tributado-Emissão Nota Tributação/BR", trace.getDescription());
 	}
 }

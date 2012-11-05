@@ -60,6 +60,8 @@ public class CorreiosTrace extends Trace {
 
 		if (matcher.matches()) {
 			city = Strings.firstToUpper(matcher.group(5)).trim();
+			city = applyReplcements(city);
+
 			state = matcher.group(6).trim();
 		}
 	}
@@ -82,20 +84,36 @@ public class CorreiosTrace extends Trace {
 
 				description = p1 + " " + Strings.firstToUpper(p2) + "/" + p3;
 
+			} else if (!Strings.isEmpty(registro.getAcao()) && (getStatus() == UNKNOWN || getStatus() == AWAITING)) {
+				description = registro.getAcao().trim() + ". " + text + ".";
+				description = description.replace("..", ".").trim();
+
 			} else {
-				description = "";
-
-				if (!Strings.isEmpty(registro.getAcao()) && (getStatus() == UNKNOWN || getStatus() == AWAITING)) {
-					description += registro.getAcao().trim() + ". ";
-				}
-
-				description += text + ".";
-				description = description.replaceAll("[.][.]", ".").trim();
+				description = text;
 			}
 
 		} else if (registro.getAcao().indexOf(" ") > 0) {
 			description = registro.getAcao();
 		}
+
+		description = applyReplcements(description);
+	}
+
+	private String applyReplcements(final String text) {
+		String result = null;
+
+		if (text != null) {
+			result = new String(text);
+
+			result = result.replace("UNIDADE DE TRATAMENTO INTERNACIONAL - BRASIL",
+					"Unidade de Tratamento Internacional - Brasil");
+			result = result.replace("FISCALIZACAO ADUANEIRA", "Fiscalização Aduaneira");
+			result = result.replace("TRIBUTADO-EMISSÃO NOTA TRIBUTACAO/BR", "Tributado-Emissão Nota Tributação/BR");
+			result = result.replace("Sao Paulo", "São Paulo");
+			result = result.replace("Brasilia", "Brasília");
+		}
+
+		return result;
 	}
 
 	@Override

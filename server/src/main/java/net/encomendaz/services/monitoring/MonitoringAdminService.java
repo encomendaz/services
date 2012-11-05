@@ -22,6 +22,7 @@ package net.encomendaz.services.monitoring;
 
 import static com.google.appengine.api.taskqueue.TaskOptions.Method.POST;
 import static net.encomendaz.services.Constants.JSON_MEDIA_TYPE;
+import static net.encomendaz.services.Response.Status.OK;
 
 import java.util.Date;
 import java.util.Iterator;
@@ -34,16 +35,17 @@ import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
 
-import com.google.appengine.api.taskqueue.Queue;
-import com.google.appengine.api.taskqueue.QueueFactory;
-import com.google.appengine.api.taskqueue.TaskOptions;
-import com.google.appengine.api.taskqueue.TaskOptions.Builder;
-
+import net.encomendaz.services.Response;
 import net.encomendaz.services.notification.NotificationManager;
 import net.encomendaz.services.tracking.Tracking;
 import net.encomendaz.services.tracking.TrackingManager;
 import net.encomendaz.services.util.Booleans;
 import net.encomendaz.services.util.Strings;
+
+import com.google.appengine.api.taskqueue.Queue;
+import com.google.appengine.api.taskqueue.QueueFactory;
+import com.google.appengine.api.taskqueue.TaskOptions;
+import com.google.appengine.api.taskqueue.TaskOptions.Builder;
 
 @Path("/admin")
 public class MonitoringAdminService {
@@ -51,29 +53,30 @@ public class MonitoringAdminService {
 	@GET
 	@Path("/monitoring.json")
 	@Produces(JSON_MEDIA_TYPE)
-	public List<Monitoring> search(@QueryParam("completed") String completed, @QueryParam("unread") String unread)
-			throws MonitoringException {
+	public Response<List<Monitoring>> search(@QueryParam("completed") String completed,
+			@QueryParam("unread") String unread) throws MonitoringException {
 
-		List<Monitoring> result = MonitoringManager.findAll();
+		List<Monitoring> list = MonitoringManager.findAll();
 
 		if (!Strings.isEmpty(completed) || !Strings.isEmpty(unread)) {
-
-			for (Iterator<Monitoring> iter = result.iterator(); iter.hasNext();) {
+			for (Iterator<Monitoring> iter = list.iterator(); iter.hasNext();) {
 				Monitoring monitoring = iter.next();
 
 				if (!Strings.isEmpty(completed) && monitoring.isCompleted() != Booleans.valueOf(completed)) {
 					iter.remove();
-				}
-
-				if (!Strings.isEmpty(unread) && monitoring.isUnread() != Booleans.valueOf(unread)) {
+				} else if (!Strings.isEmpty(unread) && monitoring.isUnread() != Booleans.valueOf(unread)) {
 					iter.remove();
 				}
 			}
 		}
 
-		return result;
+		Response<List<Monitoring>> response = new Response<List<Monitoring>>();
+		response.setStatus(OK);
+		response.setData(list);
+
+		return response;
 	}
-	
+
 	@GET
 	@Path("/monitoring/check-for-updates")
 	public void execute() throws Exception {

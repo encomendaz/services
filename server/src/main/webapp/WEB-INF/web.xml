@@ -39,11 +39,7 @@
 		<param-value>true</param-value>
 	</context-param>
 
-	<mime-mapping>
-		<extension>ipa</extension>
-		<mime-type>application/octet-stream</mime-type>
-	</mime-mapping>
-
+	<!--
 	<security-constraint>
 		<web-resource-collection>
 			<web-resource-name>Serviços privados</web-resource-name>
@@ -53,4 +49,5 @@
 			<role-name>admin</role-name>
 		</auth-constraint>
 	</security-constraint>
+	-->
 </web-app>

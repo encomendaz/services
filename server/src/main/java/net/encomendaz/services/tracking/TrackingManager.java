@@ -34,9 +34,9 @@ import org.alfredlibrary.utilitarios.correios.RegistroRastreamento;
 
 public class TrackingManager {
 
-	private static void validateParameters(String id) {
+	private static void validateParameters(String id) throws TrackingException {
 		if (id == null || id.isEmpty()) {
-			throw new IllegalArgumentException("É necessário informar a identificação do objeto via parâmetro \"id\"");
+			throw new TrackingException("É necessário informar a identificação do objeto via parâmetro \"id\"");
 		}
 	}
 
@@ -44,14 +44,13 @@ public class TrackingManager {
 		return search(id, null, null, null);
 	}
 
-	public static Tracking search(String trackId, Integer start, Integer end, String clientId)
-			throws EncomendaZException {
-		validateParameters(trackId);
+	public static Tracking search(String id, Integer start, Integer end, String clientId) throws EncomendaZException {
+		validateParameters(id);
 
 		List<Trace> traces = new ArrayList<Trace>();
 
 		try {
-			List<RegistroRastreamento> list = Rastreamento.rastrear(trackId);
+			List<RegistroRastreamento> list = Rastreamento.rastrear(id);
 			Collections.reverse(list);
 
 			int _start = (start == null || start < 1 ? 1 : start);
@@ -66,11 +65,11 @@ public class TrackingManager {
 		}
 
 		Tracking tracking = new Tracking();
-		tracking.setId(trackId);
+		tracking.setId(id);
 		tracking.setTraces(traces);
 
 		if (!Strings.isEmpty(clientId)) {
-			MonitoringManager.markAsRead(clientId, trackId);
+			MonitoringManager.markAsRead(clientId, id);
 		}
 
 		return tracking;

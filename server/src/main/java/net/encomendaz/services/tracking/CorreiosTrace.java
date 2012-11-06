@@ -109,8 +109,6 @@ public class CorreiosTrace extends Trace {
 					"Unidade de Tratamento Internacional - Brasil");
 			result = result.replace("FISCALIZACAO ADUANEIRA", "Fiscalização Aduaneira");
 			result = result.replace("TRIBUTADO-EMISSÃO NOTA TRIBUTACAO/BR", "Tributado-Emissão Nota Tributação/BR");
-			result = result.replace("Sao Paulo", "São Paulo");
-			result = result.replace("Brasilia", "Brasília");
 		}
 
 		return result;

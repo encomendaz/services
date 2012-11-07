@@ -79,6 +79,7 @@ public class NotificationManager {
 
 		Push push = new Push();
 		push.addAlias(monitoring.getClientId());
+		push.setTrackId(monitoring.getTrackId());
 		push.setAps(aps);
 
 		NotificationProxy proxy = createProxy(NotificationProxy.class);

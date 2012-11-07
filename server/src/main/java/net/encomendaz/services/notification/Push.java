@@ -31,6 +31,8 @@ public class Push {
 	private Aps aps;
 
 	private List<String> aliases = new ArrayList<String>();
+	
+	private String trackId;
 
 	public Aps getAps() {
 		return aps;
@@ -50,5 +52,13 @@ public class Push {
 
 	public void addAlias(String alias) {
 		this.aliases.add(alias);
+	}
+
+	public String getTrackId() {
+		return trackId;
+	}
+
+	public void setTrackId(String trackId) {
+		this.trackId = trackId;
 	}
 }

@@ -21,6 +21,7 @@
 package net.encomendaz.services.notification;
 
 import java.util.Properties;
+import java.util.regex.Pattern;
 
 import javax.mail.Message;
 import javax.mail.MessagingException;
@@ -163,6 +164,12 @@ public class NotificationManager {
 	private static String buildNextStop(Trace trace) {
 		String nextStop = " o próximo destino";
 
+		//Pattern descriptionPattern = Pattern.compile("^(.*?[A-Z]{2,3}) (.*) - (.*)/(\\w{2})$");
+		
+		//^(Em trânsito para|Encaminhado para) (.*)
+		
+		//trace.getDescription().
+		
 		// Em trânsito para
 		// Encaminhado para
 

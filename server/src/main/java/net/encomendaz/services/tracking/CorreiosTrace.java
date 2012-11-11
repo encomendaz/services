@@ -109,6 +109,7 @@ public class CorreiosTrace extends Trace {
 					"Unidade de Tratamento Internacional - Brasil");
 			result = result.replace("FISCALIZACAO ADUANEIRA", "Fiscalização Aduaneira");
 			result = result.replace("TRIBUTADO-EMISSÃO NOTA TRIBUTACAO/BR", "Tributado-Emissão Nota Tributação/BR");
+			result = result.replace("ENTREPOSTO", "entreposto");
 		}
 
 		return result;
@@ -133,6 +134,7 @@ public class CorreiosTrace extends Trace {
 	public Status getStatus() {
 		if (status == null) {
 			final String acao = registro.getAcao().toLowerCase().trim();
+			final String descricao = registro.getDetalhe() != null ? registro.getDetalhe().toLowerCase().trim() : "";
 
 			if ("postado".equals(acao)) {
 				status = Status.ACCEPTANCE;
@@ -146,6 +148,9 @@ public class CorreiosTrace extends Trace {
 			} else if ("encaminhado".equals(acao)) {
 				status = Status.ENROUTE;
 
+			} else if ("conferido".equals(acao) && "recebido/destino".equals(descricao)) {
+				status = Status.DELIVERED;
+				
 			} else if ("conferido".equals(acao)) {
 				status = Status.CHECKED;
 
@@ -156,6 +161,9 @@ public class CorreiosTrace extends Trace {
 				status = Status.DELIVERED;
 
 			} else if ("entrega efetuada".equals(acao)) {
+				status = Status.DELIVERED;
+				
+			} else if ("devolvido ao remetente".equals(acao)) {
 				status = Status.DELIVERED;
 
 			} else if (acao.indexOf("aguardando") >= 0) {

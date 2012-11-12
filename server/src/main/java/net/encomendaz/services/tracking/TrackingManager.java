@@ -23,6 +23,8 @@ package net.encomendaz.services.tracking;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import net.encomendaz.services.EncomendaZException;
 import net.encomendaz.services.monitoring.MonitoringManager;
@@ -35,9 +37,48 @@ import org.alfredlibrary.utilitarios.correios.RegistroRastreamento;
 public class TrackingManager {
 
 	private static void validateParameters(String id) throws TrackingException {
-		if (id == null || id.isEmpty()) {
-			throw new TrackingException("É necessário informar a identificação do objeto via parâmetro \"id\"");
+		if (Strings.isEmpty(id)) {
+			throw new TrackingException("É necessário informar código de rastreamento via parâmetro \"id\"");
+
+		} else if (!isValidId(id)) {
+			throw new TrackingException("O \"id\" informado não representa um código de rastreamento válido");
 		}
+	}
+
+	public static boolean isValidId(String id) {
+		boolean result = false;
+
+		if (id != null) {
+			Pattern idPattern = Pattern.compile("^\\w{2}(\\d{9})\\w{2}$");
+			Matcher matcher = idPattern.matcher(id);
+
+			if (matcher.matches()) {
+				String number = matcher.group(1);
+				int sum = 0;
+				int mult[] = { 8, 6, 4, 2, 3, 5, 9, 7 };
+
+				for (int i = 0; i < 8; i++) {
+					sum += Integer.parseInt(number.substring(i, i + 1)) * mult[i];
+				}
+
+				int rest = (sum % 11);
+				int digit;
+
+				if (rest == 0) {
+					digit = 5;
+				} else if (rest == 1) {
+					digit = 0;
+				} else {
+					digit = 11 - rest;
+				}
+
+				if (Integer.parseInt(number.substring(8, 9)) == digit) {
+					result = true;
+				}
+			}
+		}
+
+		return result;
 	}
 
 	public static Tracking search(String id) throws EncomendaZException {

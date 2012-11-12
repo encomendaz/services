@@ -104,7 +104,7 @@ public class MonitoringAdminService {
 		Tracking tracking = TrackingManager.search(monitoring.getTrackId());
 		String hash = tracking.getHash();
 
-		if (!monitoring.getHash().equals(hash)) {
+		if (monitoring.getHash() == null || !monitoring.getHash().equals(hash)) {
 			monitoring.setHash(hash);
 			monitoring.setUpdated(date);
 			monitoring.setUnread(true);

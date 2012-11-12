@@ -30,10 +30,15 @@ public class Tracking {
 	@JsonIgnore
 	public boolean isCompleted() {
 		boolean result = false;
-		Trace lastTrace = getLastTrace();
+		List<Trace> traces = getTraces();
 
-		if (lastTrace != null && lastTrace.getStatus() == Status.DELIVERED) {
-			result = true;
+		if (traces != null) {
+			for (Trace trace : traces) {
+				if (trace.getStatus() == Status.DELIVERED) {
+					result = true;
+					break;
+				}
+			}
 		}
 
 		return result;

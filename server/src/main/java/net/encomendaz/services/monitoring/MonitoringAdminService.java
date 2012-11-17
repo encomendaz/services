@@ -100,21 +100,24 @@ public class MonitoringAdminService {
 	public void execute(@FormParam("clientId") String clientId, @FormParam("trackId") String trackId) throws Exception {
 		Monitoring monitoring = MonitoringManager.load(clientId, trackId);
 
-		Date date = new Date();
-		Tracking tracking = TrackingManager.search(monitoring.getTrackId());
-		String hash = tracking.getHash();
+		if (monitoring != null) {
+			Date date = new Date();
 
-		if (monitoring.getHash() == null || !monitoring.getHash().equals(hash)) {
-			monitoring.setHash(hash);
-			monitoring.setUpdated(date);
-			monitoring.setUnread(true);
+			Tracking tracking = TrackingManager.search(monitoring.getTrackId());
+			String hash = tracking.getHash();
 
-			if (tracking.isCompleted()) {
-				monitoring.setCompleted(date);
+			if (monitoring.getHash() == null || !monitoring.getHash().equals(hash)) {
+				monitoring.setHash(hash);
+				monitoring.setUpdated(date);
+				monitoring.setUnread(true);
+
+				if (tracking.isCompleted()) {
+					monitoring.setCompleted(date);
+				}
+
+				MonitoringPersistence.update(monitoring);
+				NotificationManager.send(monitoring, tracking);
 			}
-
-			MonitoringPersistence.update(monitoring);
-			NotificationManager.send(monitoring, tracking);
 		}
 
 		// monitoring.setMonitored(date);

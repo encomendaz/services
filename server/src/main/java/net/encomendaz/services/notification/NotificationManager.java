@@ -169,7 +169,7 @@ public class NotificationManager {
 		Matcher matcher = pattern.matcher(trace.getDescription());
 		
 		if(matcher.matches()) {
-			nextStop = " " + matcher.group(1);
+			nextStop = " " + matcher.group(2);
 		} else {
 			nextStop = " o próximo destino";
 		}

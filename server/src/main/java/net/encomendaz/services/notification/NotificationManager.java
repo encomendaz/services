@@ -33,6 +33,7 @@ import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeMessage;
 
 import net.encomendaz.services.monitoring.Monitoring;
+import net.encomendaz.services.monitoring.MonitoringException;
 import net.encomendaz.services.monitoring.MonitoringManager;
 import net.encomendaz.services.tracking.Trace;
 import net.encomendaz.services.tracking.Tracking;
@@ -73,7 +74,7 @@ public class NotificationManager {
 		Transport.send(msg);
 	}
 
-	private static void push(Monitoring monitoring, Tracking tracking) {
+	private static void push(Monitoring monitoring, Tracking tracking) throws MonitoringException {
 		Aps aps = new Aps();
 		aps.setAlert(buildMessage(monitoring, tracking));
 		aps.setSound("default");

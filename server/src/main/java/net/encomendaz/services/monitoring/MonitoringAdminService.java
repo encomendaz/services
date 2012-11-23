@@ -25,7 +25,6 @@ import static net.encomendaz.services.Constants.JSON_MEDIA_TYPE;
 import static net.encomendaz.services.Response.Status.OK;
 
 import java.util.Date;
-import java.util.Iterator;
 import java.util.List;
 
 import javax.ws.rs.FormParam;
@@ -40,7 +39,6 @@ import net.encomendaz.services.notification.NotificationManager;
 import net.encomendaz.services.tracking.Tracking;
 import net.encomendaz.services.tracking.TrackingManager;
 import net.encomendaz.services.util.Booleans;
-import net.encomendaz.services.util.Strings;
 
 import com.google.appengine.api.taskqueue.Queue;
 import com.google.appengine.api.taskqueue.QueueFactory;
@@ -56,19 +54,20 @@ public class MonitoringAdminService {
 	public Response<List<Monitoring>> search(@QueryParam("completed") String completed,
 			@QueryParam("unread") String unread) throws MonitoringException {
 
-		List<Monitoring> list = MonitoringManager.findAll();
+		List<Monitoring> list = MonitoringManager.search(null, null, Booleans.valueOf(completed),
+				Booleans.valueOf(unread));
 
-		if (!Strings.isEmpty(completed) || !Strings.isEmpty(unread)) {
-			for (Iterator<Monitoring> iter = list.iterator(); iter.hasNext();) {
-				Monitoring monitoring = iter.next();
-
-				if (!Strings.isEmpty(completed) && monitoring.isCompleted() != Booleans.valueOf(completed)) {
-					iter.remove();
-				} else if (!Strings.isEmpty(unread) && monitoring.isUnread() != Booleans.valueOf(unread)) {
-					iter.remove();
-				}
-			}
-		}
+		// if (!Strings.isEmpty(completed) || !Strings.isEmpty(unread)) {
+		// for (Iterator<Monitoring> iter = list.iterator(); iter.hasNext();) {
+		// Monitoring monitoring = iter.next();
+		//
+		// if (!Strings.isEmpty(completed) && monitoring.isCompleted() != Booleans.valueOf(completed)) {
+		// iter.remove();
+		// } else if (!Strings.isEmpty(unread) && monitoring.isUnread() != Booleans.valueOf(unread)) {
+		// iter.remove();
+		// }
+		// }
+		// }
 
 		Response<List<Monitoring>> response = new Response<List<Monitoring>>();
 		response.setStatus(OK);

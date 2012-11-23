@@ -36,6 +36,9 @@ public interface MonitoringService {
 
 	@GET
 	MonitoringResponse search(@QueryParam("clientId") String clientId);
+	
+	@GET
+	MonitoringResponse search(@QueryParam("clientId") String clientId, @QueryParam("completed") Boolean completed, @QueryParam("unread") Boolean unread);
 
 	@PUT
 	MonitoringResponse register(@FormParam("clientId") String clientId, @FormParam("trackId") String trackId,

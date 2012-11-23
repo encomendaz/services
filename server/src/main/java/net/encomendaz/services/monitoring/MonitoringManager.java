@@ -21,7 +21,6 @@
 package net.encomendaz.services.monitoring;
 
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 
 import net.encomendaz.services.EncomendaZException;
@@ -77,51 +76,55 @@ public class MonitoringManager {
 		return MonitoringPersistence.load(clientId, trackId);
 	}
 
-	public static List<Monitoring> findAll() {
-		return MonitoringPersistence.findAll();
+	public static List<Monitoring> findAll() throws MonitoringException {
+		return search(null, null, null, null);
 	}
 
-	public static Integer countUnread(String clientId) {
-		int count = 0;
-
-		if (!Strings.isEmpty(clientId)) {
-			List<Monitoring> list;
-
-			try {
-				list = search(clientId, null, true);
-			} catch (MonitoringException cause) {
-				list = new ArrayList<Monitoring>();
-			}
-
-			count = list.size();
-		}
-
-		return count;
+	public static Integer countUnread(String clientId) throws MonitoringException {
+		return search(clientId, null, null, true).size();
 	}
 
-	public static List<Monitoring> search(String clientId, String trackId, Boolean unread) throws MonitoringException {
-		validateClientId(clientId);
-		List<Monitoring> result;
+	public static List<Monitoring> search(String clientId, String trackId, Boolean completed, Boolean unread)
+			throws MonitoringException {
+		// validateClientId(clientId);
+		List<Monitoring> list;
 
-		if (Strings.isEmpty(trackId)) {
-			result = MonitoringPersistence.find(clientId);
+		if (Strings.isEmpty(clientId) && Strings.isEmpty(trackId)) {
+			list = MonitoringPersistence.findAll();
+
+		} else if (Strings.isEmpty(trackId)) {
+			list = MonitoringPersistence.find(clientId);
 
 		} else {
-			result = new ArrayList<Monitoring>();
-			result.add(load(clientId, trackId));
+			list = new ArrayList<Monitoring>();
+			list.add(load(clientId, trackId));
 		}
 
-		if (unread != null) {
-			Monitoring monitoring;
+		List<Monitoring> result = new ArrayList<Monitoring>();
 
-			for (Iterator<Monitoring> iter = result.iterator(); iter.hasNext();) {
-				monitoring = iter.next();
+		for (Monitoring monitoring : list) {
+			if ((completed == null || monitoring.isCompleted() == completed.booleanValue())
+					&& (unread == null || monitoring.isUnread() == unread.booleanValue())) {
 
-				if (!unread.equals(monitoring.isUnread())) {
-					iter.remove();
+				if (!Strings.isEmpty(clientId)) {
+					monitoring.setClientId(null);
 				}
+
+				result.add(monitoring);
 			}
 		}
+
+		// if (unread != null) {
+		// Monitoring monitoring;
+		//
+		// for (Iterator<Monitoring> iter = result.iterator(); iter.hasNext();) {
+		// monitoring = iter.next();
+		//
+		// if (!unread.equals(monitoring.isUnread())) {
+		// iter.remove();
+		// }
+		// }
+		// }
 
 		return result;
 	}

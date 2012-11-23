@@ -56,13 +56,36 @@ public class MonitoringService {
 
 	@GET
 	public String search(@QueryParam("clientId") String clientId, @QueryParam("trackId") String trackId,
-			@QueryParam("unread") String unread, @QueryParam("callback") String callback) throws MonitoringException {
+			@QueryParam("completed") String completed, @QueryParam("unread") String unread,
+			@QueryParam("callback") String callback) throws MonitoringException {
 
-		List<Monitoring> list = MonitoringManager.search(clientId, trackId, Booleans.valueOf(unread));
+		List<Monitoring> list = MonitoringManager.search(clientId, trackId, Booleans.valueOf(completed),
+				Booleans.valueOf(unread));
 
-		for (Monitoring monitoring : list) {
-			monitoring.setClientId(null);
-		}
+		// List<Monitoring> result = new ArrayList<Monitoring>();
+		//
+		// for (Monitoring monitoring : list) {
+		// if ((Strings.isEmpty(completed) || monitoring.isCompleted() == Booleans.valueOf(completed))
+		// && (Strings.isEmpty(unread) || monitoring.isUnread() == Booleans.valueOf(unread))) {
+		//
+		// monitoring.setClientId(null);
+		// result.add(monitoring);
+		// }
+		// }
+		//
+		// if (!Strings.isEmpty(completed) || !Strings.isEmpty(unread)) {
+		// for (Iterator<Monitoring> iter = list.iterator(); iter.hasNext();) {
+		// Monitoring monitoring = iter.next();
+		// monitoring.setClientId(null);
+		//
+		// if (!Strings.isEmpty(completed) && monitoring.isCompleted() != Booleans.valueOf(completed)) {
+		// iter.remove();
+		// } else if (!Strings.isEmpty(unread) && monitoring.isUnread() != Booleans.valueOf(unread)) {
+		// iter.remove();
+		// }
+		//
+		// }
+		// }
 
 		Response<List<Monitoring>> response = new Response<List<Monitoring>>();
 		response.setStatus(OK);

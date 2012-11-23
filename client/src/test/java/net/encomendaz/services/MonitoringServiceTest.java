@@ -39,14 +39,41 @@ public class MonitoringServiceTest {
 		MonitoringResponse response = EncomendaZ.monitoring.search("");
 
 		EncomendaZ.setBaseURL("http://services.sandbox.encomendaz.net");
-		String clientId = "91448300404063076307502904506675:018F14CE029B3AFA3135BDB2DA37286C77EE467AA9A72F779AB2A04B8921E448";
+		//String clientId = "91448300404063076307502904506675:018F14CE029B3AFA3135BDB2DA37286C77EE467AA9A72F779AB2A04B8921E448";
 
 		int i = 1;
 		MonitoringResponse response2;
 		for (Monitoring m : response.getData()) {
-			response2 = EncomendaZ.monitoring.register(clientId, m.getTrackId(), m.getLabel());
+			response2 = EncomendaZ.monitoring.register(m.getClientId() + "_", m.getTrackId(), m.getLabel());
 			System.out.println(i + " : " + m.getTrackId() + " : " + response2);
 			i++;
+		}
+	}
+
+	@Test
+	public void sql() {
+		// EncomendaZ.setBaseURL("http://services.encomendaz.net/admin");
+		EncomendaZ.setBaseURL("http://services.sandbox.encomendaz.net/admin");
+		MonitoringResponse response = EncomendaZ.monitoring.search("", false, null);
+
+		System.out.println("drop table Monitoring;");
+		System.out.println("create table Monitoring (clientId varchar not null, trackId varchar not null, primary key (clientId, trackId));");
+
+		for (Monitoring m : response.getData()) {
+			System.out.println(String.format("insert into Monitoring (clientId, trackId) values ('%s', '%s');",
+					m.getClientId(), m.getTrackId()));
+		}
+	}
+
+	@Test
+	public void clean2() {
+		// EncomendaZ.setBaseURL("http://services.encomendaz.net/admin");
+		EncomendaZ.setBaseURL("http://services.sandbox.encomendaz.net");
+		MonitoringResponse response = EncomendaZ.monitoring.search("91448300404063076307502904506675", false, true);
+
+		for (Monitoring m : response.getData()) {
+			EncomendaZ.monitoring.delete(m.getClientId(), m.getTrackId());
+			System.out.print(".");
 		}
 	}
 

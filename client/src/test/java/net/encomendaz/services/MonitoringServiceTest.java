@@ -36,16 +36,18 @@ public class MonitoringServiceTest {
 	@Test
 	public void load() {
 		EncomendaZ.setBaseURL("http://services.encomendaz.net/admin");
-		MonitoringResponse response = EncomendaZ.monitoring.search("");
+		MonitoringResponse response = EncomendaZ.monitoring.search(null);
 
 		EncomendaZ.setBaseURL("http://services.sandbox.encomendaz.net");
-		//String clientId = "91448300404063076307502904506675:018F14CE029B3AFA3135BDB2DA37286C77EE467AA9A72F779AB2A04B8921E448";
+		String clientId = "91448300404063076307502904506675:018F14CE029B3AFA3135BDB2DA37286C77EE467AA9A72F779AB2A04B8921E448";
 
 		int i = 1;
 		MonitoringResponse response2;
 		for (Monitoring m : response.getData()) {
-			response2 = EncomendaZ.monitoring.register(m.getClientId() + "_", m.getTrackId(), m.getLabel());
-			System.out.println(i + " : " + m.getTrackId() + " : " + response2);
+			// response2 = EncomendaZ.monitoring.register(m.getClientId() + "_", m.getTrackId(), m.getLabel());
+			response2 = EncomendaZ.monitoring.register(clientId, m.getTrackId(), m.getLabel());
+
+			System.out.println(i + ": " + response2.toString());
 			i++;
 		}
 	}
@@ -54,10 +56,11 @@ public class MonitoringServiceTest {
 	public void sql() {
 		// EncomendaZ.setBaseURL("http://services.encomendaz.net/admin");
 		EncomendaZ.setBaseURL("http://services.sandbox.encomendaz.net/admin");
-		MonitoringResponse response = EncomendaZ.monitoring.search("", false, null);
+		MonitoringResponse response = EncomendaZ.monitoring.search(null, false, null);
 
 		System.out.println("drop table Monitoring;");
-		System.out.println("create table Monitoring (clientId varchar not null, trackId varchar not null, primary key (clientId, trackId));");
+		System.out
+				.println("create table Monitoring (clientId varchar not null, trackId varchar not null, primary key (clientId, trackId));");
 
 		for (Monitoring m : response.getData()) {
 			System.out.println(String.format("insert into Monitoring (clientId, trackId) values ('%s', '%s');",
@@ -68,12 +71,16 @@ public class MonitoringServiceTest {
 	@Test
 	public void clean2() {
 		// EncomendaZ.setBaseURL("http://services.encomendaz.net/admin");
-		EncomendaZ.setBaseURL("http://services.sandbox.encomendaz.net");
-		MonitoringResponse response = EncomendaZ.monitoring.search("91448300404063076307502904506675", false, true);
+		EncomendaZ.setBaseURL("http://services.sandbox.encomendaz.net/admin");
+		MonitoringResponse response = EncomendaZ.monitoring.search(null, null, null);
 
+		EncomendaZ.setBaseURL("http://services.sandbox.encomendaz.net");
 		for (Monitoring m : response.getData()) {
-			EncomendaZ.monitoring.delete(m.getClientId(), m.getTrackId());
-			System.out.print(".");
+
+			if (!"49875341236190825424153421103956".equalsIgnoreCase(m.getClientId())) {
+				EncomendaZ.monitoring.delete(m.getClientId(), m.getTrackId());
+				System.out.println(m.toString());
+			}
 		}
 	}
 

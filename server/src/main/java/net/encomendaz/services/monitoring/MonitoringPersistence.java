@@ -22,7 +22,6 @@ package net.encomendaz.services.monitoring;
 
 import static com.google.appengine.api.taskqueue.TaskOptions.Method.DELETE;
 import static com.google.appengine.api.taskqueue.TaskOptions.Method.POST;
-import static com.google.appengine.api.taskqueue.TaskOptions.Method.PUT;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -34,7 +33,6 @@ import java.util.Set;
 import javax.ws.rs.DELETE;
 import javax.ws.rs.FormParam;
 import javax.ws.rs.POST;
-import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
 import javax.ws.rs.QueryParam;
 
@@ -107,7 +105,7 @@ public class MonitoringPersistence {
 	private static boolean setProperty(Entity entity, String property, Object value) {
 		boolean updated = false;
 
-		Object currentValue = entity.getProperty(property);
+		Object currentValue = getProperty(entity, property);
 
 		if (value == null && currentValue != null) {
 			entity.removeProperty(property);
@@ -161,7 +159,8 @@ public class MonitoringPersistence {
 
 		if (Strings.isEmpty((String) getMemcacheService().get(key))) {
 			getMemcacheService().put(key, "loading");
-			loadCacheQueue();
+			// loadCacheQueue();
+			loadCache();
 		}
 
 		while (!getMemcacheService().get(key).equals("loaded")) {
@@ -174,23 +173,27 @@ public class MonitoringPersistence {
 		}
 	}
 
-	private static void loadCacheQueue() {
-		TaskOptions taskOptions;
-		taskOptions = Builder.withUrl("/admin/monitoring/cache");
-		taskOptions.method(PUT);
+	// private static void loadCacheQueue() {
+	// TaskOptions taskOptions;
+	// taskOptions = Builder.withUrl("/admin/monitoring/cache");
+	// taskOptions.method(PUT);
+	//
+	// Queue queue = QueueFactory.getQueue("monitoring-cache");
+	// queue.add(taskOptions);
+	// }
 
-		Queue queue = QueueFactory.getQueue("monitoring-cache");
-		queue.add(taskOptions);
-	}
-
-	@PUT
-	public static void loadCache() {
+	// @PUT
+	private static void loadCache() {
 		for (String id : findAllIdsFromDatastore()) {
-			addToCache(id);
+			// addToCache(id);
+			addToCacheQueue(id);
 		}
 
-		final String key = "cache_status";
-		getMemcacheService().put(key, "loaded");
+		addToCacheQueue(null);
+
+		//
+		// final String key = "cache_status";
+		// getMemcacheService().put(key, "loaded");
 	}
 
 	public static Set<String> getClientIds() {
@@ -296,8 +299,11 @@ public class MonitoringPersistence {
 	private static void addToCacheQueue(String id) {
 		TaskOptions taskOptions;
 		taskOptions = Builder.withUrl("/admin/monitoring/cache");
-		taskOptions = taskOptions.param("id", id);
 		taskOptions.method(POST);
+
+		if (!Strings.isEmpty(id)) {
+			taskOptions = taskOptions.param("id", id);
+		}
 
 		Queue queue = QueueFactory.getQueue("monitoring-cache");
 		queue.add(taskOptions);
@@ -305,18 +311,25 @@ public class MonitoringPersistence {
 
 	@POST
 	public static void addToCache(@FormParam("id") String id) {
-		Entity entity = loadFromDatastore(id);
-		Monitoring monitoring = parse(entity);
+		final String key = "cache_status";
 
-		Set<String> trackIds = getCachedTrackIds(monitoring.getClientId());
-		trackIds.add(monitoring.getTrackId());
+		if (Strings.isEmpty(id)) {
+			getMemcacheService().put(key, "loaded");
 
-		Set<String> clientIds = getCachedClientIds();
-		clientIds.add(monitoring.getClientId());
+		} else {
+			Entity entity = loadFromDatastore(id);
+			Monitoring monitoring = parse(entity);
 
-		getMemcacheService().put(getKind(), clientIds);
-		getMemcacheService().put(monitoring.getClientId(), trackIds);
-		getMemcacheService().put(id, monitoring);
+			Set<String> trackIds = getCachedTrackIds(monitoring.getClientId());
+			trackIds.add(monitoring.getTrackId());
+
+			Set<String> clientIds = getCachedClientIds();
+			clientIds.add(monitoring.getClientId());
+
+			getMemcacheService().put(getKind(), clientIds);
+			getMemcacheService().put(monitoring.getClientId(), trackIds);
+			getMemcacheService().put(id, monitoring);
+		}
 	}
 
 	private static void removeFromCacheQueue(String id) {
@@ -449,20 +462,29 @@ public class MonitoringPersistence {
 		Monitoring monitoring = null;
 
 		if (entity != null) {
-			String clientId = (String) entity.getProperty("clientId");
-			String trackId = (String) entity.getProperty("trackId");
+			String clientId = getProperty(entity, "clientId");
+			String trackId = getProperty(entity, "trackId");
 
 			monitoring = new Monitoring(clientId, trackId);
-			monitoring.setClientId((String) entity.getProperty("clientId"));
-			monitoring.setTrackId((String) entity.getProperty("trackId"));
-			monitoring.setLabel((String) entity.getProperty("label"));
-			monitoring.setUnread((Boolean) entity.getProperty("unread"));
-			monitoring.setCreated((Date) entity.getProperty("created"));
-			monitoring.setUpdated((Date) entity.getProperty("updated"));
-			monitoring.setCompleted((Date) entity.getProperty("completed"));
-			monitoring.setHash((String) entity.getProperty("hash"));
+			monitoring.setLabel((String) getProperty(entity, "label"));
+			monitoring.setUnread((Boolean) getProperty(entity, "unread"));
+			monitoring.setCreated((Date) getProperty(entity, "created"));
+			monitoring.setUpdated((Date) getProperty(entity, "updated"));
+			monitoring.setCompleted((Date) getProperty(entity, "completed"));
+			monitoring.setHash((String) getProperty(entity, "hash"));
 		}
 
 		return monitoring;
+	}
+
+	private static <T> T getProperty(Entity entity, String property) {
+		@SuppressWarnings("unchecked")
+		T result = (T) entity.getProperty(property);
+
+		if (result instanceof String && Strings.isEmpty((String) result)) {
+			result = null;
+		}
+
+		return result;
 	}
 }

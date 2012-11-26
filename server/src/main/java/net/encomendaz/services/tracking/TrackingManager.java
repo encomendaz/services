@@ -85,13 +85,13 @@ public class TrackingManager {
 		return search(id, null, null, null);
 	}
 
-	public static Tracking search(String id, Integer start, Integer end, String clientId) throws EncomendaZException {
-		validateParameters(id);
+	public static Tracking search(String trackId, Integer start, Integer end, String clientId) throws EncomendaZException {
+		validateParameters(trackId);
 
 		List<Trace> traces = new ArrayList<Trace>();
 
 		try {
-			List<RegistroRastreamento> list = Rastreamento.rastrear(id);
+			List<RegistroRastreamento> list = Rastreamento.rastrear(trackId);
 			Collections.reverse(list);
 
 			int _start = (start == null || start < 1 ? 1 : start);
@@ -106,11 +106,11 @@ public class TrackingManager {
 		}
 
 		Tracking tracking = new Tracking();
-		tracking.setId(id);
+		tracking.setId(trackId);
 		tracking.setTraces(traces);
 
 		if (!Strings.isEmpty(clientId)) {
-			MonitoringManager.markAsRead(clientId, id);
+			MonitoringManager.markAsRead(clientId, trackId);
 		}
 
 		return tracking;

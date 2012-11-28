@@ -41,6 +41,7 @@ import com.google.appengine.api.datastore.PreparedQuery;
 import com.google.appengine.api.datastore.PropertyProjection;
 import com.google.appengine.api.datastore.Query;
 import com.google.appengine.api.datastore.Query.FilterPredicate;
+import com.google.appengine.api.memcache.Expiration;
 import com.google.appengine.api.memcache.MemcacheService;
 import com.google.appengine.api.memcache.MemcacheService.IdentifiableValue;
 import com.google.appengine.api.memcache.MemcacheServiceFactory;
@@ -188,7 +189,7 @@ public class MonitoringPersistence {
 
 	private static void addMonitoringToCache(Monitoring monitoring) {
 		String id = getId(monitoring);
-		getMemcacheService().put(id, monitoring);
+		getMemcacheService().put(id, monitoring, getCacheExpiration());
 
 		// addTrackIdToCache(monitoring.getClientId(), monitoring.getTrackId());
 		// addClientIdToCache(monitoring.getClientId());
@@ -216,20 +217,19 @@ public class MonitoringPersistence {
 			trackIds = (Set<String>) identifiable.getValue();
 			trackIds.add(trackId);
 
-			result = getMemcacheService().putIfUntouched(clientId, identifiable, trackIds);
+			result = getMemcacheService().putIfUntouched(clientId, identifiable, trackIds, getCacheExpiration());
 
 		} else {
 			trackIds = new HashSet<String>();
 			trackIds.add(trackId);
 
-			getMemcacheService().put(clientId, trackIds);
+			getMemcacheService().put(clientId, trackIds, getCacheExpiration());
 		}
 
 		if (!result) {
 			addTrackIdToCache(clientId, trackId);
 		}
 
-		// addClientIdToCache(clientId);
 		return result;
 	}
 
@@ -244,7 +244,7 @@ public class MonitoringPersistence {
 			trackIds = (Set<String>) identifiable.getValue();
 
 			if (trackIds.remove(trackId)) {
-				result = getMemcacheService().putIfUntouched(clientId, identifiable, trackIds);
+				result = getMemcacheService().putIfUntouched(clientId, identifiable, trackIds, getCacheExpiration());
 			}
 		}
 
@@ -253,6 +253,10 @@ public class MonitoringPersistence {
 		}
 
 		return result;
+	}
+
+	private static Expiration getCacheExpiration() {
+		return Expiration.byDeltaSeconds(Integer.MAX_VALUE);
 	}
 
 	@SuppressWarnings("unchecked")
@@ -266,13 +270,13 @@ public class MonitoringPersistence {
 			clientIds = (Set<String>) identifiable.getValue();
 			clientIds.add(clientId);
 
-			result = getMemcacheService().putIfUntouched(getKind(), identifiable, clientIds);
+			result = getMemcacheService().putIfUntouched(getKind(), identifiable, clientIds, getCacheExpiration());
 
 		} else {
 			clientIds = new HashSet<String>();
 			clientIds.add(clientId);
 
-			getMemcacheService().put(getKind(), clientIds);
+			getMemcacheService().put(getKind(), clientIds, getCacheExpiration());
 		}
 
 		if (!result) {
@@ -303,7 +307,8 @@ public class MonitoringPersistence {
 	// return result;
 	// }
 
-	private static Monitoring load(String id) {
+	public static Monitoring load(String clientId, String trackId) {
+		String id = getId(clientId, trackId);
 		Monitoring monitoring = (Monitoring) getMemcacheService().get(id);
 
 		if (monitoring == null) {
@@ -319,10 +324,6 @@ public class MonitoringPersistence {
 		}
 
 		return monitoring;
-	}
-
-	public static Monitoring load(String clientId, String trackId) {
-		return load(getId(clientId, trackId));
 	}
 
 	private static Entity loadFromDatastore(String id) {

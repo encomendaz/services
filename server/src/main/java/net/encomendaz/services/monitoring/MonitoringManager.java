@@ -144,7 +144,7 @@ public class MonitoringManager {
 		}
 	}
 
-	private static void validateClientId(String clientId) throws MonitoringException {
+	public static void validateClientId(String clientId) throws MonitoringException {
 		if (Strings.isEmpty(clientId)) {
 			throw new MonitoringException("O parâmetro clientId é obrigatório");
 		}

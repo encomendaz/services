@@ -24,6 +24,10 @@
 
 	<distributable />
 
+	<listener>
+		<listener-class>net.encomendaz.services.EncomendaZServletListener</listener-class>
+	</listener>
+ 
 	<filter>
 		<filter-name>Resteasy</filter-name>
 		<filter-class>org.jboss.resteasy.plugins.server.servlet.FilterDispatcher</filter-class>

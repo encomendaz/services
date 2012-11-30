@@ -38,10 +38,10 @@ public class TrackingManager {
 
 	private static void validateParameters(String id) throws TrackingException {
 		if (Strings.isEmpty(id)) {
-			throw new TrackingException("É necessário informar código de rastreamento via parâmetro \"id\"");
+			throw new TrackingException("Parâmetro 'id' obrigatório");
 
 		} else if (!isValidId(id)) {
-			throw new TrackingException("O \"id\" informado não representa um código de rastreamento válido");
+			throw new TrackingException("Identificação inválida");
 		}
 	}
 
@@ -85,7 +85,8 @@ public class TrackingManager {
 		return search(id, null, null, null);
 	}
 
-	public static Tracking search(String trackId, Integer start, Integer end, String clientId) throws EncomendaZException {
+	public static Tracking search(String trackId, Integer start, Integer end, String clientId)
+			throws EncomendaZException {
 		validateParameters(trackId);
 
 		List<Trace> traces = new ArrayList<Trace>();

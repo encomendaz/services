@@ -42,14 +42,21 @@ public class MonitoringServiceTest {
 		String clientId = "91448300404063076307502904506675:018F14CE029B3AFA3135BDB2DA37286C77EE467AA9A72F779AB2A04B8921E448";
 
 		int i = 1;
+		int ok = 0;
 		MonitoringResponse response2;
 		for (Monitoring m : response.getData()) {
 			// response2 = EncomendaZ.monitoring.register(m.getClientId() + "_", m.getTrackId(), m.getLabel());
 			response2 = EncomendaZ.monitoring.register(clientId, m.getTrackId(), m.getLabel());
 
-			System.out.println(i + ": " + response2.toString());
+			if (response2.getStatus() == net.encomendaz.services.Response.Status.OK) {
+				ok++;
+			}
+
+			System.out.println(i + " : " + m.getTrackId() + " : " + response2.toString());
 			i++;
 		}
+
+		System.out.println("Monitoramentos OK: " + ok);
 	}
 
 	@Test
@@ -86,9 +93,9 @@ public class MonitoringServiceTest {
 
 	@Test
 	public void clean() {
-		EncomendaZ.setBaseURL("http://services.encomendaz.net");
-		// EncomendaZ.setBaseURL("http://services.sandbox.encomendaz.net");
-		MonitoringResponse mResponse = EncomendaZ.monitoring.search("<all>");
+		// EncomendaZ.setBaseURL("http://services.encomendaz.net");
+		EncomendaZ.setBaseURL("http://services.sandbox.encomendaz.net");
+		MonitoringResponse mResponse = EncomendaZ.monitoring.search(null, true, null);
 
 		Trace t;
 		TrackingResponse tResponse;

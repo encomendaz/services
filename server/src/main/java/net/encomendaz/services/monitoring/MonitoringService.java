@@ -59,33 +59,10 @@ public class MonitoringService {
 			@QueryParam("completed") String completed, @QueryParam("unread") String unread,
 			@QueryParam("callback") String callback) throws MonitoringException {
 
+		MonitoringManager.validateClientId(clientId);
+
 		List<Monitoring> list = MonitoringManager.search(clientId, trackId, Booleans.valueOf(completed),
 				Booleans.valueOf(unread));
-
-		// List<Monitoring> result = new ArrayList<Monitoring>();
-		//
-		// for (Monitoring monitoring : list) {
-		// if ((Strings.isEmpty(completed) || monitoring.isCompleted() == Booleans.valueOf(completed))
-		// && (Strings.isEmpty(unread) || monitoring.isUnread() == Booleans.valueOf(unread))) {
-		//
-		// monitoring.setClientId(null);
-		// result.add(monitoring);
-		// }
-		// }
-		//
-		// if (!Strings.isEmpty(completed) || !Strings.isEmpty(unread)) {
-		// for (Iterator<Monitoring> iter = list.iterator(); iter.hasNext();) {
-		// Monitoring monitoring = iter.next();
-		// monitoring.setClientId(null);
-		//
-		// if (!Strings.isEmpty(completed) && monitoring.isCompleted() != Booleans.valueOf(completed)) {
-		// iter.remove();
-		// } else if (!Strings.isEmpty(unread) && monitoring.isUnread() != Booleans.valueOf(unread)) {
-		// iter.remove();
-		// }
-		//
-		// }
-		// }
 
 		Response<List<Monitoring>> response = new Response<List<Monitoring>>();
 		response.setStatus(OK);

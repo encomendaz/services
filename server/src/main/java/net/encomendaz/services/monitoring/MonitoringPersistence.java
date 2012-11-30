@@ -84,7 +84,6 @@ public class MonitoringPersistence {
 
 			getDatastoreService().put(entity);
 
-			// addMonitoringToCache(monitoring);
 			addMonitoringToCache(monitoring.getClientId(), monitoring);
 			addClientIdToCache(monitoring.getClientId(), false);
 		}
@@ -125,7 +124,6 @@ public class MonitoringPersistence {
 		if (updated) {
 			getDatastoreService().put(entity);
 
-			// addMonitoringToCache(monitoring);
 			addMonitoringToCache(clientId, monitoring);
 			addClientIdToCache(clientId, false);
 		}
@@ -135,7 +133,6 @@ public class MonitoringPersistence {
 		String id = generateId(monitoring);
 		getDatastoreService().delete(getKey(id));
 
-		// removeMonitoringFromCache(monitoring.getClientId(), monitoring.getTrackId());
 		removeMonitoringFromCache(monitoring.getClientId(), monitoring);
 	}
 
@@ -168,7 +165,6 @@ public class MonitoringPersistence {
 
 		if (result == null) {
 			Query query = new Query(getKind());
-			// query.addProjection(new PropertyProjection("trackId", String.class));
 			query.setFilter(new FilterPredicate("clientId", Query.FilterOperator.EQUAL, clientId));
 
 			PreparedQuery preparedQuery = getDatastoreService().prepare(query);
@@ -186,28 +182,12 @@ public class MonitoringPersistence {
 		return result;
 	}
 
-	// private static void addMonitoringToCache(Monitoring monitoring) {
-	// String id = getId(monitoring);
-	// getMemcacheService().put(id, monitoring);
-	// }
-
-	// private static boolean removeMonitoringFromCache(String clientId, String trackId) {
-	// String id = getId(clientId, trackId);
-	// boolean deleted = getMemcacheService().delete(id);
-	//
-	// if (deleted) {
-	// removeTrackIdFromCache(clientId, trackId);
-	// }
-	//
-	// return deleted;
-	// }
-
 	@SuppressWarnings("unchecked")
-	private static boolean addMonitoringToCache(String clientId, Monitoring monitoring) {
+	private static void addMonitoringToCache(String clientId, Monitoring monitoring) {
 		boolean result = true;
 
-		IdentifiableValue identifiable = getMemcacheService().getIdentifiable(clientId);
 		Set<Monitoring> monitorings;
+		IdentifiableValue identifiable = getMemcacheService().getIdentifiable(clientId);
 
 		if (identifiable != null) {
 			monitorings = (Set<Monitoring>) identifiable.getValue();
@@ -226,19 +206,17 @@ public class MonitoringPersistence {
 		if (!result) {
 			addMonitoringToCache(clientId, monitoring);
 		}
-
-		return result;
 	}
 
 	@SuppressWarnings("unchecked")
-	private static boolean removeMonitoringFromCache(String clientId, Monitoring monitoring) {
+	private static void removeMonitoringFromCache(String clientId, Monitoring monitoring) {
 		boolean result = true;
 
+		Set<Monitoring> monitorings = null;
 		IdentifiableValue identifiable = getMemcacheService().getIdentifiable(clientId);
-		List<Monitoring> monitorings;
 
 		if (identifiable != null) {
-			monitorings = (List<Monitoring>) identifiable.getValue();
+			monitorings = (Set<Monitoring>) identifiable.getValue();
 
 			if (monitorings.remove(monitoring)) {
 				result = getMemcacheService().putIfUntouched(clientId, identifiable,
@@ -250,19 +228,17 @@ public class MonitoringPersistence {
 			removeMonitoringFromCache(clientId, monitoring);
 		}
 
-		return result;
+		if (monitorings != null && monitorings.isEmpty()) {
+			removeClientIdFromCache(clientId);
+		}
 	}
 
-	// private static Expiration getCacheExpiration() {
-	// return Expiration.byDeltaSeconds(Integer.MAX_VALUE);
-	// }
-
 	@SuppressWarnings("unchecked")
-	private static boolean addClientIdToCache(String clientId, boolean force) {
+	private static void addClientIdToCache(String clientId, boolean force) {
 		boolean result = true;
 
-		IdentifiableValue identifiable = getMemcacheService().getIdentifiable(getKind());
 		Set<String> clientIds;
+		IdentifiableValue identifiable = getMemcacheService().getIdentifiable(getKind());
 
 		if (identifiable != null) {
 			clientIds = (Set<String>) identifiable.getValue();
@@ -280,30 +256,26 @@ public class MonitoringPersistence {
 		if (!result) {
 			addClientIdToCache(clientId, force);
 		}
-
-		return result;
 	}
 
 	@SuppressWarnings("unchecked")
-	private static boolean removeClientIdFromCache(String clientId) {
+	private static void removeClientIdFromCache(String clientId) {
 		boolean result = true;
 
-		IdentifiableValue identifiable = getMemcacheService().getIdentifiable(getKind());
 		Set<String> clientIds;
+		IdentifiableValue identifiable = getMemcacheService().getIdentifiable(getKind());
 
 		if (identifiable != null) {
 			clientIds = (Set<String>) identifiable.getValue();
 
 			if (clientIds.remove(clientId)) {
-				result = getMemcacheService().putIfUntouched(clientId, identifiable, new HashSet<String>(clientIds));
+				result = getMemcacheService().putIfUntouched(getKind(), identifiable, new HashSet<String>(clientIds));
 			}
 		}
 
 		if (!result) {
 			removeClientIdFromCache(clientId);
 		}
-
-		return result;
 	}
 
 	public static Monitoring load(String clientId, String trackId) {
@@ -321,25 +293,6 @@ public class MonitoringPersistence {
 
 		return result;
 	}
-
-	// public static Monitoring load(String clientId, String trackId) {
-	// String id = getId(clientId, trackId);
-	// Monitoring monitoring = getMonitoring(clientId, trackId);
-	//
-	// if (monitoring == null) {
-	// Entity entity = loadFromDatastore(id);
-	//
-	// if (entity != null) {
-	// monitoring = parse(entity);
-	//
-	// addMonitoringToCache(monitoring);
-	// addTrackIdToCache(monitoring.getClientId(), monitoring);
-	// addClientIdToCache(monitoring.getClientId(), false);
-	// }
-	// }
-	//
-	// return monitoring;
-	// }
 
 	private static Entity loadFromDatastore(String id) {
 		Entity entity;
@@ -367,18 +320,9 @@ public class MonitoringPersistence {
 
 	public static List<Monitoring> findAll() {
 		List<Monitoring> result = new ArrayList<Monitoring>();
-		List<Monitoring> monitorings;
 
 		for (String clientId : getClientIds()) {
-			monitorings = find(clientId);
-
-			if (monitorings == null || monitorings.isEmpty()) {
-				removeClientIdFromCache(clientId);
-				// removeMonitoringFromCache(clientId, monitoring);
-				// removeTrackIdFromCache(clientId, trackId);
-			} else {
-				result.addAll(monitorings);
-			}
+			result.addAll(find(clientId));
 		}
 
 		return result;
@@ -388,15 +332,7 @@ public class MonitoringPersistence {
 		List<Monitoring> result = new ArrayList<Monitoring>();
 
 		for (Monitoring monitoring : getMonitorings(clientId)) {
-			// monitoring = load(clientId, trackId);
-
-			// if (monitoring == null) {
-			// removeMonitoringFromCache(clientId, monitoring);
-			// removeTrackIdFromCache(clientId, trackId);
-
-			// } else {
 			result.add(monitoring);
-			// }
 		}
 
 		return result;

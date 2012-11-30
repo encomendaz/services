@@ -21,7 +21,6 @@
 package net.encomendaz.services.monitoring;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
@@ -127,8 +126,8 @@ public class MonitoringPersistence {
 			getDatastoreService().put(entity);
 
 			// addMonitoringToCache(monitoring);
-			addMonitoringToCache(monitoring.getClientId(), monitoring);
-			addClientIdToCache(monitoring.getClientId(), false);
+			addMonitoringToCache(clientId, monitoring);
+			addClientIdToCache(clientId, false);
 		}
 	}
 
@@ -149,7 +148,7 @@ public class MonitoringPersistence {
 			query.addProjection(new PropertyProjection("clientId", String.class));
 
 			PreparedQuery preparedQuery = getDatastoreService().prepare(query);
-			clientIds = Collections.synchronizedSet(new HashSet<String>());
+			clientIds = new HashSet<String>();
 			String clientId;
 
 			for (Entity entity : preparedQuery.asIterable()) {
@@ -173,7 +172,7 @@ public class MonitoringPersistence {
 			query.setFilter(new FilterPredicate("clientId", Query.FilterOperator.EQUAL, clientId));
 
 			PreparedQuery preparedQuery = getDatastoreService().prepare(query);
-			result = Collections.synchronizedSet(new HashSet<Monitoring>());
+			result = new HashSet<Monitoring>();
 			Monitoring monitoring;
 
 			for (Entity entity : preparedQuery.asIterable()) {
@@ -212,12 +211,13 @@ public class MonitoringPersistence {
 
 		if (identifiable != null) {
 			monitorings = (Set<Monitoring>) identifiable.getValue();
+			monitorings.remove(monitoring);
 			monitorings.add(monitoring);
 
-			result = getMemcacheService().putIfUntouched(clientId, identifiable, monitorings);
+			result = getMemcacheService().putIfUntouched(clientId, identifiable, new HashSet<Monitoring>(monitorings));
 
 		} else {
-			monitorings = Collections.synchronizedSet(new HashSet<Monitoring>());
+			monitorings = new HashSet<Monitoring>();
 			monitorings.add(monitoring);
 
 			getMemcacheService().put(clientId, monitorings);
@@ -241,7 +241,8 @@ public class MonitoringPersistence {
 			monitorings = (List<Monitoring>) identifiable.getValue();
 
 			if (monitorings.remove(monitoring)) {
-				result = getMemcacheService().putIfUntouched(clientId, identifiable, monitorings);
+				result = getMemcacheService().putIfUntouched(clientId, identifiable,
+						new HashSet<Monitoring>(monitorings));
 			}
 		}
 
@@ -267,10 +268,10 @@ public class MonitoringPersistence {
 			clientIds = (Set<String>) identifiable.getValue();
 			clientIds.add(clientId);
 
-			result = getMemcacheService().putIfUntouched(getKind(), identifiable, clientIds);
+			result = getMemcacheService().putIfUntouched(getKind(), identifiable, new HashSet<String>(clientIds));
 
 		} else if (force) {
-			clientIds = Collections.synchronizedSet(new HashSet<String>());
+			clientIds = new HashSet<String>();
 			clientIds.add(clientId);
 
 			getMemcacheService().put(getKind(), clientIds);
@@ -294,7 +295,7 @@ public class MonitoringPersistence {
 			clientIds = (Set<String>) identifiable.getValue();
 
 			if (clientIds.remove(clientId)) {
-				result = getMemcacheService().putIfUntouched(clientId, identifiable, clientIds);
+				result = getMemcacheService().putIfUntouched(clientId, identifiable, new HashSet<String>(clientIds));
 			}
 		}
 

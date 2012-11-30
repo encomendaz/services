@@ -35,7 +35,7 @@ import org.codehaus.jackson.map.annotate.JsonDeserialize;
 import org.codehaus.jackson.map.annotate.JsonSerialize;
 
 @JsonPropertyOrder({ "clientId", "trackId", "label" })
-public class Monitoring implements Comparable<Monitoring>, Cloneable, Serializable {
+public class Monitoring implements Comparable<Monitoring>, /* Cloneable, */Serializable {
 
 	private static final long serialVersionUID = 1L;
 
@@ -78,18 +78,18 @@ public class Monitoring implements Comparable<Monitoring>, Cloneable, Serializab
 		this.trackId = trackId;
 	}
 
-	@Override
-	protected Object clone() {
-		Object clone = null;
-
-		try {
-			clone = super.clone();
-		} catch (CloneNotSupportedException e) {
-			e.printStackTrace();
-		}
-
-		return clone;
-	}
+	// @Override
+	// protected Object clone() {
+	// Object clone = null;
+	//
+	// try {
+	// clone = super.clone();
+	// } catch (CloneNotSupportedException e) {
+	// e.printStackTrace();
+	// }
+	//
+	// return clone;
+	// }
 
 	@Override
 	public int compareTo(Monitoring other) {

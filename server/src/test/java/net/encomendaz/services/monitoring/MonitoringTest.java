@@ -8,7 +8,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
 
-import org.junit.Assert;
 import org.junit.Test;
 
 public class MonitoringTest {
@@ -69,11 +68,11 @@ public class MonitoringTest {
 		assertArrayEquals(expectedOrder.toArray(new Monitoring[0]), monitorings.values().toArray(new Monitoring[0]));
 	}
 
-	@Test
-	public void clonable() throws CloneNotSupportedException {
-		Monitoring monitoring = new Monitoring("b", "2");
-		Monitoring clone = (Monitoring) monitoring.clone();
-
-		Assert.assertNotSame(clone, monitoring);
-	}
+	// @Test
+	// public void clonable() throws CloneNotSupportedException {
+	// Monitoring monitoring = new Monitoring("b", "2");
+	// Monitoring clone = (Monitoring) monitoring.clone();
+	//
+	// Assert.assertNotSame(clone, monitoring);
+	// }
 }

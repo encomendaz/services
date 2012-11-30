@@ -73,7 +73,7 @@ public class MonitoringPersistence {
 			String clientId = monitoring.getClientId();
 			String trackId = monitoring.getTrackId();
 
-			String id = getId(clientId, trackId);
+			String id = generateId(clientId, trackId);
 			Key key = getKey(id);
 
 			Entity entity = new Entity(key);
@@ -85,8 +85,8 @@ public class MonitoringPersistence {
 
 			getDatastoreService().put(entity);
 
-			addMonitoringToCache(monitoring);
-			addTrackIdToCache(monitoring.getClientId(), monitoring.getTrackId());
+			// addMonitoringToCache(monitoring);
+			addMonitoringToCache(monitoring.getClientId(), monitoring);
 			addClientIdToCache(monitoring.getClientId(), false);
 		}
 	}
@@ -111,7 +111,7 @@ public class MonitoringPersistence {
 	public static void update(Monitoring monitoring) {
 		String clientId = monitoring.getClientId();
 		String trackId = monitoring.getTrackId();
-		String id = getId(clientId, trackId);
+		String id = generateId(clientId, trackId);
 
 		Entity entity = loadFromDatastore(id);
 
@@ -126,18 +126,18 @@ public class MonitoringPersistence {
 		if (updated) {
 			getDatastoreService().put(entity);
 
-			addMonitoringToCache(monitoring);
-			addTrackIdToCache(monitoring.getClientId(), monitoring.getTrackId());
+			// addMonitoringToCache(monitoring);
+			addMonitoringToCache(monitoring.getClientId(), monitoring);
 			addClientIdToCache(monitoring.getClientId(), false);
 		}
 	}
 
 	public static void delete(Monitoring monitoring) {
-		String id = getId(monitoring);
+		String id = generateId(monitoring);
 		getDatastoreService().delete(getKey(id));
 
-		removeMonitoringFromCache(monitoring.getClientId(), monitoring.getTrackId());
-		removeTrackIdFromCache(monitoring.getClientId(), monitoring.getTrackId());
+		// removeMonitoringFromCache(monitoring.getClientId(), monitoring.getTrackId());
+		removeMonitoringFromCache(monitoring.getClientId(), monitoring);
 	}
 
 	private static Set<String> getClientIds() {
@@ -163,90 +163,90 @@ public class MonitoringPersistence {
 		return clientIds;
 	}
 
-	private static Set<String> getTrackIds(String clientId) {
+	private static Set<Monitoring> getMonitorings(String clientId) {
 		@SuppressWarnings("unchecked")
-		Set<String> trackIds = (Set<String>) getMemcacheService().get(clientId);
+		Set<Monitoring> result = (Set<Monitoring>) getMemcacheService().get(clientId);
 
-		if (trackIds == null) {
+		if (result == null) {
 			Query query = new Query(getKind());
-			query.addProjection(new PropertyProjection("trackId", String.class));
+			// query.addProjection(new PropertyProjection("trackId", String.class));
 			query.setFilter(new FilterPredicate("clientId", Query.FilterOperator.EQUAL, clientId));
 
 			PreparedQuery preparedQuery = getDatastoreService().prepare(query);
-			trackIds = Collections.synchronizedSet(new HashSet<String>());
-			String trackId;
+			result = Collections.synchronizedSet(new HashSet<Monitoring>());
+			Monitoring monitoring;
 
 			for (Entity entity : preparedQuery.asIterable()) {
-				trackId = getProperty(entity, "trackId");
+				monitoring = parse(entity);
 
-				addTrackIdToCache(clientId, trackId);
-				trackIds.add(trackId);
+				addMonitoringToCache(clientId, monitoring);
+				result.add(monitoring);
 			}
 		}
 
-		return trackIds;
+		return result;
 	}
 
-	private static void addMonitoringToCache(Monitoring monitoring) {
-		String id = getId(monitoring);
-		getMemcacheService().put(id, monitoring);
-	}
+	// private static void addMonitoringToCache(Monitoring monitoring) {
+	// String id = getId(monitoring);
+	// getMemcacheService().put(id, monitoring);
+	// }
 
-	private static boolean removeMonitoringFromCache(String clientId, String trackId) {
-		String id = getId(clientId, trackId);
-		boolean deleted = getMemcacheService().delete(id);
-
-		if (deleted) {
-			removeTrackIdFromCache(clientId, trackId);
-		}
-
-		return deleted;
-	}
+	// private static boolean removeMonitoringFromCache(String clientId, String trackId) {
+	// String id = getId(clientId, trackId);
+	// boolean deleted = getMemcacheService().delete(id);
+	//
+	// if (deleted) {
+	// removeTrackIdFromCache(clientId, trackId);
+	// }
+	//
+	// return deleted;
+	// }
 
 	@SuppressWarnings("unchecked")
-	private static boolean addTrackIdToCache(String clientId, String trackId) {
+	private static boolean addMonitoringToCache(String clientId, Monitoring monitoring) {
 		boolean result = true;
 
 		IdentifiableValue identifiable = getMemcacheService().getIdentifiable(clientId);
-		Set<String> trackIds;
+		Set<Monitoring> monitorings;
 
 		if (identifiable != null) {
-			trackIds = (Set<String>) identifiable.getValue();
-			trackIds.add(trackId);
+			monitorings = (Set<Monitoring>) identifiable.getValue();
+			monitorings.add(monitoring);
 
-			result = getMemcacheService().putIfUntouched(clientId, identifiable, trackIds);
+			result = getMemcacheService().putIfUntouched(clientId, identifiable, monitorings);
 
 		} else {
-			trackIds = Collections.synchronizedSet(new HashSet<String>());
-			trackIds.add(trackId);
+			monitorings = Collections.synchronizedSet(new HashSet<Monitoring>());
+			monitorings.add(monitoring);
 
-			getMemcacheService().put(clientId, trackIds);
+			getMemcacheService().put(clientId, monitorings);
 		}
 
 		if (!result) {
-			addTrackIdToCache(clientId, trackId);
+			addMonitoringToCache(clientId, monitoring);
 		}
 
 		return result;
 	}
 
 	@SuppressWarnings("unchecked")
-	private static boolean removeTrackIdFromCache(String clientId, String trackId) {
+	private static boolean removeMonitoringFromCache(String clientId, Monitoring monitoring) {
 		boolean result = true;
 
 		IdentifiableValue identifiable = getMemcacheService().getIdentifiable(clientId);
-		List<String> trackIds;
+		List<Monitoring> monitorings;
 
 		if (identifiable != null) {
-			trackIds = (List<String>) identifiable.getValue();
+			monitorings = (List<Monitoring>) identifiable.getValue();
 
-			if (trackIds.remove(trackId)) {
-				result = getMemcacheService().putIfUntouched(clientId, identifiable, trackIds);
+			if (monitorings.remove(monitoring)) {
+				result = getMemcacheService().putIfUntouched(clientId, identifiable, monitorings);
 			}
 		}
 
 		if (!result) {
-			removeTrackIdFromCache(clientId, trackId);
+			removeMonitoringFromCache(clientId, monitoring);
 		}
 
 		return result;
@@ -283,45 +283,62 @@ public class MonitoringPersistence {
 		return result;
 	}
 
-	// private static boolean removeClientIdFromCache(String clientId) {
-	// boolean result = true;
-	//
-	// IdentifiableValue identifiable = getMemcacheService().getIdentifiable(getKind());
-	// Set<String> clientIds;
-	//
-	// if (identifiable != null) {
-	// clientIds = (Set<String>) identifiable.getValue();
-	//
-	// if (clientIds.remove(clientId)) {
-	// result = getMemcacheService().putIfUntouched(clientId, identifiable, clientIds);
-	// }
-	// }
-	//
-	// if (!result) {
-	// removeClientIdFromCache(clientId);
-	// }
-	//
-	// return result;
-	// }
+	@SuppressWarnings("unchecked")
+	private static boolean removeClientIdFromCache(String clientId) {
+		boolean result = true;
 
-	public static Monitoring load(String clientId, String trackId) {
-		String id = getId(clientId, trackId);
-		Monitoring monitoring = (Monitoring) getMemcacheService().get(id);
+		IdentifiableValue identifiable = getMemcacheService().getIdentifiable(getKind());
+		Set<String> clientIds;
 
-		if (monitoring == null) {
-			Entity entity = loadFromDatastore(id);
+		if (identifiable != null) {
+			clientIds = (Set<String>) identifiable.getValue();
 
-			if (entity != null) {
-				monitoring = parse(entity);
-
-				addMonitoringToCache(monitoring);
-				addTrackIdToCache(monitoring.getClientId(), monitoring.getTrackId());
-				addClientIdToCache(monitoring.getClientId(), false);
+			if (clientIds.remove(clientId)) {
+				result = getMemcacheService().putIfUntouched(clientId, identifiable, clientIds);
 			}
 		}
 
-		return monitoring;
+		if (!result) {
+			removeClientIdFromCache(clientId);
+		}
+
+		return result;
 	}
+
+	public static Monitoring load(String clientId, String trackId) {
+		Monitoring result = null;
+		Set<Monitoring> monitorings = getMonitorings(clientId);
+
+		if (monitorings != null) {
+			for (Monitoring monitoring : monitorings) {
+				if (monitoring.getTrackId() != null && trackId != null && monitoring.getTrackId().equals(trackId)) {
+					result = monitoring;
+					break;
+				}
+			}
+		}
+
+		return result;
+	}
+
+	// public static Monitoring load(String clientId, String trackId) {
+	// String id = getId(clientId, trackId);
+	// Monitoring monitoring = getMonitoring(clientId, trackId);
+	//
+	// if (monitoring == null) {
+	// Entity entity = loadFromDatastore(id);
+	//
+	// if (entity != null) {
+	// monitoring = parse(entity);
+	//
+	// addMonitoringToCache(monitoring);
+	// addTrackIdToCache(monitoring.getClientId(), monitoring);
+	// addClientIdToCache(monitoring.getClientId(), false);
+	// }
+	// }
+	//
+	// return monitoring;
+	// }
 
 	private static Entity loadFromDatastore(String id) {
 		Entity entity;
@@ -335,12 +352,12 @@ public class MonitoringPersistence {
 		return entity;
 	}
 
-	private static String getId(String clientId, String trackId) {
+	private static String generateId(String clientId, String trackId) {
 		return Monitoring.generateId(clientId, trackId);
 	}
 
-	private static String getId(Monitoring monitoring) {
-		return getId(monitoring.getClientId(), monitoring.getTrackId());
+	private static String generateId(Monitoring monitoring) {
+		return generateId(monitoring.getClientId(), monitoring.getTrackId());
 	}
 
 	private static Key getKey(String id) {
@@ -349,9 +366,18 @@ public class MonitoringPersistence {
 
 	public static List<Monitoring> findAll() {
 		List<Monitoring> result = new ArrayList<Monitoring>();
+		List<Monitoring> monitorings;
 
 		for (String clientId : getClientIds()) {
-			result.addAll(find(clientId));
+			monitorings = find(clientId);
+
+			if (monitorings == null || monitorings.isEmpty()) {
+				removeClientIdFromCache(clientId);
+				// removeMonitoringFromCache(clientId, monitoring);
+				// removeTrackIdFromCache(clientId, trackId);
+			} else {
+				result.addAll(monitorings);
+			}
 		}
 
 		return result;
@@ -359,18 +385,17 @@ public class MonitoringPersistence {
 
 	public static List<Monitoring> find(String clientId) {
 		List<Monitoring> result = new ArrayList<Monitoring>();
-		Monitoring monitoring;
 
-		for (String trackId : getTrackIds(clientId)) {
-			monitoring = load(clientId, trackId);
+		for (Monitoring monitoring : getMonitorings(clientId)) {
+			// monitoring = load(clientId, trackId);
 
-			if (monitoring == null) {
-				removeMonitoringFromCache(clientId, trackId);
-				removeTrackIdFromCache(clientId, trackId);
+			// if (monitoring == null) {
+			// removeMonitoringFromCache(clientId, monitoring);
+			// removeTrackIdFromCache(clientId, trackId);
 
-			} else {
-				result.add(monitoring);
-			}
+			// } else {
+			result.add(monitoring);
+			// }
 		}
 
 		return result;

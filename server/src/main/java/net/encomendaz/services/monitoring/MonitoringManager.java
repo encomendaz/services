@@ -80,13 +80,21 @@ public class MonitoringManager {
 		return search(null, null, null, null);
 	}
 
+	public static List<String> findAllClientIds() throws MonitoringException {
+		return MonitoringPersistence.findAllClientIds();
+	}
+
 	public static Integer countUnread(String clientId) throws MonitoringException {
 		return search(clientId, null, null, true).size();
 	}
 
+	public static List<Monitoring> search(String clientId, Boolean completed, Boolean unread)
+			throws MonitoringException {
+		return search(clientId, null, completed, unread);
+	}
+
 	public static List<Monitoring> search(String clientId, String trackId, Boolean completed, Boolean unread)
 			throws MonitoringException {
-		// validateClientId(clientId);
 		List<Monitoring> list;
 
 		if (Strings.isEmpty(clientId) && Strings.isEmpty(trackId)) {
@@ -113,18 +121,6 @@ public class MonitoringManager {
 				result.add(monitoring);
 			}
 		}
-
-		// if (unread != null) {
-		// Monitoring monitoring;
-		//
-		// for (Iterator<Monitoring> iter = result.iterator(); iter.hasNext();) {
-		// monitoring = iter.next();
-		//
-		// if (!unread.equals(monitoring.isUnread())) {
-		// iter.remove();
-		// }
-		// }
-		// }
 
 		return result;
 	}

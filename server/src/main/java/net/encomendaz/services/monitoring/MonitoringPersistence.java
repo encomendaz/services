@@ -136,6 +136,18 @@ public class MonitoringPersistence {
 		removeMonitoringFromCache(monitoring.getClientId(), monitoring);
 	}
 
+	public static List<String> findAllClientIds() {
+		ArrayList<String> result = new ArrayList<String>();
+
+		for (String clinetId : getClientIds()) {
+			if (!getMonitorings(clinetId).isEmpty()) {
+				result.add(clinetId);
+			}
+		}
+
+		return result;
+	}
+
 	private static Set<String> getClientIds() {
 		@SuppressWarnings("unchecked")
 		Set<String> clientIds = (Set<String>) getMemcacheService().get(getKind());

@@ -41,7 +41,7 @@ public class TrackingManager {
 			throw new TrackingException("Parâmetro 'id' obrigatório");
 
 		} else if (!isValidId(id)) {
-			throw new TrackingException("Identificação inválida");
+			throw new TrackingException("Inválido");
 		}
 	}
 

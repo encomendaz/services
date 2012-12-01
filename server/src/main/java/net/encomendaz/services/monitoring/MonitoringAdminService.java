@@ -57,18 +57,6 @@ public class MonitoringAdminService {
 		List<Monitoring> list = MonitoringManager.search(null, null, Booleans.valueOf(completed),
 				Booleans.valueOf(unread));
 
-		// if (!Strings.isEmpty(completed) || !Strings.isEmpty(unread)) {
-		// for (Iterator<Monitoring> iter = list.iterator(); iter.hasNext();) {
-		// Monitoring monitoring = iter.next();
-		//
-		// if (!Strings.isEmpty(completed) && monitoring.isCompleted() != Booleans.valueOf(completed)) {
-		// iter.remove();
-		// } else if (!Strings.isEmpty(unread) && monitoring.isUnread() != Booleans.valueOf(unread)) {
-		// iter.remove();
-		// }
-		// }
-		// }
-
 		Response<List<Monitoring>> response = new Response<List<Monitoring>>();
 		response.setStatus(OK);
 		response.setData(list);
@@ -82,24 +70,22 @@ public class MonitoringAdminService {
 		TaskOptions taskOptions;
 		Queue queue = QueueFactory.getQueue("monitoring");
 
-		for (Monitoring monitoring : MonitoringManager.findAll()) {
-			if (!monitoring.isCompleted()) {
-				taskOptions = Builder.withUrl("/admin/monitoring/check-for-updates");
-				taskOptions = taskOptions.param("clientId", monitoring.getClientId());
-				taskOptions = taskOptions.param("trackId", monitoring.getTrackId());
-				taskOptions.method(POST);
+		for (String clintId : MonitoringManager.findAllClientIds()) {
+			taskOptions = Builder.withUrl("/admin/monitoring/check-for-updates");
+			taskOptions = taskOptions.param("clientId", clintId);
+			taskOptions.method(POST);
 
-				queue.add(taskOptions);
-			}
+			queue.add(taskOptions);
 		}
 	}
 
 	@POST
 	@Path("/monitoring/check-for-updates")
-	public void execute(@FormParam("clientId") String clientId, @FormParam("trackId") String trackId) throws Exception {
-		Monitoring monitoring = MonitoringManager.load(clientId, trackId);
+	public void execute(@FormParam("clientId") String clientId) throws Exception {
 
-		if (monitoring != null) {
+		List<Monitoring> monitorings = MonitoringManager.search(clientId, false, null);
+
+		for (Monitoring monitoring : monitorings) {
 			Date date = new Date();
 
 			Tracking tracking = TrackingManager.search(monitoring.getTrackId());
@@ -118,7 +104,5 @@ public class MonitoringAdminService {
 				NotificationManager.send(monitoring, tracking);
 			}
 		}
-
-		// monitoring.setMonitored(date);
 	}
 }

@@ -83,9 +83,9 @@ public class MonitoringAdminService {
 	@Path("/monitoring/check-for-updates")
 	public void execute(@FormParam("clientId") String clientId) throws Exception {
 
-		List<Monitoring> monitorings = MonitoringManager.search(clientId, false, null);
+		MonitoringManager.validateClientId(clientId);
 
-		for (Monitoring monitoring : monitorings) {
+		for (Monitoring monitoring : MonitoringManager.search(clientId, false, null)) {
 			Date date = new Date();
 
 			Tracking tracking = TrackingManager.search(monitoring.getTrackId());

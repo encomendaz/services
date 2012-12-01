@@ -36,7 +36,7 @@ public class MonitoringServiceTest {
 	@Test
 	public void load() {
 		EncomendaZ.setBaseURL("http://services.encomendaz.net/admin");
-		MonitoringResponse response = EncomendaZ.monitoring.search(null);
+		MonitoringResponse response = EncomendaZ.monitoring.search(null, false, null);
 		System.out.println(".");
 
 		EncomendaZ.setBaseURL("http://services.sandbox.encomendaz.net");
@@ -120,6 +120,21 @@ public class MonitoringServiceTest {
 				i++;
 			}
 		}
+	}
+
+	@Test
+	public void count() {
+		int count = 0;
+
+		// EncomendaZ.setBaseURL("http://services.encomendaz.net/admin");
+		EncomendaZ.setBaseURL("http://services.sandbox.encomendaz.net/admin");
+		MonitoringResponse response = EncomendaZ.monitoring.search(null, null, null);
+
+		if (response.getData() != null) {
+			count = response.getData().size();
+		}
+
+		System.out.println("Count: " + count);
 	}
 
 	// @Test

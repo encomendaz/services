@@ -85,7 +85,7 @@ public class MonitoringPersistence {
 			getDatastoreService().put(entity);
 
 			addMonitoringToCache(monitoring.getClientId(), monitoring);
-			addClientIdToCache(monitoring.getClientId(), false);
+			addClientIdToCache(monitoring.getClientId());
 		}
 	}
 
@@ -112,20 +112,22 @@ public class MonitoringPersistence {
 		String id = generateId(clientId, trackId);
 
 		Entity entity = loadFromDatastore(id);
-
 		boolean updated = false;
-		updated |= setProperty(entity, "label", monitoring.getLabel());
-		updated |= setProperty(entity, "unread", monitoring.isUnread());
-		updated |= setProperty(entity, "created", monitoring.getCreated());
-		updated |= setProperty(entity, "updated", monitoring.getUpdated());
-		updated |= setProperty(entity, "completed", monitoring.getCompleted());
-		updated |= setProperty(entity, "hash", monitoring.getHash());
+
+		if (entity != null) {
+			updated |= setProperty(entity, "label", monitoring.getLabel());
+			updated |= setProperty(entity, "unread", monitoring.isUnread());
+			updated |= setProperty(entity, "created", monitoring.getCreated());
+			updated |= setProperty(entity, "updated", monitoring.getUpdated());
+			updated |= setProperty(entity, "completed", monitoring.getCompleted());
+			updated |= setProperty(entity, "hash", monitoring.getHash());
+		}
 
 		if (updated) {
 			getDatastoreService().put(entity);
 
 			addMonitoringToCache(clientId, monitoring);
-			addClientIdToCache(clientId, false);
+			addClientIdToCache(clientId);
 		}
 	}
 
@@ -137,15 +139,15 @@ public class MonitoringPersistence {
 	}
 
 	public static List<String> findAllClientIds() {
-		ArrayList<String> result = new ArrayList<String>();
+		// ArrayList<String> result = new ArrayList<String>();
+		//
+		// for (String clientId : getClientIds()) {
+		// if (!getMonitorings(clientId).isEmpty()) {
+		// result.add(clientId);
+		// }
+		// }
 
-		for (String clinetId : getClientIds()) {
-			if (!getMonitorings(clinetId).isEmpty()) {
-				result.add(clinetId);
-			}
-		}
-
-		return result;
+		return new ArrayList<String>(getClientIds());
 	}
 
 	private static Set<String> getClientIds() {
@@ -158,14 +160,12 @@ public class MonitoringPersistence {
 
 			PreparedQuery preparedQuery = getDatastoreService().prepare(query);
 			clientIds = new HashSet<String>();
-			String clientId;
 
 			for (Entity entity : preparedQuery.asIterable()) {
-				clientId = getProperty(entity, "clientId");
-
-				addClientIdToCache(clientId, true);
-				clientIds.add(clientId);
+				clientIds.add((String) getProperty(entity, "clientId"));
 			}
+
+			getMemcacheService().put(getKind(), clientIds);
 		}
 
 		return clientIds;
@@ -181,14 +181,13 @@ public class MonitoringPersistence {
 
 			PreparedQuery preparedQuery = getDatastoreService().prepare(query);
 			result = new HashSet<Monitoring>();
-			Monitoring monitoring;
 
 			for (Entity entity : preparedQuery.asIterable()) {
-				monitoring = parse(entity);
-
-				addMonitoringToCache(clientId, monitoring);
-				result.add(monitoring);
+				result.add(parse(entity));
 			}
+
+			getMemcacheService().put(clientId, result);
+
 		}
 
 		return result;
@@ -246,7 +245,7 @@ public class MonitoringPersistence {
 	}
 
 	@SuppressWarnings("unchecked")
-	private static void addClientIdToCache(String clientId, boolean force) {
+	private static void addClientIdToCache(String clientId) {
 		boolean result = true;
 
 		Set<String> clientIds;
@@ -258,7 +257,7 @@ public class MonitoringPersistence {
 
 			result = getMemcacheService().putIfUntouched(getKind(), identifiable, new HashSet<String>(clientIds));
 
-		} else if (force) {
+		} else {
 			clientIds = new HashSet<String>();
 			clientIds.add(clientId);
 
@@ -266,7 +265,7 @@ public class MonitoringPersistence {
 		}
 
 		if (!result) {
-			addClientIdToCache(clientId, force);
+			addClientIdToCache(clientId);
 		}
 	}
 

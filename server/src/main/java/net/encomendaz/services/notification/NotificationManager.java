@@ -165,16 +165,16 @@ public class NotificationManager {
 
 	private static String buildNextStop(Trace trace) {
 		String nextStop;
-		
+
 		Pattern pattern = Pattern.compile("^(Em trânsito para|Encaminhado para) (.*)");
 		Matcher matcher = pattern.matcher(trace.getDescription());
-		
-		if(matcher.matches()) {
+
+		if (matcher.matches()) {
 			nextStop = " " + matcher.group(2);
 		} else {
 			nextStop = " o próximo destino";
 		}
-		
+
 		return nextStop;
 	}
 }

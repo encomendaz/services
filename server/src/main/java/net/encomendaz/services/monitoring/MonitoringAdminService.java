@@ -70,22 +70,24 @@ public class MonitoringAdminService {
 		TaskOptions taskOptions;
 		Queue queue = QueueFactory.getQueue("monitoring");
 
-		for (String clintId : MonitoringManager.findAllClientIds()) {
-			taskOptions = Builder.withUrl("/admin/monitoring/check-for-updates");
-			taskOptions = taskOptions.param("clientId", clintId);
-			taskOptions.method(POST);
+		for (Monitoring monitoring : MonitoringManager.findAll()) {
+			if (!monitoring.isCompleted()) {
+				taskOptions = Builder.withUrl("/admin/monitoring/check-for-updates");
+				taskOptions = taskOptions.param("clientId", monitoring.getClientId());
+				taskOptions = taskOptions.param("trackId", monitoring.getTrackId());
+				taskOptions.method(POST);
 
-			queue.add(taskOptions);
+				queue.add(taskOptions);
+			}
 		}
 	}
 
 	@POST
 	@Path("/monitoring/check-for-updates")
-	public void execute(@FormParam("clientId") String clientId) throws Exception {
+	public void execute(@FormParam("clientId") String clientId, @FormParam("trackId") String trackId) throws Exception {
+		Monitoring monitoring = MonitoringManager.load(clientId, trackId);
 
-		MonitoringManager.validateClientId(clientId);
-
-		for (Monitoring monitoring : MonitoringManager.search(clientId, false, null)) {
+		if (monitoring != null) {
 			Date date = new Date();
 
 			Tracking tracking = TrackingManager.search(monitoring.getTrackId());

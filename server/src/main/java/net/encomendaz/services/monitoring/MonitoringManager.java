@@ -132,8 +132,7 @@ public class MonitoringManager {
 		Monitoring monitoring = MonitoringPersistence.load(clientId, trackId);
 
 		if (monitoring == null) {
-			throw new MonitoringException("Não existe monitoramento para o clientId=" + clientId + " e trackId="
-					+ trackId);
+			throw new MonitoringException("Inexistente");
 
 		} else {
 			MonitoringPersistence.delete(monitoring);

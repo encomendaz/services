@@ -91,15 +91,14 @@ public class MonitoringServiceTest {
 
 	@Test
 	public void sql() {
-//		EncomendaZ.setBaseURL("http://services.encomendaz.net/admin");
-		 EncomendaZ.setBaseURL("http://services.sandbox.encomendaz.net/admin");
-		MonitoringResponse response = EncomendaZ.monitoring.search(null, null, null);
+		EncomendaZ.setBaseURL("http://services.encomendaz.net/admin");
+		// EncomendaZ.setBaseURL("http://services.sandbox.encomendaz.net/admin");
+		MonitoringResponse response = EncomendaZ.monitoring.search(null, false, null);
 
-		System.out.println("drop table Monitoring;");
-		System.out
-		.println("create table Monitoring (clientId varchar not null, trackId varchar not null);");
-//		System.out
-//				.println("create table Monitoring (clientId varchar not null, trackId varchar not null, primary key (clientId, trackId));");
+		 System.out.println("drop table Monitoring;");
+		System.out.println("create table Monitoring (clientId varchar not null, trackId varchar not null);");
+		// System.out
+		// .println("create table Monitoring (clientId varchar not null, trackId varchar not null, primary key (clientId, trackId));");
 
 		for (Monitoring m : response.getData()) {
 			System.out.println(String.format("insert into Monitoring (clientId, trackId) values ('%s', '%s');",

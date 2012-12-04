@@ -48,7 +48,7 @@ public class MonitoringServiceTest {
 	public void cleanCompleted() {
 		EncomendaZ.setBaseURL("http://services.encomendaz.net/admin");
 		// EncomendaZ.setBaseURL("http://services.sandbox.encomendaz.net/admin");
-		MonitoringResponse response = EncomendaZ.monitoring.search(null, true, null);
+		MonitoringResponse response = EncomendaZ.monitoring.search(null, true, false);
 
 		EncomendaZ.setBaseURL("http://services.encomendaz.net");
 		// EncomendaZ.setBaseURL("http://services.sandbox.encomendaz.net");
@@ -109,12 +109,12 @@ public class MonitoringServiceTest {
 	@Test
 	public void count() {
 		EncomendaZ.setBaseURL("http://services.encomendaz.net/admin");
-		MonitoringResponse response1 = EncomendaZ.monitoring.search(null, false, null);
+		MonitoringResponse response1 = EncomendaZ.monitoring.search(null, null, null);
 
 		EncomendaZ.setBaseURL("http://services.sandbox.encomendaz.net/admin");
-		MonitoringResponse response2 = EncomendaZ.monitoring.search(null, false, null);
+		MonitoringResponse response2 = EncomendaZ.monitoring.search(null, null, null);
 
 		System.out.println("Distribution count: " + response1.getData().size());
-		System.out.println("Sandobox count: " + response2.getData().size());
+		System.out.println("Sandbox count: " + response2.getData().size());
 	}
 }

@@ -139,14 +139,6 @@ public class MonitoringPersistence {
 	}
 
 	public static List<String> findAllClientIds() {
-		// ArrayList<String> result = new ArrayList<String>();
-		//
-		// for (String clientId : getClientIds()) {
-		// if (!getMonitorings(clientId).isEmpty()) {
-		// result.add(clientId);
-		// }
-		// }
-
 		return new ArrayList<String>(getClientIds());
 	}
 
@@ -155,19 +147,26 @@ public class MonitoringPersistence {
 		Set<String> clientIds = (Set<String>) getMemcacheService().get(getKind());
 
 		if (clientIds == null) {
-			Query query = new Query(getKind());
-			query.addProjection(new PropertyProjection("clientId", String.class));
-
-			PreparedQuery preparedQuery = getDatastoreService().prepare(query);
-			clientIds = new HashSet<String>();
-
-			for (Entity entity : preparedQuery.asIterable()) {
-				clientIds.add((String) getProperty(entity, "clientId"));
-			}
-
-			getMemcacheService().put(getKind(), clientIds);
+			clientIds = initClientIds();
 		}
 
+		return clientIds;
+	}
+
+	private static Set<String> initClientIds() {
+		Query query = new Query(getKind());
+		query.addProjection(new PropertyProjection("clientId", String.class));
+
+		PreparedQuery preparedQuery = getDatastoreService().prepare(query);
+		Set<String> clientIds = new HashSet<String>();
+		String clientId;
+
+		for (Entity entity : preparedQuery.asIterable()) {
+			clientId = getProperty(entity, "clientId");
+			clientIds.add(clientId);
+		}
+
+		getMemcacheService().put(getKind(), clientIds);
 		return clientIds;
 	}
 
@@ -176,20 +175,24 @@ public class MonitoringPersistence {
 		Set<Monitoring> result = (Set<Monitoring>) getMemcacheService().get(clientId);
 
 		if (result == null) {
-			Query query = new Query(getKind());
-			query.setFilter(new FilterPredicate("clientId", Query.FilterOperator.EQUAL, clientId));
-
-			PreparedQuery preparedQuery = getDatastoreService().prepare(query);
-			result = new HashSet<Monitoring>();
-
-			for (Entity entity : preparedQuery.asIterable()) {
-				result.add(parse(entity));
-			}
-
-			getMemcacheService().put(clientId, result);
-
+			result = initMonitorings(clientId);
 		}
 
+		return result;
+	}
+
+	private static Set<Monitoring> initMonitorings(String clientId) {
+		Query query = new Query(getKind());
+		query.setFilter(new FilterPredicate("clientId", Query.FilterOperator.EQUAL, clientId));
+
+		PreparedQuery preparedQuery = getDatastoreService().prepare(query);
+		Set<Monitoring> result = new HashSet<Monitoring>();
+
+		for (Entity entity : preparedQuery.asIterable()) {
+			result.add(parse(entity));
+		}
+
+		getMemcacheService().put(clientId, result);
 		return result;
 	}
 
@@ -208,10 +211,8 @@ public class MonitoringPersistence {
 			result = getMemcacheService().putIfUntouched(clientId, identifiable, new HashSet<Monitoring>(monitorings));
 
 		} else {
-			monitorings = new HashSet<Monitoring>();
-			monitorings.add(monitoring);
-
-			getMemcacheService().put(clientId, monitorings);
+			initMonitorings(clientId);
+			result = false;
 		}
 
 		if (!result) {
@@ -258,10 +259,8 @@ public class MonitoringPersistence {
 			result = getMemcacheService().putIfUntouched(getKind(), identifiable, new HashSet<String>(clientIds));
 
 		} else {
-			clientIds = new HashSet<String>();
-			clientIds.add(clientId);
-
-			getMemcacheService().put(getKind(), clientIds);
+			initClientIds();
+			result = false;
 		}
 
 		if (!result) {

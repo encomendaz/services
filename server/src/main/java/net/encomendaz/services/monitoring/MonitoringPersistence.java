@@ -154,20 +154,22 @@ public class MonitoringPersistence {
 	}
 
 	private static Set<String> initClientIds() {
+		Set<String> result = new HashSet<String>();
+		getMemcacheService().put(getKind(), result);
+
 		Query query = new Query(getKind());
 		query.addProjection(new PropertyProjection("clientId", String.class));
 
 		PreparedQuery preparedQuery = getDatastoreService().prepare(query);
-		Set<String> clientIds = new HashSet<String>();
-		String clientId;
 
 		for (Entity entity : preparedQuery.asIterable()) {
-			clientId = getProperty(entity, "clientId");
-			clientIds.add(clientId);
+			result.add((String) getProperty(entity, "clientId"));
 		}
 
-		getMemcacheService().put(getKind(), clientIds);
-		return clientIds;
+		getMemcacheService().delete(getKind());
+		getMemcacheService().put(getKind(), result);
+
+		return result;
 	}
 
 	private static Set<Monitoring> getMonitorings(String clientId) {
@@ -182,17 +184,21 @@ public class MonitoringPersistence {
 	}
 
 	private static Set<Monitoring> initMonitorings(String clientId) {
+		Set<Monitoring> result = new HashSet<Monitoring>();
+		getMemcacheService().put(clientId, result);
+
 		Query query = new Query(getKind());
 		query.setFilter(new FilterPredicate("clientId", Query.FilterOperator.EQUAL, clientId));
 
 		PreparedQuery preparedQuery = getDatastoreService().prepare(query);
-		Set<Monitoring> result = new HashSet<Monitoring>();
 
 		for (Entity entity : preparedQuery.asIterable()) {
 			result.add(parse(entity));
 		}
 
+		getMemcacheService().delete(clientId);
 		getMemcacheService().put(clientId, result);
+
 		return result;
 	}
 
@@ -332,20 +338,14 @@ public class MonitoringPersistence {
 		List<Monitoring> result = new ArrayList<Monitoring>();
 
 		for (String clientId : getClientIds()) {
-			result.addAll(find(clientId));
+			result.addAll(getMonitorings(clientId));
 		}
 
 		return result;
 	}
 
 	public static List<Monitoring> find(String clientId) {
-		List<Monitoring> result = new ArrayList<Monitoring>();
-
-		for (Monitoring monitoring : getMonitorings(clientId)) {
-			result.add(monitoring);
-		}
-
-		return result;
+		return new ArrayList<Monitoring>(getMonitorings(clientId));
 	}
 
 	private static Monitoring parse(Entity entity) {

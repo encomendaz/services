@@ -165,6 +165,9 @@ public class CorreiosTrace extends Trace {
 				
 			} else if ("devolvido ao remetente".equals(acao)) {
 				status = Status.DELIVERED;
+				
+			} else if (acao.indexOf("disponível para retirada") >= 0) {
+				status = Status.DELIVERED;
 
 			} else if (acao.indexOf("aguardando") >= 0) {
 				status = Status.AWAITING;

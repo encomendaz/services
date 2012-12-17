@@ -89,7 +89,7 @@ public class TrackingManager {
 			throws EncomendaZException {
 		validateParameters(trackId);
 
-		List<Trace> traces = new ArrayList<Trace>();
+		List<Trace> traces;
 
 		try {
 			List<RegistroRastreamento> list = Rastreamento.rastrear(trackId);
@@ -98,20 +98,27 @@ public class TrackingManager {
 			int _start = (start == null || start < 1 ? 1 : start);
 			int _end = (end == null || end > list.size() ? list.size() : end);
 
+			traces = new ArrayList<Trace>();
+
 			for (int i = _start; i <= _end; i++) {
 				traces.add(parse(list.get(i - 1)));
 			}
 
 		} catch (AlfredException cause) {
 			cause.printStackTrace();
+			traces = null;
 		}
 
-		Tracking tracking = new Tracking();
-		tracking.setId(trackId);
-		tracking.setTraces(traces);
+		Tracking tracking = null;
 
-		if (!Strings.isEmpty(clientId)) {
-			MonitoringManager.markAsRead(clientId, trackId);
+		if (traces != null) {
+			tracking = new Tracking();
+			tracking.setId(trackId);
+			tracking.setTraces(traces);
+
+			if (!Strings.isEmpty(clientId)) {
+				MonitoringManager.markAsRead(clientId, trackId);
+			}
 		}
 
 		return tracking;

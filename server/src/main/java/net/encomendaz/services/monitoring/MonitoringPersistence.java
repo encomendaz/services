@@ -62,6 +62,10 @@ public class MonitoringPersistence {
 	public static void insert(Monitoring monitoring) throws EncomendaZException {
 		Tracking tracking = TrackingManager.search(monitoring.getTrackId());
 
+		if (tracking == null) {
+			throw new MonitoringException("Falha ao consultar o rastreamento " + monitoring.getTrackId());
+		}
+
 		if (tracking.isCompleted()) {
 			throw new MonitoringException("Finalizado");
 

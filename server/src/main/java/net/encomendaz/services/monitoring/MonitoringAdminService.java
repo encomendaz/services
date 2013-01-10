@@ -91,9 +91,9 @@ public class MonitoringAdminService {
 			Date date = new Date();
 
 			Tracking tracking = TrackingManager.search(monitoring.getTrackId());
-			String hash = tracking.getHash();
+			String hash = tracking != null ? tracking.getHash() : null;
 
-			if (monitoring.getHash() == null || !monitoring.getHash().equals(hash)) {
+			if (hash != null && (monitoring.getHash() == null || !monitoring.getHash().equals(hash))) {
 				monitoring.setHash(hash);
 				monitoring.setUpdated(date);
 				monitoring.setUnread(true);

@@ -4,10 +4,16 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 import net.encomendaz.services.EncomendaZException;
 
+import org.alfredlibrary.utilitarios.correios.Rastreamento;
 import org.junit.Test;
 
 public class TrackingManagerTest {
 
+	@Test
+	public void x() {
+		Rastreamento.rastrear("RB069060794CN");
+	}
+	
 	@Test
 	public void isCompleted() throws EncomendaZException {
 		Tracking tracking = TrackingManager.search("PB261442824BR");

@@ -19,8 +19,10 @@ public class Tracking {
 	private String hash;
 
 	public String getHash() {
-		if (this.hash == null) {
-			String serial = Serializer.json(getTraces());
+		List<Trace> traces = getTraces();
+
+		if (this.hash == null && traces != null) {
+			String serial = Serializer.json(traces);
 			this.hash = Hasher.sha1(serial);
 		}
 
@@ -62,6 +64,6 @@ public class Tracking {
 
 	@JsonIgnore
 	public Trace getLastTrace() {
-		return this.traces.isEmpty() ? null : this.traces.get(this.traces.size() - 1);
+		return this.traces != null && this.traces.isEmpty() ? null : this.traces.get(this.traces.size() - 1);
 	}
 }

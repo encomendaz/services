@@ -23,6 +23,7 @@ package net.encomendaz.services.tracking;
 import static net.encomendaz.services.Constants.JSON_MEDIA_TYPE;
 import static net.encomendaz.services.Response.Status.OK;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.ws.rs.GET;
@@ -45,8 +46,14 @@ public class TrackingService {
 		Response<List<Trace>> response = new Response<List<Trace>>();
 
 		Tracking tracking = TrackingManager.search(id, start, end, clientId);
+
+		List<Trace> traces = new ArrayList<Trace>();
+		if (tracking != null) {
+			traces = tracking.getTraces();
+		}
+
 		response.setStatus(OK);
-		response.setData(tracking.getTraces());
+		response.setData(traces);
 
 		return Serializer.json(response, callback);
 	}

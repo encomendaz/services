@@ -36,6 +36,7 @@ import net.encomendaz.services.monitoring.Monitoring;
 import net.encomendaz.services.monitoring.MonitoringException;
 import net.encomendaz.services.monitoring.MonitoringManager;
 import net.encomendaz.services.tracking.Trace;
+import net.encomendaz.services.tracking.Trace.Status;
 import net.encomendaz.services.tracking.Tracking;
 import net.encomendaz.services.util.Strings;
 
@@ -104,8 +105,10 @@ public class NotificationManager {
 		}
 
 		message.append(" ");
+		Status status = tracking != null && tracking.getLastTrace() != null ? tracking.getLastTrace().getStatus()
+				: Status.UNKNOWN;
 
-		switch (tracking.getLastTrace().getStatus()) {
+		switch (status) {
 			case ACCEPTANCE:
 				message.append("foi postada");
 				message.append(buildCity(tracking.getLastTrace()));
@@ -165,9 +168,9 @@ public class NotificationManager {
 
 	private static String buildNextStop(Trace trace) {
 		String nextStop;
-
+		
 		Pattern pattern = Pattern.compile("^(Em trânsito para|Encaminhado para) (.*)");
-		Matcher matcher = pattern.matcher(trace.getDescription());
+		Matcher matcher = pattern.matcher(trace == null || trace.getDescription() == null ? "" :  trace.getDescription());
 
 		if (matcher.matches()) {
 			nextStop = " " + matcher.group(2);
